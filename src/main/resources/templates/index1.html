@@ -1,0 +1,36 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"-->
+<!--                      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Title</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--huany您好，您的用户权限为-->
+<!--<span sec:authentication="principal.authorities[0]" style="color:darkkhaki"></span>-->
+<!--<span sec:authentication="principal.password" style="color:darkkhaki"></span>-->
+<!--</body>-->
+<!--</html>-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+</head>
+<body>
+<div sec:authorize="isAuthenticated()">
+    <p>已登录</p>
+    <p>登录名：<span sec:authentication="name"></span></p>
+    <p>Password：<span sec:authentication="principal.password"></span></p>
+    <div sec:authentication="principal.authorities"></div> <!-- works fine -->
+<!--    <p>Email ：<span sec:authentication="principal.email"></span></p>-->
+    <p>Name：<span sec:authentication="principal.getUsername()"></span></p>
+<!--    <p>Status：<span sec:authentication="principal.status"></span></p>-->
+    <p>拥有的角色：
+        <span sec:authorize="hasRole('ROLE_ADMIN')">管理员</span>
+        <span sec:authorize="hasRole('ROLE_USER')">用户</span>
+    </p>
+</div>
+<div sec:authorize="isAuthenticated()"><p>未登录</p></div>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>用户登录界面</title>
+    <link th:href="@{/login/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/login/css/signin.css}" rel="stylesheet">
+</head>
+<body class="text-center">
+<form class="form-signin" th:action="@{/userLogin}" th:method="post" >
+    <img class="mb-4" th:src="@{/login/img/login.jpg}" width="72px" height="72px">
+    <h1 class="h3 mb-3 font-weight-normal">请登录</h1>
+    <!-- 用户登录错误信息提示框 -->
+    <div th:if="${param.error}" style="color: red;height: 40px;text-align: left;font-size: 1.1em">
+        <img th:src="@{/login/img/loginError.jpg}" width="20px">用户名或密码错误，请重新登录！
+    </div>
+
+    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+    <select name="usertype">
+        <option value="1" >学生</option>
+        <option value="2">教师</option>
+        <option value="0">管理员</option>
+        <option value="3">维修人员</option>
+    </select>
+    <input type="text" name="username" class="form-control" placeholder="用户名" required="" autofocus="">
+    <input type="password" name="password" class="form-control" placeholder="密码" required="">
+    <div class="checkbox mb-3">
+        <label>
+            <input type="checkbox" name="rememberme"> 记住我
+        </label>
+    </div>
+    <button class="btn btn-lg btn-primary btn-block" type="submit" >登录</button>
+    <br><a th:href="@{/reisterPage}" style="font-size: 12px;">没有账号，注册账号</a>
+    <p class="mt-5 mb-3 text-muted">Copyright© 2019-2020</p>
+</form>
+</body>
+</html>
