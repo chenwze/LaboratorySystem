@@ -1,6 +1,7 @@
 package com.gdufe.laboratorysystem.entity;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
@@ -14,31 +15,33 @@ import java.util.Collection;
  * @create: 2022-01-25 10:37
  * @version: 1.0
  */
-public class Student extends BasicInformation implements Serializable,UserDetails{
+public class StudentInfo extends BasicInformation implements Serializable,UserDetails{
     private static final long serialVersionUID = -8539697792547976377L;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        //以逗号分割,
+        return AuthorityUtils.commaSeparatedStringToAuthorityList("student,ddd");
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }

@@ -1,5 +1,6 @@
 package com.gdufe.laboratorysystem.controller;
 
+import com.gdufe.laboratorysystem.utils.UserInfo;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -20,20 +21,44 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class Usercontroller {
 
     //跳转登录界面
-    @GetMapping(value = {"login","userLogin"})
+    @GetMapping(value = {"/login","/userLogin"})
     public String loginPage(){
         System.out.println("进入登录页面---------");
         return "login";
     }
 
-    //跳转登录界面
+    //跳转用户的主页面
     @GetMapping(value = {"/"})
     public String indexPage(){
-//        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-//        String userType=request.getParameter("usertype");
-//        System.out.println("进入登录页面---111------"+userType);
-        return "index";
+        //判断是否登录
+        if( ! SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
+            return "redirect:/userLogin";
+        }
+
+        //获取用户的所有权限
+        Object[] toArray = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toArray();
+        for (Object array:toArray) {
+                //含有student权限跳转学生页面
+                if (array.toString().equals("student")){
+                    System.out.println("++++++++++++++++"+array);
+                    return "/student/student_main";
+                }
+                 //含有teachert权限跳转老师页面
+                if (array.toString().equals("teacher")){
+                    System.out.println("++++++++++++++++"+array);
+                    return "/teacher/teacher_index";
+                }
+                //含有admin权限跳转管理员页面
+                if(array.toString().equals("admin")){
+                    System.out.println("++++++++++++++++"+array);
+                    return "/admin/admin_index";
+                }
+        }
+
+        return "redirect:/userLogin";
     }
+
+
 
 //    //注册页面跳转
 //    @GetMapping("/reisterPage")
@@ -95,49 +120,50 @@ public class Usercontroller {
 //        return "index";
 //    }
 //
-    @GetMapping("/getuserByContext")
-    @ResponseBody
-    public Object[] getUser() {
-        // 获取应用上下文
-        SecurityContext context = SecurityContextHolder.getContext();
-        System.out.println("userDetails: "+context);
-        // 获取用户相关信息
-        Authentication authentication = context.getAuthentication();
-        UserDetails principal = (UserDetails)authentication.getPrincipal();
-        System.out.println(principal.toString());
-        Object principal1 = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-        Object[] arr = principal.getAuthorities().toArray();
-        System.out.println("======================"+principal1+"===============");
-        System.out.println("username: "+principal.getUsername()+"---------------------------");
-        System.out.println("passwrod:"+principal.getPassword());
-        return arr;
-    }
-    @RequestMapping("/getUsername")
-    public String getUsername(){
-        //获取到登录的用户名 这里的User对象是Spring-Security提供的User
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        System.out.println(user.getPassword());
-        if(user!=null){
-            return null;
-        }else {
-            return null;
-        }
-    }
-    //登录用户信息显示
-    @GetMapping("/getUserInfo")
-    public String getUserInfo (Model model){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!(authentication instanceof AnonymousAuthenticationToken)) {
-            UserDetails principal = (UserDetails)authentication.getPrincipal();
-            model.addAttribute("username",principal.getUsername());
-            model.addAttribute("password",principal.getPassword());
-            model.addAttribute("authorities",principal.getAuthorities());
-            model.addAttribute("isEnabled",principal.isEnabled());
-            model.addAttribute("isAccountNonExpired",principal.isAccountNonExpired());
-            model.addAttribute("isAccountNonLocked",principal.isAccountNonLocked());
-            model.addAttribute("isCredentialsNonExpired",principal.isCredentialsNonExpired());
-        }
-        return "user/user_info";
-    }
+//    @GetMapping("/getuserByContext")
+//    @ResponseBody
+//    public Object[] getUser() {
+//        // 获取应用上下文
+//        SecurityContext context = SecurityContextHolder.getContext();
+//        System.out.println("userDetails: "+context);
+//        // 获取用户相关信息
+//        Authentication authentication = context.getAuthentication();
+//        UserDetails principal = (UserDetails)authentication.getPrincipal();
+//        System.out.println(principal.toString());
+//        Object principal1 = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+//        Object[] arr = principal.getAuthorities().toArray();
+//        System.out.println("======================"+principal1+"===============");
+//        System.out.println("username: "+principal.getUsername()+"---------------------------");
+//        System.out.println("passwrod:"+principal.getPassword());
+//        return arr;
+//    }
+//
+//    @RequestMapping("/getUsername")
+//    public String getUsername(){
+//        //获取到登录的用户名 这里的User对象是Spring-Security提供的User
+//        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        System.out.println(user.getPassword());
+//        if(user!=null){
+//            return null;
+//        }else {
+//            return null;
+//        }
+//    }
+//    //登录用户信息显示
+//    @GetMapping("/getUserInfo")
+//    public String getUserInfo (Model model){
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+//            UserDetails principal = (UserDetails)authentication.getPrincipal();
+//            model.addAttribute("username",principal.getUsername());
+//            model.addAttribute("password",principal.getPassword());
+//            model.addAttribute("authorities",principal.getAuthorities());
+//            model.addAttribute("isEnabled",principal.isEnabled());
+//            model.addAttribute("isAccountNonExpired",principal.isAccountNonExpired());
+//            model.addAttribute("isAccountNonLocked",principal.isAccountNonLocked());
+//            model.addAttribute("isCredentialsNonExpired",principal.isCredentialsNonExpired());
+//        }
+//        return "user/user_info";
+//    }
 
 }

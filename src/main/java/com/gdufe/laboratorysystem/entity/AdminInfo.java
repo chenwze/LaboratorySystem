@@ -9,7 +9,7 @@ import java.io.Serializable;
  * @create: 2022-02-13 19:24
  * @version: 1.0
  */
-public class Admin extends BasicInformation implements Serializable {
+public class AdminInfo extends BasicInformation implements Serializable {
     private static final long serialVersionUID = -6470903421414880872L;
 
 }

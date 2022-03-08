@@ -7,74 +7,78 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1,shrink-to-fit=no">
     <title>Title</title>
+    <link th:href="@{/bootstrap/bootstrap.min.css}" href="../static/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/bootstrap/signin.css}" href="../static/bootstrap/signin.css" rel="stylesheet">
 </head>
 <body>
 
-<!--<div sec:authorize="isAuthenticated()">-->
-<!--    <p>已登录</p>-->
-<!--    <p>登录名：<span sec:authentication="name"></span></p>-->
-<!--    <p>Password：<span sec:authentication="principal.password"></span></p>-->
-<!--    <div sec:authentication="principal.authorities"></div> &lt;!&ndash; works fine &ndash;&gt;-->
-<!--    &lt;!&ndash;    <p>Email ：<span sec:authentication="principal.email"></span></p>&ndash;&gt;-->
-<!--    <p>Name：<span sec:authentication="principal.getUsername()"></span></p>-->
-<!--    &lt;!&ndash;    <p>Status：<span sec:authentication="principal.status"></span></p>&ndash;&gt;-->
-<!--    <p>拥有的角色：-->
-<!--        <span sec:authorize="hasRole('ROLE_ADMIN')">管理员</span>-->
-<!--        <span sec:authorize="hasRole('ROLE_USER')">用户</span>-->
-<!--    </p>-->
-<!--</div>-->
-<!--<div sec:authorize="isAuthenticated()"><p>未登录</p></div>-->
+<div class="logo">
 
-ddddd
-<div sec:authorize="isAnonymous()">
-    <h2 align="center">未登录账号,<a th:href="@{/userLogin}">请登录</a></h2>
 </div>
+<div class="container-fluid">
+    <div class="row main">
+        <div class="col-md-3 nav" style="border: 1px solid rosybrown;">navnavnavnavnavnavnavnavnavnavn
+            navnavnavnavnavnavnav</div>
+        <div class="col-md-9 content" style="border: 1px solid saddlebrown;">
+            <div class="content-body">content</div>
+        </div>
+    </div>
+</div>
+头部
+    <!--<div sec:authorize="isAnonymous()">-->
+    <!--    <h2 align="center">未登录账号,<a th:href="@{/userLogin}">请登录</a></h2>-->
+    <!--</div>-->
 
-<div style="margin:0 auto; width: 80%;" sec:authorize="isAuthenticated()" >
-    <h2 align ="center" >登录用户信息</h2>
-    <table>
-        <tr class="odd">
-            <td>登录账号</td>
-            <td><span>[[${username}]]</span></td>
-        </tr>
-        <tr class="even">
-            <td>账号密码</td>
-            <td><span>[[${password}]]</span></td>
-        </tr>
-        <tr class="odd">
-            <td>账户权限</td>
-            <td><span>[[${authorities}]]</span></td>
-        </tr>
-        <tr class="even">
-            <td>crsf_token</td>
-            <td><span>[[${_csrf.token}]]</span></td>
-        </tr>
-        <tr class="odd">
-            <td>已启动</td>
-            <td><span>[[${isEnabled}]]</span></td>
-        </tr>
-        <tr class="even">
-            <td>账号未过期</td>
-            <td><span>[[${isAccountNonExpired}]]</span></td>
-        </tr>
-        <tr class="odd">
-            <td>账号未锁定</td>
-            <td><span>[[${isAccountNonLocked}]]</span></td>
-        </tr>
-        <tr class="even">
-            <td>凭证未过期</td>
-            <td><span>[[${isCredentialsNonExpired}]]</span></td>
-        </tr>
-    </table>
-    <!--        <div>登录账号:<span>[[${username}]]</span></div>-->
-    <!--        <div>账号密码:<span>[[${password}]]</span></div>-->
-    <!--        <div>账户权限:<span>[[${authorities}]]</span></div>-->
-    <!--        <div>crsf_token:<span>[[${_csrf.token}]]</span></div>-->
-    <!--        <div>已启动:<span>[[${isEnabled}]]</span></div>-->
-    <!--        <div>账号未过期:<span>[[${isAccountNonExpired}]]</span></div>-->
-    <!--        <div>账号未锁定:<span>[[${isAccountNonLocked}]]</span></div>-->
-    <!--        <div>凭证未过期:<span>[[${isCredentialsNonExpired}]]</span></div>-->
-</div>
+    <!--<div style="margin:0 auto; width: 80%;" sec:authorize="isAuthenticated()" >-->
+    <!--    <h2 align ="center" >登录用户信息</h2>-->
+    <!--    <table>-->
+    <!--        <span sec:authentication="name"></span>-->
+    <!--        <div sec:authentication="principal.authorities"></div>-->
+
+    <!--        <div sec:authentication="principal.userid"></div>-->
+    <!--        <div sec:authentication="principal.password"></div>-->
+    <!--        <tr class="odd">-->
+    <!--            <td>登录账号</td>-->
+    <!--            <td><span>[[${username}]]</span></td>-->
+    <!--        </tr>-->
+    <!--        <tr class="even">-->
+    <!--            <td>账号密码</td>-->
+    <!--            <td><span>[[${password}]]</span></td>-->
+    <!--        </tr>-->
+    <!--        <tr class="odd">-->
+    <!--            <td>账户权限</td>-->
+    <!--            <td><span>[[${authorities}]]</span></td>-->
+    <!--        </tr>-->
+    <!--        <tr class="even">-->
+    <!--            <td>crsf_token</td>-->
+    <!--            <td><span>[[${_csrf.token}]]</span></td>-->
+    <!--        </tr>-->
+    <!--        <tr class="odd">-->
+    <!--            <td>已启动</td>-->
+    <!--            <td><span>[[${isEnabled}]]</span></td>-->
+    <!--        </tr>-->
+    <!--        <tr class="even">-->
+    <!--            <td>账号未过期</td>-->
+    <!--            <td><span>[[${isAccountNonExpired}]]</span></td>-->
+    <!--        </tr>-->
+    <!--        <tr class="odd">-->
+    <!--            <td>账号未锁定</td>-->
+    <!--            <td><span>[[${isAccountNonLocked}]]</span></td>-->
+    <!--        </tr>-->
+    <!--        <tr class="even">-->
+    <!--            <td>凭证未过期</td>-->
+    <!--            <td><span>[[${isCredentialsNonExpired}]]</span></td>-->
+    <!--        </tr>-->
+    <!--    </table>-->
+    <!--    &lt;!&ndash;        <div>登录账号:<span>[[${username}]]</span></div>&ndash;&gt;-->
+    <!--    &lt;!&ndash;        <div>账号密码:<span>[[${password}]]</span></div>&ndash;&gt;-->
+    <!--    &lt;!&ndash;        <div>账户权限:<span>[[${authorities}]]</span></div>&ndash;&gt;-->
+    <!--    &lt;!&ndash;        <div>crsf_token:<span>[[${_csrf.token}]]</span></div>&ndash;&gt;-->
+    <!--    &lt;!&ndash;        <div>已启动:<span>[[${isEnabled}]]</span></div>&ndash;&gt;-->
+    <!--    &lt;!&ndash;        <div>账号未过期:<span>[[${isAccountNonExpired}]]</span></div>&ndash;&gt;-->
+    <!--    &lt;!&ndash;        <div>账号未锁定:<span>[[${isAccountNonLocked}]]</span></div>&ndash;&gt;-->
+    <!--    &lt;!&ndash;        <div>凭证未过期:<span>[[${isCredentialsNonExpired}]]</span></div>&ndash;&gt;-->
+    <!--</div>-->
 
 </body>
 </html>
