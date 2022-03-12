@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gdufe.laboratorysystem.dao.ReserveDao">
+
+    <resultMap id="ReserveLabor" type="com.gdufe.laboratorysystem.entity.Reserve">
+        <id property="id" column="id"/>
+        <result property="labid" column="labid"/>
+        <result property="reserveTime" column="reserve_time"/>
+        <result property="userType" column="user_type"/>
+        <result property="username" column="username"/>
+        <result property="reserveTime" column="reserve_time"/>
+        <collection property="laboratoryInfo" column="labid"
+                    javaType="com.gdufe.laboratorysystem.entity.LaboratoryInfo">
+            <id property="labid" column="labid"/>
+            <id property="buildingName" column="building_name"/>
+            <id property="category" column="category"/>
+            <id property="roomNumber" column="room_number"/>
+            <id property="capacity" column="capacity"/>
+            <id property="describe" column="describe"/>
+            <id property="status" column="status"/>
+
+        </collection>
+    </resultMap>
+
+
+    <!--    获取已预约时间列表,根据实验室唯一编号labid，预约时间-->
+    <select id="getReserveTimeList" resultType="com.gdufe.laboratorysystem.entity.Reserve">
+        select reserve_time as reserveTime from  reserve
+        where reserve_time > now() and labid =#{labid};
+    </select>
+
+<!--    添加预约记录-->
+    <insert id="addReserve" parameterType="com.gdufe.laboratorysystem.entity.Reserve" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO `laboratory_system`.`reserve`(`labid`, `id`, `reserve_time`, `username`, `user_type`)
+        VALUES ( #{labid}, #{id}, #{reserveTime}, #{username}, #{userType})
+    </insert>
+
+<!--  学生、老师操作  查询用户个人的预约记录-->
+    <select id="getReserveList" resultMap="ReserveLabor" >
+        SELECT * FROM `reserve` LEFT JOIN laboratory_info on laboratory_info.labid=reserve.labid
+        <where>
+            <if test="1==1">
+                reserve.username=#{reserve.username}
+            </if>
+            <if test="laboratoryInfo.buildingName != '' and laboratoryInfo.buildingName != null and laboratoryInfo.buildingName!='null'">
+                and building_name like concat(concat('%',#{laboratoryInfo.buildingName}),'%')
+            </if>
+
+            <if test="laboratoryInfo.category != '' and laboratoryInfo.category != null and laboratoryInfo.category !='null'">
+                and category like concat(concat('%',#{laboratoryInfo.category}),'%')
+            </if>
+
+            <if test="reserve.reserveTime != '' and reserve.reserveTime != null and reserve.reserveTime != 'null' ">
+                and  reserve.reserve_time > #{reserve.reserveTime}
+            </if>
+
+        </where>
+
+    </select>
+
+</mapper>

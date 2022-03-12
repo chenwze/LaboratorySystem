@@ -101,7 +101,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.formLogin().loginPage("/userLogin").permitAll()
                 .usernameParameter("username").passwordParameter("password")
                 .defaultSuccessUrl("/").failureUrl("/userLogin?error");
-        //        http.csrf().disable();
+                http.csrf().disable();
         http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
 
         // 自定义用户退出控制

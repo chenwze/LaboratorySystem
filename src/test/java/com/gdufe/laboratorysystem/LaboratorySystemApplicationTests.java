@@ -1,11 +1,16 @@
 package com.gdufe.laboratorysystem;
 
+import com.gdufe.laboratorysystem.dao.LaboratoryInfoDao;
 import com.gdufe.laboratorysystem.dao.StudentInfoDao;
 import com.gdufe.laboratorysystem.dao.StudentUserDao;
+import com.gdufe.laboratorysystem.entity.LaboratoryInfo;
 import com.gdufe.laboratorysystem.entity.StudentInfo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.sql.Date;
+import java.util.UUID;
 
 @SpringBootTest
 class LaboratorySystemApplicationTests {
@@ -14,8 +19,25 @@ class LaboratorySystemApplicationTests {
     StudentUserDao studentUserDao;
     @Autowired
     StudentInfoDao studentInfoDao;
+    @Autowired
+    LaboratoryInfoDao laboratoryInfoDao;
+
+
     @Test
     void getTest(){
+
+            for (int i = 0; i < 5; i++) {
+                //注意replaceAll前面的是正则表达式
+                String uuid = UUID.randomUUID().toString().replaceAll("-","");
+                System.out.println(uuid);
+//            System.out.println(uuid.length());
+            }
+
+//        Date date= new Date(System.currentTimeMillis());
+//        System.out.println(date+"-----"+date.toString());
+//        LaboratoryInfo laboratoryInfo=new LaboratoryInfo();
+//        laboratoryInfo.setBuildingName("实验楼1");
+//        System.out.println(laboratoryInfoDao.getLaboratoryInfoList(laboratoryInfo));
 //        System.out.println(studentDao.getUserInfo("10001").toString());
 //        System.out.println(studentInfoDao.getStudentInfo("10001").toString());
 //        StudentInfo studentInfo=new StudentInfo();
@@ -24,7 +46,7 @@ class LaboratorySystemApplicationTests {
 //        studentInfo.setUsername("1");
 //        System.out.println(studentInfo.toString());
 //        System.out.println(studentInfoDao.getStudentInfoAll(studentInfo));
-        System.out.println(studentUserDao.getUserInfo("1001"));
+//        System.out.println(studentUserDao.getUserInfo("1001"));
     }
 
     @Test
@@ -35,11 +57,16 @@ class LaboratorySystemApplicationTests {
     @Test
     void getDataTest(){
 
-        //公告表notice
-        for (int i = 10020; i <10040 ; i++) {
-            System.out.println("INSERT INTO `laboratory_system`.`notice`(`id`, `title`, `content`, `time`, `adminid`) " +
-                    "VALUES ("+i+", '公告测试"+i+"', '公告内容"+i+"', '2022-03-03', 10002);");
+        for (int i=4;i<50;i++){
+            System.out.println("INSERT INTO `laboratory_system`.`laboratory_info`(`labid`, `building_name`, `capacity`, `category`, `describe`, `status`, `room_number`) " +
+                    "VALUES ("+i+", '实验楼"+i+"', 50, '电脑', '实验用途"+i+"', '开发', '10"+i+"');");
         }
+
+//        //公告表notice
+//        for (int i = 10020; i <10040 ; i++) {
+//            System.out.println("INSERT INTO `laboratory_system`.`notice`(`id`, `title`, `content`, `time`, `adminid`) " +
+//                    "VALUES ("+i+", '公告测试"+i+"', '公告内容"+i+"', '2022-03-03', 10002);");
+//        }
 
 //        //tea_info表
 //        for (int i = 10002; i <10050 ; i++) {

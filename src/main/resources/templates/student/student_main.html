@@ -34,7 +34,7 @@
             <!--2、属性data-title（选项卡标题）-->
             <!--3、属性data-id必须唯一，tab选项卡根据这个值进行切换-->
 
-            <a href="#" data-url="profile" data-title="账号信息" data-id="0101" class="site-demo-active"
+            <a href="#" data-url="/student/user" data-title="账号信息" data-id="0101" class="site-demo-active"
                data-type="tabAdd">
               账号信息
             </a>
@@ -47,7 +47,7 @@
             <!--2、属性data-title（选项卡标题）-->
             <!--3、属性data-id必须唯一，tab选项卡根据这个值进行切换-->
 
-            <a href="#" data-url="/studenr/changePassword" data-title="修改密码" data-id="0102" class="site-demo-active" data-type="tabAdd">
+            <a href="#" data-url="/student/changePassword" data-title="修改密码" data-id="0102" class="site-demo-active" data-type="tabAdd">
               修改密码
             </a>
           </dd>
@@ -112,21 +112,9 @@
             <!--1、属性data-url（需要在右边选项卡中打开的页面的路径）  -->
             <!--2、属性data-title（选项卡标题）-->
             <!--3、属性data-id必须唯一，tab选项卡根据这个值进行切换-->
-            <a href="#"  data-url="/student/changePassword" data-title="修改密码" data-id="0102" class="site-demo-active"
+            <a href="#"  data-url="/student/student" data-title="个人信息" data-id="0102" class="site-demo-active"
                data-type="tabAdd">
-              修改密码
-            </a>
-          </dd>
-
-          <dd>
-            <!--TODO -->
-            <!--需要修改为自己项目的部分：-->
-            <!--1、属性data-url（需要在右边选项卡中打开的页面的路径）  -->
-            <!--2、属性data-title（选项卡标题）-->
-            <!--3、属性data-id必须唯一，tab选项卡根据这个值进行切换-->
-            <a href="#"  data-url="/student/changePassword" data-title="修改密码" data-id="0102" class="site-demo-active"
-               data-type="tabAdd">
-              账号冻结
+              个人信息
             </a>
           </dd>
 
@@ -145,19 +133,19 @@
             <!--1、属性data-url（需要在右边选项卡中打开的页面的路径）  -->
             <!--2、属性data-title（选项卡标题）-->
             <!--3、属性data-id必须唯一，tab选项卡根据这个值进行切换-->
-            <a href="#" data-url="/student/user" data-title="实验室列表" data-id="0201" class="site-demo-active"
+            <a href="#" data-url="/student/getLaboratoryInfoList" data-title="实验室列表" data-id="0201" class="site-demo-active"
                data-type="tabAdd">
               实验室列表
             </a>
           </dd>
-          实验室预约记录
+
           <dd>
             <!--TODO -->
             <!--需要修改为自己项目的部分：-->
             <!--1、属性data-url（需要在右边选项卡中打开的页面的路径）  -->
             <!--2、属性data-title（选项卡标题）-->
             <!--3、属性data-id必须唯一，tab选项卡根据这个值进行切换-->
-            <a href="#"  data-url="/student/changePassword" data-title="预约记录" data-id="0202" class="site-demo-active"
+            <a href="#"  data-url="/student/getReserveInfoList" data-title="预约记录" data-id="0202" class="site-demo-active"
                data-type="tabAdd">
               预约记录
             </a>
@@ -225,17 +213,17 @@
 
 </div>
 
-<!--修改密码弹出框-->
-<form class="layui-form" id="changePassword" style="display:none">
+<!--&lt;!&ndash;修改密码弹出框&ndash;&gt;-->
+<!--<form class="layui-form" id="changePassword" style="display:none">-->
 
-  <div class="layui-form-item">
-    <label class="layui-form-label">密码框</label>
-    <div class="layui-input-inline">
-      <input type="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="on" class="layui-input">
-    </div>
-    <div class="layui-form-mid layui-word-aux">辅助文字</div>
-  </div>
-</form>
+<!--  <div class="layui-form-item">-->
+<!--    <label class="layui-form-label">密码框</label>-->
+<!--    <div class="layui-input-inline">-->
+<!--      <input type="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="on" class="layui-input">-->
+<!--    </div>-->
+<!--    <div class="layui-form-mid layui-word-aux">辅助文字</div>-->
+<!--  </div>-->
+<!--</form>-->
 
 
 <script>

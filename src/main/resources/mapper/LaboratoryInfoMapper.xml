@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gdufe.laboratorysystem.dao.LaboratoryInfoDao">
+
+<!--    获取实验室列表,可以根据实验楼，实验室类别，预约时间-->
+    <select id="getLaboratoryInfoList" resultType="com.gdufe.laboratorysystem.entity.LaboratoryInfo">
+        select * from  laboratory_info lab
+        <where>
+            <if test="laboratoryInfo.buildingName != '' and laboratoryInfo.buildingName != null and laboratoryInfo.buildingName!='null'">
+                and building_name like concat(concat('%',#{laboratoryInfo.buildingName}),'%')
+            </if>
+
+            <if test="laboratoryInfo.category != '' and laboratoryInfo.category != null and laboratoryInfo.category !='null'">
+                and category like concat(concat('%',#{laboratoryInfo.category}),'%')
+            </if>
+
+            <if test="reserve != '' and reserve != null and reserve != 'null' ">
+                and lab.labid not in (SELECT labid FROM reserve WHERE Date(reserve_time) = #{reserve})
+            </if>
+
+        </where>
+
+    </select>
+
+<!--    根据实验室labid查询某个实验室信息-->
+    <select id="getLaboratoryInfo" resultType="com.gdufe.laboratorysystem.entity.LaboratoryInfo">
+        select * from laboratory_info where labid=#{labid};
+    </select>
+</mapper>
