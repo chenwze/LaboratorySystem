@@ -27,7 +27,7 @@
 <!--            <label class="layui-form-label">个人账号:</label>-->
             <div class="layui-input-inline" >
                 <a href="javascript:;">
-                    <img src="/login/img/login.jpg" src="../../static/login/img/login.jpg"
+                    <img th:src="@{/login/img/login.jpg}" src="../../static/login/img/login.jpg"
                          class="" width="100px;">
                 </a>
             </div>
@@ -39,7 +39,8 @@
         <div class="layui-inline">
             <label class="layui-form-label">个人账号:</label>
             <div class="layui-input-inline" >
-                <input type="text" value="[[${StudentUser.username}]]" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >
+                <input type="text" th:value="${StudentUser.username}" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >
+
             </div>
             <div class="layui-form-mid layui-word-aux" style="visibility: hidden;"><a href="#">占格</a></div>
         </div>
@@ -49,7 +50,7 @@
         <div class="layui-inline">
             <label class="layui-form-label">账号名称:</label>
             <div class="layui-input-inline" >
-                <input type="text" value="[[${StudentUser.name}]]" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >
+                <input type="text" th:value="${StudentUser.name}" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >
             </div>
             <div class="layui-form-mid layui-word-aux" style="visibility: hidden;"><a href="#">占格</a></div>
         </div>
@@ -60,7 +61,7 @@
         <div class="layui-inline">
             <label class="layui-form-label">账号邮箱:</label>
             <div class="layui-input-inline" >
-                <input id="email" type="text" value="[[${StudentUser.email}]]" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >
+                <input id="email" type="text" th:value="${StudentUser.email}" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >
             </div>
             <div class="layui-form-mid layui-word-aux"><a href="#" style="color: #0000FF;">更换</a></div>
         </div>
@@ -70,7 +71,7 @@
         <div class="layui-inline">
             <label class="layui-form-label">账号状态:</label>
             <div class="layui-input-inline" >
-                <input type="text" value="[[${StudentUser.status}]]" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >
+                <input type="text" th:value="${StudentUser.status}" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >
             </div>
             <div class="layui-form-mid layui-word-aux" style="visibility: hidden;"><a href="#">占格</a></div>
         </div>
@@ -81,7 +82,7 @@
         <div class="layui-inline">
             <label class="layui-form-label">注册时间:</label>
             <div class="layui-input-inline" >
-                <input type="text" value="[[${StudentUser.createTime}]]" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >
+                <input type="text" th:value="${StudentUser.createTime}" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >
             </div>
             <div class="layui-form-mid layui-word-aux" style="visibility: hidden;"><a href="#">占格</a></div>
         </div>
