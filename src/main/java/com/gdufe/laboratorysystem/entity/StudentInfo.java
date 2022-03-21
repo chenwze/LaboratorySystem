@@ -17,6 +17,10 @@ import java.util.Collection;
  */
 public class StudentInfo extends BasicInformation implements Serializable,UserDetails{
     private static final long serialVersionUID = -8539697792547976377L;
+    private String studayDate;
+    private String graduationDate;
+    private String major;
+    private String aclass;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -43,5 +47,47 @@ public class StudentInfo extends BasicInformation implements Serializable,UserDe
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "StudentInfo{" +
+                "studayDate='" + studayDate + '\'' +
+                ", graduationDate='" + graduationDate + '\'' +
+                ", major='" + major + '\'' +
+                ", aclass='" + aclass + '\'' +
+                '}';
+    }
+
+    public String getStudayDate() {
+        return studayDate;
+    }
+
+    public void setStudayData(String studayDate) {
+        this.studayDate = studayDate;
+    }
+
+    public String getGraduationDate() {
+        return graduationDate;
+    }
+
+    public void setGraduationDate(String graduationDate) {
+        this.graduationDate = graduationDate;
+    }
+
+    public String getMajor() {
+        return major;
+    }
+
+    public void setMajor(String major) {
+        this.major = major;
+    }
+
+    public String getAclass() {
+        return aclass;
+    }
+
+    public void setAclass(String aclass) {
+        this.aclass = aclass;
     }
 }

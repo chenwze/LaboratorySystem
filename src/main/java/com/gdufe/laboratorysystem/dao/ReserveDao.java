@@ -15,10 +15,10 @@ import java.util.List;
 public interface ReserveDao {
     /**
      * 获取已预约时间列表,根据实验室唯一编号labid，预约时间
-     * @param labid
+     * @param username
      * @return
      */
-    List<Reserve> getReserveTimeList(@Param("labid") String labid);
+    List<Reserve> getReserveTimeList(@Param("username") String username);
 
     /**
      * 添加预约记录
@@ -29,4 +29,10 @@ public interface ReserveDao {
      *    查询用户个人的预约记录
       */
     List<Reserve> getReserveList(Reserve reserve, LaboratoryInfo laboratoryInfo);
+
+
+    /**
+     * 取消预约
+     */
+    int delReserve(@Param("id") String id ,@Param("username") String username);
 }

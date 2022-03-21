@@ -234,18 +234,13 @@
                 shade: 0.8,
                 scrollbar: false,
                 area: ['70%', '99%'],//宽 高
-                content:'/student/reservePage?labid='+name+'&reserve='+reserve
+                content:'/student/reservePage?labid='+name+'&reserveTime='+reserve
                 // ,btn:['<div class="btttt">保存</div>','取消']
-                ,closeBtn:1
-                ,yes:function (index){
-                    // alert(index.date());
-                    // layer.close(index);
-
-                }
-                ,end: function(date){
-                    // alert(date);
-                    // window.location.href="/student/getLaboratoryInfoList?category=电脑房";
-                }
+                // ,closeBtn:1
+                // ,end: function(date){
+                //     alert(date);
+                //     window.location.href="/student/getReserveInfoList";
+                // }
             });
     }
 

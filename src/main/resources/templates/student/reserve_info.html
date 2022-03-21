@@ -7,6 +7,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1,shrink-to-fit=no">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header"  th:content="${_csrf.headerName}"/>
     <title>个人预约记录表</title>
     <link th:href="@{/login/css/bootstrap.min.css}" href="../static/login/css/bootstrap.min.css" rel="stylesheet">
     <link th:href="@{/login/css/signin.css}" href="../static/login/css/signin.css" rel="stylesheet">
@@ -14,72 +16,7 @@
     <script src="../../static/js/jquery-3.6.0.min.js" th:src="@{/js/jquery-3.6.0.min.js}" type="text/javascript"></script>
     <script src="../../static/layui/layui.js" th:src="@{/layui/layui.js}" type="text/javascript"></script>
 </head>
-<!--<style type="text/css">-->
 
-
-<!--    .pagination-flickr{-->
-<!--        float: right;-->
-<!--    }-->
-<!--    .pagination-flickr li {-->
-<!--        border: 0;-->
-<!--        margin: 0;-->
-<!--        padding: 0;-->
-<!--        font-size: 16px;-->
-<!--        list-style: none;-->
-<!--        /* savers */-->
-<!--        float: left;-->
-<!--    }-->
-
-<!--    .pagination-flickr a {-->
-<!--        border: solid 1px #d0d0d0;-->
-<!--        margin-right: 0px;-->
-<!--    }-->
-
-<!--    .pagination-flickr .current a{-->
-<!--        background: #0b6fa2;-->
-<!--        color: #FFFFFF;-->
-<!--        font-weight: bold;-->
-<!--        display: block;-->
-<!--        float: left;-->
-<!--        padding: 4px 6px;-->
-<!--        border: 1px solid #f0f0f0;-->
-<!--    }-->
-
-<!--    .pagination-flickr a:link{-->
-<!--        /*color: #0e509e;*/-->
-<!--        display: block;-->
-<!--        float: left;-->
-<!--        padding: 3px 6px;-->
-<!--        text-decoration: none;-->
-<!--    }-->
-<!--    .pagination-flickr .current a:visited{-->
-<!--        color: #f6f8fa;-->
-<!--        display: block;-->
-<!--        float: left;-->
-<!--        padding: 3px 6px;-->
-<!--        text-decoration: none;-->
-<!--    }-->
-<!--    .pagination-flickr a{-->
-<!--        color: #0b6fa2;-->
-<!--    }-->
-<!--    .pagination-flickr a:hover {-->
-<!--        border: solid 1px #f0f0f0;-->
-<!--        background-color:#0b6fa2 ;-->
-<!--        color: #ffffff;-->
-<!--    }-->
-<!--    .pagination-flickr .am-pagination-pages span{-->
-<!--        /*background: #f0f0f0;*/-->
-<!--        color: #1a1a1a;-->
-<!--        /*font-weight: bold;*/-->
-<!--        display: block;-->
-<!--        float: left;-->
-<!--        padding: 4px 6px;-->
-<!--        /* savers */-->
-<!--        /*margin-right: 2px;*/-->
-<!--        /*border: 1px solid #d0d0d0;*/-->
-<!--    }-->
-
-<!--</style>-->
 <style type="text/css">
     .my-label{
         width: max-content;
@@ -172,8 +109,9 @@
                     <td th:text="${arrayS.laboratoryInfo.capacity}"></td>
                     <td th:text="${arrayS.reserveTime}"></td>
                     <td>
-                        <a href="javascript:if(confirm('确实要取消吗?'))location='/student/getReserveInfoList'">取消预约</a>
-                        <a id="btn-resever" th:onclick="'reserve_info('+${arrayS.labid}+');'">预约</a>
+<!--                        th:data-pid="${project.id}" th:data-cid="${c.id}" th:onclick="doComment(this.getAttribute('data-cid'),this.getAttribute('data-pid'))"-->
+                        <a id="del-resever" href="javascript:void(0)" th:data-id="${arrayS.id}" th:onclick="dalReserve(this.getAttribute('data-id'))">取消预约</a>
+                        <a id="btn-resever" th:onclick="'reserve_info('+${arrayS.labid}+');'">详情</a>
                     </td>
                 </tr>
                 </tbody>
@@ -187,7 +125,7 @@
         <div  class="layui-box  layui-laypage-default layui-laypage">
             <!--        <ul class="pagination-flickr pagination m-b-5 pull-right">-->
             <th:block th:if="${pageInfo.hasPreviousPage}">
-                <a  th:href="@{'/student/getLaboratoryInfoList?pageNum='+${pageInfo.prePage}
+                <a  th:href="@{'/student/getReserveInfoList?pageNum='+${pageInfo.prePage}
                 +'&buildingName='+${buildingName}
                 +'&category='+${category}
                  +'&reserveTime='+${reserveTime}}" aria-label="Previous">
@@ -198,7 +136,7 @@
             <th:block th:each="navIndex :${ pageInfo.navigatepageNums}">
 
                 <a th:class="${pageInfo.pageNum}==${navIndex}?'pageNum':''"
-                   th:href="@{'/student/getLaboratoryInfoList?pageNum='+${navIndex}
+                   th:href="@{'/student/getReserveInfoList?pageNum='+${navIndex}
                    +'&buildingName='+${buildingName}
                    +'&category='+${category}
                    +'&reserveTime='+${reserveTime}}" th:text="${navIndex}"></a>
@@ -206,7 +144,7 @@
             </th:block>
 
             <th:block th:if="${pageInfo.hasNextPage}">
-                <a th:href="@{'/student/getLaboratoryInfoList?pageNum='+${pageInfo.nextPage}
+                <a th:href="@{'/student/getReserveInfoList?pageNum='+${pageInfo.nextPage}
                 +'&buildingName='+${buildingName}
                 +'&category='+${category}
                 +'&reserveTime='+${reserveTime}}" aria-label="Next">
@@ -223,6 +161,41 @@
 
 </body>
 <script type="text/javascript">
+
+    //取消预约
+    function dalReserve(id){
+
+        var header = $("meta[name='_csrf_header']").attr("content");
+        var token = $("meta[name='_csrf']").attr("content");
+        var data = {'id':id};
+            $.ajax({
+                url: '/student/delReserve',
+                type: 'POST',
+                async: true,
+                data: data,
+                dataType: 'json',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token);
+                },
+                success: function (data) {
+                    window.location.reload();
+                    if (data.status==200){
+                        alert("取消成功");
+                    }else {
+                        alert("取消失败");
+                    }
+
+                    // closeIfame();
+                },
+                error:function (){
+                    alert("请求失败！！");
+                    window.location.reload();
+                }
+            })
+
+    }
+
+
     function reserve_info(name){
         //获取被选中的option标签
         // var vs = $('select  option:selected').val();

@@ -1,16 +1,14 @@
 package com.gdufe.laboratorysystem.service;
 
 import com.gdufe.laboratorysystem.dao.LaboratoryInfoDao;
-import com.gdufe.laboratorysystem.entity.LaboratoryInfo;
-import com.gdufe.laboratorysystem.entity.Notice;
-import com.gdufe.laboratorysystem.entity.Reserve;
-import com.gdufe.laboratorysystem.entity.User;
+import com.gdufe.laboratorysystem.entity.*;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
 
 public interface StudentService {
+    //获取用户信息
     User getStudentUser(String username);
 
     //获取显示的公告
@@ -22,12 +20,30 @@ public interface StudentService {
     //根据labid查询某个实验室信息
     Map getLaboratoryInfo(String labid);
 
+    //修改用户密码
+    boolean upPassword(String oldPassword,String newPassword);
+
     /**
      * 添加预约记录
      * @param reserve
      * @return
      */
-    public boolean addReserve(Reserve reserve);
+     String addReserve(Reserve reserve);
 
+     /**
+      *
+      * */
     List<Reserve> getReserveList(Reserve reserve,LaboratoryInfo laboratoryInfo);
+
+    /**
+     * 获取个人信息表
+     */
+    StudentInfo getStudentInfo();
+
+    /**
+     * 删除预约记录
+     * @param id
+     * @return
+     */
+    boolean delReserve(String id);
 }

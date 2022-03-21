@@ -75,6 +75,11 @@
             <groupId>net.minidev</groupId>
             <artifactId>json-smart</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.gdufe</groupId>
+            <artifactId>LaboratorySystem</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>

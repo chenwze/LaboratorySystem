@@ -13,6 +13,7 @@ import java.sql.Date;
 public class BasicInformation {
     //登录账号
     private String userid;
+    private String name;
     //用户名称
     private String username;
     private String password;
@@ -28,10 +29,18 @@ public class BasicInformation {
     private String status;
     //账户头像
     private String headPortrait;
-    private Date birth;
+    private String birth;
     private int age;
     //是否锁住
     private boolean locked;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getUserid() {
         return userid;
@@ -113,11 +122,11 @@ public class BasicInformation {
         this.headPortrait = headPortrait;
     }
 
-    public Date getBirth() {
+    public String getBirth() {
         return birth;
     }
 
-    public void setBirth(Date birth) {
+    public void setBirth(String birth) {
         this.birth = birth;
     }
 

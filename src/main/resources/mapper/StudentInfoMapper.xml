@@ -2,23 +2,28 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.gdufe.laboratorysystem.dao.StudentInfoDao">
 
-    <!--根据用户名查找个人信息-->
-    <select id="getStudentInfo" resultType="Map">
-        select * from student_info where stuid=#{username};
-    </select>
+<!--    &lt;!&ndash;根据用户名查找个人信息&ndash;&gt;-->
+<!--    <select id="getStudentInfo" resultType="Map">-->
+<!--        select * from student_info where stuid=#{username};-->
+<!--    </select>-->
 
 
-    <select id="getStudentInfoAll" resultType="com.gdufe.laboratorysystem.entity.StudentInfo">
-        select * from student_info
-        <where>
-            <if test="age !=0">
-                and age=#{age}
-            </if>
-            <if test="username!=null and username !='' ">
-                and username name=#{username}
-            </if>
-        </where>
-        ;
+<!--    <select id="getStudentInfoAll" resultType="com.gdufe.laboratorysystem.entity.StudentInfo">-->
+<!--        select * from student_info-->
+<!--        <where>-->
+<!--            <if test="age !=0">-->
+<!--                and age=#{age}-->
+<!--            </if>-->
+<!--            <if test="username!=null and username !='' ">-->
+<!--                and username name=#{username}-->
+<!--            </if>-->
+<!--        </where>-->
+<!--        ;-->
+<!--    </select>-->
+
+    <!--查找个人信息-->
+    <select id="getStudentInfo" resultType="com.gdufe.laboratorysystem.entity.StudentInfo">
+        select * from student_info where username=#{username};
     </select>
 
 </mapper>

@@ -1,20 +1,16 @@
 package com.gdufe.laboratorysystem.service.impl;
 
-import com.gdufe.laboratorysystem.dao.LaboratoryInfoDao;
-import com.gdufe.laboratorysystem.dao.NoticeDao;
-import com.gdufe.laboratorysystem.dao.ReserveDao;
-import com.gdufe.laboratorysystem.dao.StudentUserDao;
-import com.gdufe.laboratorysystem.entity.LaboratoryInfo;
-import com.gdufe.laboratorysystem.entity.Notice;
-import com.gdufe.laboratorysystem.entity.Reserve;
-import com.gdufe.laboratorysystem.entity.User;
+import com.gdufe.laboratorysystem.dao.*;
+import com.gdufe.laboratorysystem.entity.*;
 
 import com.gdufe.laboratorysystem.service.StudentService;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,6 +42,11 @@ public class StudentServiceImpl implements StudentService {
     @Autowired
     LaboratoryInfoDao laboratoryInfoDao;
 
+    @Autowired
+    StudentInfoDao studentInfoDao;
+
+    @Value("${system.user.password.secret}")
+    private String secret;
 
     @Override
     public User getStudentUser(String username) {
@@ -80,15 +81,19 @@ public class StudentServiceImpl implements StudentService {
 
         map.put("laboratoryInfo",laboratoryInfo);
         Date date=new Date(System.currentTimeMillis());
-        List<Reserve> reserveTimeList = reserveDao.getReserveTimeList(labid);
-
-        JSONObject object = new JSONObject();
-        for (Reserve reserve: reserveTimeList) {
-            System.out.println(reserve.toString());
-            object.put(reserve.getReserveTime(),"");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            //获取当前用户名
+            String currentUserName = authentication.getName();
+            List<Reserve> reserveTimeList = reserveDao.getReserveTimeList(currentUserName);
+            JSONObject object = new JSONObject();
+            for (Reserve reserve : reserveTimeList) {
+                System.out.println(reserve.toString());
+                object.put(reserve.getReserveTime(), "");
+            }
+            System.out.println(object + "++++++++++++++++");
+            map.put("reserveTimeList", object);
         }
-        System.out.println(object+"++++++++++++++++");
-        map.put("reserveTimeList",object);
         return map;
     }
 
@@ -99,7 +104,7 @@ public class StudentServiceImpl implements StudentService {
      */
     @Override
     @Transactional
-    public boolean addReserve(Reserve reserve){
+    public String addReserve(Reserve reserve){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             //获取当前用户名
@@ -131,9 +136,9 @@ public class StudentServiceImpl implements StudentService {
             int i = reserveDao.addReserve(reserve);
 //            System.out.println(reserve.getLaboratoryInfo().toString());
             System.out.println(reserve.toString());
-            if (i==1){return true;}
+            if (i==1){return reserve.getId();}
         }
-            return false;
+            return "false";
     }
 
     @Override
@@ -146,5 +151,72 @@ public class StudentServiceImpl implements StudentService {
         }
         List<Reserve> reserveList = reserveDao.getReserveList(reserve,laboratoryInfo);
         return reserveList;
+    }
+
+    //修改用户密码
+
+    @Override
+    @Transactional(rollbackFor=Exception.class)
+    public boolean upPassword( String oldPassword, String newPassword){
+        String username=null;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            //获取当前用户名
+            username = authentication.getName();
+        }
+        System.out.println("username"+username);
+        if (username.equals(null)){
+            return false;
+        }
+        //查找用户信息
+        User userInfo = studentUserDao.getUserInfo(username);
+
+        //验证旧密码是否相同
+        Pbkdf2PasswordEncoder encoder = new Pbkdf2PasswordEncoder(secret);
+        if(encoder.matches(oldPassword,userInfo.getPassword())){
+            System.out.println("newPassword"+encoder.encode(newPassword));
+            int i = studentUserDao.upPassword(username, encoder.encode(newPassword));
+            if (i==1){
+                return true;
+            }else {
+                return false;
+            }
+        }else{
+            return false;
+        }
+
+    }
+
+    /**
+     * 查看个人信息
+     * @return
+     */
+    @Override
+    public StudentInfo getStudentInfo() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            //获取当前用户名
+            String username = authentication.getName();
+            StudentInfo studentInfo = studentInfoDao.getStudentInfo(username);
+            System.out.println(studentInfo.toString());
+            System.out.println();
+            return studentInfo;
+        }
+
+        return null;
+    }
+
+    @Override
+    @Transactional(rollbackFor=Exception.class)
+    public boolean delReserve(String id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+           String username = authentication.getName();
+            int i = reserveDao.delReserve(id, username);
+            if (i==1){
+                return true;
+            }
+        }
+        return false;
     }
 }

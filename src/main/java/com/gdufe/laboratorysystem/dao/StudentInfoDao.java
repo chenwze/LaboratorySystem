@@ -18,9 +18,13 @@ import java.util.Map;
 public interface StudentInfoDao {
 
     //根据用户名查找个人信息
-    Map<String,Object> getStudentInfo(String username);
+//    Map<String,Object> getStudentInfo(String username);
 
     //根据条件查询用户信息结果集
     List<StudentInfo> getStudentInfoAll(StudentInfo studentInfo);
+
+
+    StudentInfo getStudentInfo(String usernam);
+
 
 }

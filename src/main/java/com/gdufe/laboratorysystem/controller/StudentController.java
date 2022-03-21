@@ -1,20 +1,20 @@
 package com.gdufe.laboratorysystem.controller;
 
-import com.gdufe.laboratorysystem.entity.LaboratoryInfo;
-import com.gdufe.laboratorysystem.entity.Notice;
-import com.gdufe.laboratorysystem.entity.Reserve;
-import com.gdufe.laboratorysystem.entity.User;
+import com.gdufe.laboratorysystem.entity.*;
 
 import com.gdufe.laboratorysystem.service.StudentService;
 import com.gdufe.laboratorysystem.utils.UserInfo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -65,6 +65,11 @@ public class StudentController {
         return "/student/studnet_notice";
     }
 
+    /**
+     * 打开更改密码页面
+     * @param model
+     * @return
+     */
     @RequestMapping("/changePassword")
     public String changePasswordPage(Model model){
         System.out.println("+++++++++++");
@@ -78,6 +83,39 @@ public class StudentController {
 
     }
 
+    /**
+     * 更新密码
+     * @param user 用户账号信息
+     * @return
+     */
+    @PostMapping("/upPassword")
+    @ResponseBody
+    public  Object upPassword(User user,Model model,HttpServletRequest request){
+        System.out.println("----------"+user.toString());
+        //旧密码
+        String oldPassword = request.getParameter("old-password");
+        //新密码
+        String newPassword1 = request.getParameter("new-password1");
+        //确定密码
+        String newPassword2 = request.getParameter("new-password2");
+
+        System.out.println(newPassword1+"-------"+newPassword2+"++++++"+oldPassword);
+        boolean bool = studentService.upPassword(oldPassword, newPassword1);
+        if (bool){
+            Map map=new HashMap();
+            map.put("status",200);
+            map.put("user",user);
+            return map;
+        }else {
+            Map map=new HashMap();
+            map.put("status",400);
+            map.put("user",user);
+            return map;
+        }
+
+
+
+    }
 //    //获取实验室信息列表
 //    @RequestMapping("/getLaboratoryInfoList")
 //    public String getLaboratoryInfoList(Model model, LaboratoryInfo laboratoryInfo){
@@ -150,15 +188,15 @@ public class StudentController {
     //预约实验信息表
     @RequestMapping("/reservePage")
     public String reservePage(Model model,@RequestParam(value = "labid") String labid
-            ,@RequestParam(value = "reserve") String reserve){
+            ,@RequestParam(value = "reserveTime") String reserveTime){
         model.addAttribute("labid",labid);
-        if(!"null".equals(reserve)){
-            model.addAttribute("reserve",reserve);
+        if(!"null".equals(reserveTime)){
+            model.addAttribute("reserve",reserveTime);
         }
         Map laboratoryInfo = studentService.getLaboratoryInfo(labid);
         System.out.println(laboratoryInfo.get("laboratoryInfo"));
 
-        System.out.println("ddddddddddd"+labid+reserve);
+        System.out.println("ddddddddddd"+labid+reserveTime);
         System.out.println(laboratoryInfo.get("reserveTimeList"));
         model.addAttribute("laboratoryInfo",laboratoryInfo);
         return "/student/reserve_page";
@@ -169,17 +207,17 @@ public class StudentController {
      */
     @PostMapping(value = "/addReserve")
     @ResponseBody
-    public String addReserve(LaboratoryInfo laboratoryInfo, String reserveTime, Reserve reserve){
-        System.out.println("==============");
-        System.out.println(laboratoryInfo.toString()+"========"+reserveTime);
+    public  Reserve addReserve(HttpServletRequest request,LaboratoryInfo laboratoryInfo, String reserveTime, Reserve reserve){
+        System.out.println("=============="+reserve.toString());
+//        System.out.println(laboratoryInfo.toString()+"========"+reserveTime);
         reserve.setLabid(laboratoryInfo.getLabid());
-        boolean bool = studentService.addReserve(reserve);
-
-        if (bool) {
-            return "alert('sss');";
-        } else{
-            return "false";
-        }
+        String uuid = studentService.addReserve(reserve);
+//
+//        if (uuid.equals("false")) {
+//            return "forward:/student/reservePage";
+//        } else{
+            return reserve;
+//        }
     }
 
 
@@ -233,5 +271,37 @@ public class StudentController {
         // thymeleaf默认就会拼串classpath:/templates/xxxx.html
         return "/student/reserve_info";
     }
+
+
+    /***
+     * 获取个人信息
+     */
+    @GetMapping("/getStudentInfo")
+    public String getStudentInfo(Model model){
+        StudentInfo studentInfo = studentService.getStudentInfo();
+        model.addAttribute("studentInfo",studentInfo);
+        return "/student/student_info";
+    }
+
+
+    @PostMapping("/delReserve")
+    @ResponseBody
+    public Object  delReserve(String id){
+        Map map=new HashMap();
+        System.out.println(id+"=============");
+        boolean bool = studentService.delReserve(id);
+        if (bool){
+            map.put("status",200);
+            map.put("id",id);
+            return map;
+        }else {
+            map.put("status",201);
+            map.put("id",id);
+            return map;
+        }
+//        return "redirect:/student/getReserveInfoList";
+//
+    }
+
 
 }

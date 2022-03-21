@@ -22,5 +22,11 @@ public interface StudentUserDao {
     //根据用户名查询个人账号信息
     User getUserInfo(@Param("username") String username);
 
+    /**
+     * 更新用户密码
+     *
+     */
+    int upPassword(@Param("username") String username,@Param("password") String password);
+
 
 }

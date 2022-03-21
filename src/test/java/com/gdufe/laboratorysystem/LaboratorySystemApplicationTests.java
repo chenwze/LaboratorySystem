@@ -7,13 +7,19 @@ import com.gdufe.laboratorysystem.entity.LaboratoryInfo;
 import com.gdufe.laboratorysystem.entity.StudentInfo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.web.client.RestTemplate;
 
 import java.sql.Date;
 import java.util.UUID;
 
 @SpringBootTest
 class LaboratorySystemApplicationTests {
+
+
+   
+
 
     @Autowired
     StudentUserDao studentUserDao;
@@ -26,12 +32,32 @@ class LaboratorySystemApplicationTests {
     @Test
     void getTest(){
 
-            for (int i = 0; i < 5; i++) {
-                //注意replaceAll前面的是正则表达式
-                String uuid = UUID.randomUUID().toString().replaceAll("-","");
-                System.out.println(uuid);
-//            System.out.println(uuid.length());
+
+            int[] a={1,27,5,7,3};
+            int n=a.length;
+            int i, j;
+            for (i = 0; i < n; i++) {//表示 n 次排序过程。
+                for (j = 0; j < n - i-1; j++) {
+                    if (a[j] < a[j+1]) {//前面的数字大于后面的数字就交换
+                        //交换 a[j-1]和 a[j]
+                        int temp;
+                        temp = a[j];
+                        a[j] = a[j+1];
+                        a[j+1] = temp;
+                    }
+                }
             }
+        for (int aa :a) {
+            System.out.println(aa);
+
+        }
+
+//            for (int i = 0; i < 5; i++) {
+//                //注意replaceAll前面的是正则表达式
+//                String uuid = UUID.randomUUID().toString().replaceAll("-","");
+//                System.out.println(uuid);
+////            System.out.println(uuid.length());
+//            }
 
 //        Date date= new Date(System.currentTimeMillis());
 //        System.out.println(date+"-----"+date.toString());
