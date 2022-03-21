@@ -4,4 +4,13 @@
     <select id="getTeacher" resultType="com.gdufe.laboratorysystem.entity.User">
         select *,teacher_user.teaid userid from teacher_user where username=#{username};
     </select>
+
+    <select id="getUserInfo" resultType="com.gdufe.laboratorysystem.entity.User">
+        select * from teacher_user where username=#{username};
+    </select>
+
+    <!--更新密码-->
+    <update id="upPassword">
+        update teacher_user set password=#{password} where username = #{username}
+    </update>
 </mapper>

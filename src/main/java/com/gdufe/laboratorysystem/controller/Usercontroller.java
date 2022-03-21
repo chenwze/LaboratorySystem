@@ -46,7 +46,7 @@ public class Usercontroller {
                  //含有teachert权限跳转老师页面
                 if (array.toString().equals("teacher")){
                     System.out.println("++++++++++++++++"+array);
-                    return "/teacher/teacher_index";
+                    return "/teacher/teacher_main";
                 }
                 //含有admin权限跳转管理员页面
                 if(array.toString().equals("admin")){

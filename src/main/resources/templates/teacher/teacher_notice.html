@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>查看公告</title>
+    <link rel="stylesheet" href="../../static/layui/css/layui.css" th:href="@{/layui/css/layui.css}">
+    <script src="../../static/js/jquery-3.6.0.min.js" th:src="@{/js/jquery-3.6.0.min.js}"></script>
+    <script src="../../static/layui/layui.js" th:src="@{/layui/layui.js}"></script>
+</head>
+<style type="text/css">
+
+</style>
+<body>
+<!--  <div>-->
+<!--    公告标题-->
+<!--    <div>-->
+<!--      <span>标题</span>-->
+<!--    </div>-->
+<!--      <li>数组循环：-->
+<!--          <div th:each="arrayS:${notices}">-->
+<!--              <div th:text="${arrayS.getTitle()}"></div>-->
+<!--              <div th:text="${arrayS.getContent()}"></div>-->
+<!--          </div>-->
+<!--      </li>-->
+
+<!--  </div>-->
+
+  <div class="layui-carousel" id="notice" style="margin:auto;">
+      <div carousel-item >
+          <!--里面可以加图片，文字等-->
+<!--          <div th:each="arrayS:${notices}">-->
+<!--              <h3 th:text="${arrayS.getTitle()}"></h3>-->
+<!--              <div th:text="${arrayS.getContent()}"></div>-->
+              <form  th:each="arrayS:${notices}" class="layui-form" id="changePassword"
+                     style="background: white; margin:0 auto; " >
+
+                  <div class="layui-form-item layui-inline">
+                      <div class="layui-inline">
+                          <h3 th:text="${arrayS.title}"></h3>
+                          <div class=" text-justify">
+                              <div th:text="${arrayS.getContent()}" style="overflow-x:auto;"></div>
+                          </div>
+                      </div>
+
+                  </div>
+              </form>
+      </div>
+
+  </div>
+  </div>
+
+  <script type="text/javascript">
+        //第一个轮播图
+        layui.use('carousel', function() {
+        var carousel = layui.carousel;
+        //建造实例化
+        carousel.render({
+            elem: '#notice',
+            width: '80%', //设置背景容器的宽度
+            // arrow: 'always', //始终显示箭头,不会消失
+            //anim: 'updown' //切换动画方式:anim
+            //indicator:'outside',
+            indicator: 'outside',	//这个属性：小圆点在外面
+            backgroundColor:'#red'
+        });
+    });
+
+</script>
+</body>
+</html>
