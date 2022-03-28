@@ -92,10 +92,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // 自定义用户授权管理
         http.authorizeRequests()
                 .antMatchers( "/register", "userLogin", "/index", "/reisterPage","/").permitAll()
-                .antMatchers("/login/**","/getUserInfo").permitAll()
-                .antMatchers("/detail/commom/**", "/commom/**", "/open/commom").hasRole("COMMOM")
-                .antMatchers("/detail/vip/**", "/vip/**", "/open/vip").hasRole("VIP")
-                .antMatchers("/detail/svip/**", "/svip/**", "/open/svip").hasRole("SVIP")
+                .antMatchers("/test/**","/login/**","/getUserInfo").permitAll()
+                .antMatchers("/student/**").hasAuthority("student")
+                .antMatchers("/teacher/**").hasAuthority("teacher")
+                .antMatchers("/admin/**").hasAuthority("admin")
+//                .antMatchers("/detail/commom/**", "/commom/**", "/open/commom").hasRole("COMMOM")
+//                .antMatchers("/detail/vip/**", "/vip/**", "/open/vip").hasRole("VIP")
+//                .antMatchers("/detail/svip/**", "/svip/**", "/open/svip").hasRole("SVIP")
                 .anyRequest().authenticated();
         // 自定义用户登录控制
         http.formLogin().loginPage("/userLogin").permitAll()

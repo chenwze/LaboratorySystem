@@ -7,7 +7,9 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1,shrink-to-fit=no">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <title>老师主页面</title>
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header"  th:content="${_csrf.headerName}"/>
+  <title>管理员主页面</title>
   <link rel="stylesheet" href="../../static/layui/css/layui.css" th:href="@{/layui/css/layui.css}">
   <script src="../../static/js/jquery-3.6.0.min.js" th:src="@{/js/jquery-3.6.0.min.js}" type="text/javascript"></script>
   <script src="../../static/layui/layui.js" th:src="@{/layui/layui.js}" type="text/javascript"></script>
@@ -20,6 +22,10 @@
     <div class="layui-logo">欢迎使用！！！</div>
     <ul class="layui-nav layui-layout-right">
       <li class="layui-nav-item">
+        <form action="/test/testAjax1" method="post">
+          <input th:value="${_csrf.token}" name="_csrf" type="hidden">
+          <button type="submit">提交</button>
+        </form>
         <a href="javascript:;">
           <img th:src="@{/login/img/login.jpg}" src="../../static/login/img/login.jpg" class="layui-nav-img">
 <!--          <span sec:authentication="principal.username"></span>-->
@@ -34,7 +40,7 @@
             <!--2、属性data-title（选项卡标题）-->
             <!--3、属性data-id必须唯一，tab选项卡根据这个值进行切换-->
 
-            <a href="#" data-url="/teacher/user" data-title="账号信息" data-id="0101" class="site-demo-active"
+            <a href="#" data-url="/admin/user" data-title="账号信息" data-id="0101" class="site-demo-active"
                data-type="tabAdd">
               账号信息
             </a>
@@ -47,7 +53,7 @@
             <!--2、属性data-title（选项卡标题）-->
             <!--3、属性data-id必须唯一，tab选项卡根据这个值进行切换-->
 
-            <a href="#" data-url="/teacher/changePassword" data-title="修改密码" data-id="0102" class="site-demo-active" data-type="tabAdd">
+            <a href="#" data-url="/admin/changePassword" data-title="修改密码" data-id="0102" class="site-demo-active" data-type="tabAdd">
               修改密码
             </a>
           </dd>
@@ -70,12 +76,53 @@
   <!-- 左侧导航栏 -->
   <div class="layui-tab  layui-side layui-tab-card site-demo-button" style="border-radius:0px;">
     <ul class="layui-nav layui-side layui-nav-tree layui-nav-side">
-<!--      查看公告-->
+<!--      公告管理-->
       <li class="layui-nav-item ">
-        <a href="#" id="default-tab" data-url="/teacher/showNotice" data-title="公告" data-id="notice" class="site-demo-active"
-           data-type="tabAdd">
-          公告
-        </a>
+        <a href="javascript:;">公告管理</a>
+        <dl class="layui-nav-child">
+
+          <dd>
+            <!--TODO -->
+            <!--需要修改为自己项目的部分：-->
+            <!--1、属性data-url（需要在右边选项卡中打开的页面的路径）  -->
+            <!--2、属性data-title（选项卡标题）-->
+            <!--3、属性data-id必须唯一，tab选项卡根据这个值进行切换-->
+<!--            <a href="#" id="noticePage" data-url="/admin/noticePage" data-title="发布公告" data-id="0001" class="site-demo-active"-->
+<!--               data-type="tabAdd">-->
+<!--              发布公告-->
+<!--            </a>-->
+            <a href="#" data-url="/admin/noticePage" data-title="发布公告" data-id="0101" class="site-demo-active"
+               data-type="tabAdd" >
+              发布公告
+            </a>
+          </dd>
+
+          <dd>
+            <!--TODO -->
+            <!--需要修改为自己项目的部分：-->
+            <!--1、属性data-url（需要在右边选项卡中打开的页面的路径）  -->
+            <!--2、属性data-title（选项卡标题）-->
+            <!--3、属性data-id必须唯一，tab选项卡根据这个值进行切换-->
+            <a href="#" id="add" data-url="/admin/getnoticeList" data-title="公告列表" data-id="0102" class="site-demo-active"
+               data-type="tabAdd">
+              公告列表
+            </a>
+          </dd>
+
+<!--          <dd>-->
+<!--            &lt;!&ndash;TODO &ndash;&gt;-->
+<!--            &lt;!&ndash;需要修改为自己项目的部分：&ndash;&gt;-->
+<!--            &lt;!&ndash;1、属性data-url（需要在右边选项卡中打开的页面的路径）  &ndash;&gt;-->
+<!--            &lt;!&ndash;2、属性data-title（选项卡标题）&ndash;&gt;-->
+<!--            &lt;!&ndash;3、属性data-id必须唯一，tab选项卡根据这个值进行切换&ndash;&gt;-->
+<!--            <a href="#"  data-url="/admin/getAdminInfo" data-title="个人信息" data-id="0103" class="site-demo-active"-->
+<!--               data-type="tabAdd">-->
+<!--              个人信息-->
+<!--            </a>-->
+<!--          </dd>-->
+
+        </dl>
+
       </li>
 
       <li class="layui-nav-item ">
@@ -88,9 +135,9 @@
             <!--1、属性data-url（需要在右边选项卡中打开的页面的路径）  -->
             <!--2、属性data-title（选项卡标题）-->
             <!--3、属性data-id必须唯一，tab选项卡根据这个值进行切换-->
-            <a href="#" data-url="/teacher/user" data-title="账号信息" data-id="0101" class="site-demo-active"
+            <a href="#" data-url="/admin/studentUserList" data-title="学生账号" data-id="0201" class="site-demo-active"
                data-type="tabAdd">
-              账号信息
+              学生账号
             </a>
           </dd>
 
@@ -100,23 +147,23 @@
             <!--1、属性data-url（需要在右边选项卡中打开的页面的路径）  -->
             <!--2、属性data-title（选项卡标题）-->
             <!--3、属性data-id必须唯一，tab选项卡根据这个值进行切换-->
-            <a href="#" id="add" data-url="/teacher/changePassword" data-title="修改密码" data-id="0102" class="site-demo-active"
+            <a href="#" id="add" data-url="/admin/teacherUserList" data-title="老师账号" data-id="0202" class="site-demo-active"
                data-type="tabAdd">
-              修改密码
+              老师账号
             </a>
           </dd>
 
-          <dd>
-            <!--TODO -->
-            <!--需要修改为自己项目的部分：-->
-            <!--1、属性data-url（需要在右边选项卡中打开的页面的路径）  -->
-            <!--2、属性data-title（选项卡标题）-->
-            <!--3、属性data-id必须唯一，tab选项卡根据这个值进行切换-->
-            <a href="#"  data-url="/teacher/getTeacherInfo" data-title="个人信息" data-id="0103" class="site-demo-active"
-               data-type="tabAdd">
-              个人信息
-            </a>
-          </dd>
+<!--          <dd>-->
+<!--            &lt;!&ndash;TODO &ndash;&gt;-->
+<!--            &lt;!&ndash;需要修改为自己项目的部分：&ndash;&gt;-->
+<!--            &lt;!&ndash;1、属性data-url（需要在右边选项卡中打开的页面的路径）  &ndash;&gt;-->
+<!--            &lt;!&ndash;2、属性data-title（选项卡标题）&ndash;&gt;-->
+<!--            &lt;!&ndash;3、属性data-id必须唯一，tab选项卡根据这个值进行切换&ndash;&gt;-->
+<!--            <a href="#"  data-url="/admin/getAdminInfo" data-title="个人信息" data-id="0103" class="site-demo-active"-->
+<!--               data-type="tabAdd">-->
+<!--              个人信息-->
+<!--            </a>-->
+<!--          </dd>-->
 
         </dl>
 
@@ -124,7 +171,7 @@
 
 
       <li class="layui-nav-item ">
-        <a href="javascript:;">实验室</a>
+        <a href="javascript:;">个人信息管理</a>
         <dl class="layui-nav-child">
 
           <dd>
@@ -133,9 +180,9 @@
             <!--1、属性data-url（需要在右边选项卡中打开的页面的路径）  -->
             <!--2、属性data-title（选项卡标题）-->
             <!--3、属性data-id必须唯一，tab选项卡根据这个值进行切换-->
-            <a href="#" data-url="/teacher/getLaboratoryInfoList" data-title="实验室列表" data-id="0201" class="site-demo-active"
+            <a href="#" data-url="/admin/getLaboratoryInfoList" data-title="学生信息" data-id="0201" class="site-demo-active"
                data-type="tabAdd">
-              实验室列表
+              学生信息
             </a>
           </dd>
 
@@ -145,7 +192,7 @@
             <!--1、属性data-url（需要在右边选项卡中打开的页面的路径）  -->
             <!--2、属性data-title（选项卡标题）-->
             <!--3、属性data-id必须唯一，tab选项卡根据这个值进行切换-->
-            <a href="#"  data-url="/teacher/getReserveInfoList" data-title="预约记录" data-id="0202" class="site-demo-active"
+            <a href="#"  data-url="/admin/getReserveInfoList" data-title="预约记录" data-id="0202" class="site-demo-active"
                data-type="tabAdd">
               预约记录
             </a>
@@ -157,7 +204,7 @@
 <!--            &lt;!&ndash;1、属性data-url（需要在右边选项卡中打开的页面的路径）  &ndash;&gt;-->
 <!--            &lt;!&ndash;2、属性data-title（选项卡标题）&ndash;&gt;-->
 <!--            &lt;!&ndash;3、属性data-id必须唯一，tab选项卡根据这个值进行切换&ndash;&gt;-->
-<!--            <a href="#"  data-url="/teacher/changePassword" data-title="修改密码" data-id="0102" class="site-demo-active"-->
+<!--            <a href="#"  data-url="/admin/changePassword" data-title="修改密码" data-id="0102" class="site-demo-active"-->
 <!--               data-type="tabAdd">-->
 <!--              修改密码-->
 <!--            </a>-->
@@ -169,7 +216,7 @@
 <!--            &lt;!&ndash;1、属性data-url（需要在右边选项卡中打开的页面的路径）  &ndash;&gt;-->
 <!--            &lt;!&ndash;2、属性data-title（选项卡标题）&ndash;&gt;-->
 <!--            &lt;!&ndash;3、属性data-id必须唯一，tab选项卡根据这个值进行切换&ndash;&gt;-->
-<!--            <a href="#"  data-url="/teacher/changePassword" data-title="修改密码" data-id="0102" class="site-demo-active"-->
+<!--            <a href="#"  data-url="/admin/changePassword" data-title="修改密码" data-id="0102" class="site-demo-active"-->
 <!--               data-type="tabAdd">-->
 <!--              账号冻结-->
 <!--            </a>-->
@@ -212,7 +259,26 @@
   </div>
 
 </div>
+<script type="text/javascript">
+  //发布公告弹窗
+  // layui.use(['layer','form'], function(){
+  //   $("#noticePage").click(function(){
+  //     layer.open({
+  //       type: 2,
+  //       title:"发布公告",
+  //       // area:['50%','50%'],
+  //       area:['500px','600px'],
+  //       // btn: ['确定', '取消'],
+  //       shadeClose: false, //开启遮罩关闭
+  //       content:'/admin/noticePage',
+  //       yes:function(index,layero){
+  //       }
+  //     });
+  //   })
+  //
+  // })
 
+</script>
 <!--&lt;!&ndash;修改密码弹出框&ndash;&gt;-->
 <!--<form class="layui-form" id="changePassword" style="display:none">-->
 

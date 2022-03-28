@@ -5,6 +5,8 @@ import com.gdufe.laboratorysystem.entity.User;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 
 @Repository
 public interface TeacherUserDao {
@@ -26,4 +28,15 @@ public interface TeacherUserDao {
      */
     int upPassword(@Param("username") String username,@Param("password") String password);
 
+
+    List<User> getTeacherUserList(User user);
+
+    //批量添加用户
+    int addTeacherUserList(List<User> userList);
+
+    //添加单一学生用户
+    int addTeacherUser(User user);
+
+    //批量删除公告
+    int delTeacherUserList(String[] ids);
 }

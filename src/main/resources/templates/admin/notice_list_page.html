@@ -9,14 +9,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header"  th:content="${_csrf.headerName}"/>
-    <title>个人预约记录表</title>
+    <title>管理员公告列表</title>
     <link th:href="@{/login/css/bootstrap.min.css}" href="../static/login/css/bootstrap.min.css" rel="stylesheet">
     <link th:href="@{/login/css/signin.css}" href="../static/login/css/signin.css" rel="stylesheet">
     <link rel="stylesheet" href="../../static/layui/css/layui.css" th:href="@{/layui/css/layui.css}">
     <script src="../../static/js/jquery-3.6.0.min.js" th:src="@{/js/jquery-3.6.0.min.js}" type="text/javascript"></script>
     <script src="../../static/layui/layui.js" th:src="@{/layui/layui.js}" type="text/javascript"></script>
 </head>
+<style>
+    /* Switch开关样式 */
+    input[type='checkbox'].switch {
+        outline: none;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        position: relative;
+        width: 40px;
+        height: 20px;
+        background: #ccc;
+        border-radius: 10px;
+        transition: border-color .3s, background-color .3s;
+    }
 
+    input[type='checkbox'].switch::after {
+        content: '';
+        display: inline-block;
+        width: 1rem;
+        height: 1rem;
+        border-radius: 50%;
+        background: #fff;
+        box-shadow: 0, 0, 2px, #999;
+        transition: .4s;
+        top: 2px;
+        position: absolute;
+        left: 2px;
+    }
+
+    input[type='checkbox'].switch:checked {
+        background: rgb(19, 206, 102);
+    }
+
+    /* 当input[type=checkbox]被选中时：伪元素显示下面样式 位置发生变化 */
+    input[type='checkbox'].switch:checked::after {
+        content: '';
+        position: absolute;
+        left: 55%;
+        top: 2px;
+    }
+</style>
 <style type="text/css">
     .my-label{
         width: max-content;
@@ -51,35 +91,44 @@
         background-color: #2e8ded;
         color: #fff;
     }
-    .btttt{
-        color: #fff;
-    }
+    /*.btttt{*/
+    /*    color: #fff;*/
+    /*}*/
 </style>
 <body>
 <div>
     <div>
         <!--        查找表单-->
-        <form class="layui-form" action="/teacher/getReserveInfoList">
+        <form class="layui-form" action="/admin/getnoticeList">
             <div class="layui-form-item ">
                 <div class="layui-inline">
 
-                    <label class="layui-form-label my-label">实验楼</label>
+                    <label class="layui-form-label my-label">公告标题</label>
                     <div class="layui-input-inline">
-                        <input  th:value="${buildingName}" class="layui-input"  name="buildingName" placeholder="实验楼"  >
+                        <input  th:value="${title}" class="layui-input"  name="title" placeholder="公告标题"  >
                     </div>
 
-                    <label class="layui-form-label my-label">实验室类型</label>
+                    <label class="layui-form-label my-label">发布管理员</label>
                     <div class="layui-input-inline">
-                        <input th:value="${category}"  class="layui-input" name="category" placeholder="实验室类型"  >
+                        <input th:value="${adminUsername}"  class="layui-input" name="adminUsername" placeholder="发布管理员"  >
                     </div>
-                    <label class="layui-form-label my-label">预约时间</label>
+                    <label class="layui-form-label my-label">发布时间</label>
                     <div class="layui-input-inline">
-                        <input id="test2" th:value="${reserveTime}" name="reserveTime" class="layui-input" readonly lay-verify="required|date" type="data" placeholder="预约时间"  >
+                        <input id="test2" th:value="${time}" name="time" class="layui-input" readonly lay-verify="required|date" type="data" placeholder="发布时间"  >
                     </div>
                     <button id="btn" type="submit" class="layui-btn layui-btn-normal layui-input-inline" style="width: max-content">查找</button>
                 </div>
 
             </div>
+
+<!--            <div class="layui-form-item ">-->
+<!--                <div class="layui-inline">-->
+<!--                    <label class="layui-form-label my-label">公告标题</label>-->
+<!--                    <div class="layui-input-inline">-->
+<!--                        <input  th:value="${title}" class="layui-input"  name="title" placeholder="公告标题"  >-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
         </form>
     </div>
 
@@ -87,31 +136,45 @@
     <div>
         <!--        数据列表-->
         <div>
-            <table class="layui-table" lay-size="sm" style="border-spacing: 0;">
+            <div>
+                <button class="layui-btn" onclick="addNoticePage()">添加</button>
+                <button class="layui-btn" onclick="delNoticelist();">删除</button>
+            </div>
+
+            <table class="layui-table" lay-size="sm">
                 <thead style="background-color: #009688;color: #fff;">
-                    <tr style="background-color: #393D49;color: #fff;" >
-                        <th>预约编号</th>
-                        <th>实验楼</th>
-                        <th>房间号</th>
-                        <th>实验类别</th>
-                        <th>容纳数</th>
-                        <th>预约时间</th>
-                        <th>操做</th>
-                    </tr>
+                <tr style="background-color: #393D49;color: #fff;" >
+                    <th style="min-width: 15px;"><input id="checkbox" onclick="checkAll();" type="checkbox"></th>
+                    <th>公告标题</th>
+                    <th >公告内容</th>
+                    <th>发布时间</th>
+                    <th>是否显示</th>
+                    <th>发布人</th>
+                    <th>操作</th>
+                </tr>
                 </thead>
 
                 <tbody>
                 <tr th:each="arrayS,iterStat:${pageInfo.list}">
-                    <td th:text="${arrayS.id}"></td>
-                    <td th:text="${arrayS.laboratoryInfo.buildingName}"></td>
-                    <td th:text="${arrayS.laboratoryInfo.roomNumber}"></td>
-                    <td th:text="${arrayS.laboratoryInfo.category}"></td>
-                    <td th:text="${arrayS.laboratoryInfo.capacity}"></td>
-                    <td th:text="${arrayS.reserveTime}"></td>
+<!--                    <td th:text="${arrayS.id}"></td>-->
+                    <th style="min-width: 15px;"><input type="checkbox" name="checkbox" th:value="${arrayS.id}"></th>
+                    <td th:text="${arrayS.title}"></td>
+                    <td width="200">
+                        <div style="width:200px;height:16px;text-overflow: ellipsis;overflow: hidden;white-space:nowrap;" th:utext="${arrayS.content}" ></div>
+                    </td>
+                    <td th:text="${arrayS.time}"></td>
+                    <td th:if="${arrayS.display}==1">
+                        <span>已显示</span>
+                        <input style="vertical-align:middle" checked="" type="checkbox" class="switch">
+                    </td>
+                    <td th:if="${arrayS.display}==0">
+                        <span >未显示</span>
+                        <input id="inp" style="cursor:hand" type="checkbox" class="switch">
+                    </td>
+
+                    <td th:text="${arrayS.adminUsername}"></td>
                     <td>
-<!--                        th:data-pid="${project.id}" th:data-cid="${c.id}" th:onclick="doComment(this.getAttribute('data-cid'),this.getAttribute('data-pid'))"-->
-                        <a id="del-resever" href="javascript:void(0)" th:data-id="${arrayS.id}" th:onclick="dalReserve(this.getAttribute('data-id'))">取消预约</a>
-                        <a id="btn-resever" th:onclick="'reserve_info('+${arrayS.labid}+');'">详情</a>
+                        <a id="del-resever" href="javascript:void(0)" th:data-id="${arrayS.id}" th:onclick="detailsNotice(this.getAttribute('data-id'))">详情</a>
                     </td>
                 </tr>
                 </tbody>
@@ -125,10 +188,10 @@
         <div  class="layui-box  layui-laypage-default layui-laypage">
             <!--        <ul class="pagination-flickr pagination m-b-5 pull-right">-->
             <th:block th:if="${pageInfo.hasPreviousPage}">
-                <a  th:href="@{'/teacher/getReserveInfoList?pageNum='+${pageInfo.prePage}
-                +'&buildingName='+${buildingName}
-                +'&category='+${category}
-                 +'&reserveTime='+${reserveTime}}" aria-label="Previous">
+                <a  th:href="@{'/admin/getnoticeList?pageNum='+${pageInfo.prePage}
+                +'&title='+${title}
+                +'&adminUsername='+${adminUsername}
+                +'&time='+${time}}" aria-label="Previous">
                     <i class="fa fa-angle-left"></i>&nbsp;上一页
                 </a>
             </th:block>
@@ -136,18 +199,18 @@
             <th:block th:each="navIndex :${ pageInfo.navigatepageNums}">
 
                 <a th:class="${pageInfo.pageNum}==${navIndex}?'pageNum':''"
-                   th:href="@{'/teacher/getReserveInfoList?pageNum='+${navIndex}
-                   +'&buildingName='+${buildingName}
-                   +'&category='+${category}
-                   +'&reserveTime='+${reserveTime}}" th:text="${navIndex}"></a>
+                   th:href="@{'/admin/getnoticeList?pageNum='+${navIndex}
+                   +'&title='+${title}
+                    +'&adminUsername='+${adminUsername}
+                   +'&time='+${time}}" th:text="${navIndex}"></a>
 
             </th:block>
 
             <th:block th:if="${pageInfo.hasNextPage}">
-                <a th:href="@{'/teacher/getReserveInfoList?pageNum='+${pageInfo.nextPage}
-                +'&buildingName='+${buildingName}
-                +'&category='+${category}
-                +'&reserveTime='+${reserveTime}}" aria-label="Next">
+                <a th:href="@{'/admin/getnoticeList?pageNum='+${pageInfo.nextPage}
+                +'&title='+${title}
+                +'&adminUsername='+${adminUsername}
+                +'&time='+${time}}" aria-label="Next">
                     下一页&nbsp;<i class="fa fa-angle-right"></i>
                 </a>
             </th:block>
@@ -161,45 +224,91 @@
 
 </body>
 <script type="text/javascript">
+    // $('#checkbox').onclick(){
+    //     $("input[name='checkbox']").attr("checked","true");
+    // }
+    //添加公告
+    function addNoticePage(){
+        var layer = layui.layer;
+        //iframe层
+        var index = layer.open({
+            type: 2,
+            title: '发布公告',
+            shadeClose: true,
+            shade: 0.8,
+            scrollbar: false,
+            area: ['70%', '99%'],//宽 高
+            content:'/admin/noticePage',
+            end : function() {
+                location.reload();
+            }
 
-    //取消预约
-    function dalReserve(id){
+        });
+    }
 
-        var header = $("meta[name='_csrf_header']").attr("content");
-        var token = $("meta[name='_csrf']").attr("content");
-        var data = {'id':id};
+
+
+    //批量删除
+    function delNoticelist(){
+        var chk_value =[];
+        $('input[name="checkbox"]:checked').each(function(){
+            chk_value.push($(this).val());
+        });
+        // alert(chk_value.length==0 ?'你还没有选择任何内容！':chk_value);
+        if(chk_value.length==0){
+            alert("你还没有选择任何内容!");
+        }else {
+            var header = $("meta[name='_csrf_header']").attr("content");
+            var token = $("meta[name='_csrf']").attr("content");
+            var data="dataList="+chk_value;
+            // console.log(JSON.stringify(data));
+            console.log(data);
             $.ajax({
-                url: '/teacher/delReserve',
+                url: '/admin/delNoticeAll',
                 type: 'POST',
-                async: true,
-                data: data,
-                dataType: 'json',
+                async: false,
+                data:data,
+
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader(header, token);
                 },
                 success: function (data) {
-                    window.location.reload();
-                    if (data.status==200){
-                        alert("取消成功");
-                    }else {
-                        alert("取消失败");
+                    console.log(data.num);
+                    // console.log(data.labid);
+                    // inputNull(data.labid);
+                    if (data.num>0){
+                        alert("成功删除"+data.num+"条记录！！");
+                    }else{
+                        alert("删除错误！");
                     }
 
                     // closeIfame();
+                    location.reload();
                 },
                 error:function (){
-                    alert("请求失败！！");
-                    window.location.reload();
+                    alert("删除错误！");
+                    location.reload();
                 }
-            })
 
+
+            })
+        }
     }
 
+    //全选操作
+    function checkAll(){
+        if ( $("#checkbox").is(":checked") ){
+            $("input[name='checkbox']").prop("checked",true);
+        }else {
+            $("input[name='checkbox']").prop("checked",false);
+            // $("input[name='checkbox']").removeAttr("checked");
+        }
+    }
 
-    function reserve_info(name){
+    function detailsNotice(id){
         //获取被选中的option标签
         // var vs = $('select  option:selected').val();
-        var reserve=document.getElementById('test2').value;
+        // var reserve=document.getElementById('test2').value;
         // alert(vs);
         // alert(reserve);
 
@@ -212,18 +321,13 @@
             shade: 0.8,
             scrollbar: false,
             area: ['70%', '99%'],//宽 高
-            content:'/teacher/reservePage?labid='+name+'&reserve='+reserve
+            content:'/admin/detailsNoticePage?id='+id
             // ,btn:['<div class="btttt">保存</div>','取消']
-            ,closeBtn:1
-            ,yes:function (index){
-                alert(index.date());
-                // layer.close(index);
-
-            }
-            ,end: function(date){
-                // alert(date);
-                // window.location.href="/teacher/getLaboratoryInfoList?category=电脑房";
-            }
+            // ,closeBtn:1
+            // ,end: function(date){
+            //     alert(date);
+            //     window.location.href="/admin/getnoticeList";
+            // }
         });
     }
 
@@ -273,6 +377,7 @@
 
         laydate.render({
             elem: '#test2',
+            // min:1,
             trigger : 'click',
             theme: 'grid',
             showBottom: true,

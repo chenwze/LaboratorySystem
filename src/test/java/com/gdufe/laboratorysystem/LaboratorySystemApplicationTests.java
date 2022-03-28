@@ -5,18 +5,53 @@ import com.gdufe.laboratorysystem.dao.StudentInfoDao;
 import com.gdufe.laboratorysystem.dao.StudentUserDao;
 import com.gdufe.laboratorysystem.entity.LaboratoryInfo;
 import com.gdufe.laboratorysystem.entity.StudentInfo;
+import com.gdufe.laboratorysystem.utils.CommonExcel;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.client.RestTemplate;
 
-import java.sql.Date;
+import javax.servlet.http.HttpServletResponse;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @SpringBootTest
 class LaboratorySystemApplicationTests {
 
+    @Test
+    void dateTest() throws Exception {
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//        Date date =new Date();
+//        sdf.format(date);
+//        System.out.println(date+"---------"+ sdf.format(date));
+
+            HttpServletResponse response=null;
+            String title = "xx报表";
+            String[] rowsName = new String[]{"oo","xx","oo","xx","xx","oo"};
+            List<Object[]> dataList = new ArrayList<Object[]>();
+            Object[] objs = null;
+            for (int i = 0; i < 10; i++) {
+                objs = new Object[rowsName.length];
+                objs[0] = i;
+                objs[1] = i;
+                objs[2] = i;
+                objs[3] = i;
+                objs[4] = i;
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String date = df.format(new Date());
+                objs[5] = date;
+                dataList.add(objs);
+            }
+            String fileName="xx报表-"+String.valueOf(System.currentTimeMillis()).substring(4,13)+".xls";
+            CommonExcel ex = new CommonExcel(title, rowsName, dataList,response,fileName);
+            ex.downloadExcel();
+
+    }
 
    
 

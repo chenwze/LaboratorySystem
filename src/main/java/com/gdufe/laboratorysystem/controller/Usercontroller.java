@@ -51,7 +51,7 @@ public class Usercontroller {
                 //含有admin权限跳转管理员页面
                 if(array.toString().equals("admin")){
                     System.out.println("++++++++++++++++"+array);
-                    return "/admin/admin_index";
+                    return "/admin/admin_main";
                 }
         }
 

@@ -43,7 +43,7 @@
                       <div class="layui-inline">
                           <h3 th:text="${arrayS.title}"></h3>
                           <div class=" text-justify">
-                              <div th:text="${arrayS.getContent()}" style="overflow-x:auto;"></div>
+                              <div th:utext="${arrayS.content}" style="overflow-x:auto;"></div>
                           </div>
                       </div>
 

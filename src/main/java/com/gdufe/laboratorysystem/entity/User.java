@@ -20,7 +20,7 @@ public class User implements Serializable,UserDetails {
 
     private static final long serialVersionUID = 3069954400946883940L;
     //登录账号
-    private int userid;
+    private String userid;
     //用户账号
     private String username;
     private String name;
@@ -34,11 +34,11 @@ public class User implements Serializable,UserDetails {
     private String email;
     private String createTime;
 
-    public int getUserid() {
+    public String getUserid() {
         return userid;
     }
 
-    public void setUserid(int userid) {
+    public void setUserid(String userid) {
         this.userid = userid;
     }
 

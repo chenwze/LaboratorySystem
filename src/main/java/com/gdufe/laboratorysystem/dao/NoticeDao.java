@@ -16,4 +16,15 @@ import java.util.List;
 public interface NoticeDao {
     //获取公告
     List<Notice> getShowNotice();
+
+    //公告详情信息
+    Notice getdetailsNoticePage(Notice notice);
+    //添加公告
+    int addNotice(Notice notice);
+
+    //管理员查看公告列表
+    List<Notice> getNoticeList(Notice notice);
+
+    //批量删除公告
+    int delNoticeList(String[] ids);
 }

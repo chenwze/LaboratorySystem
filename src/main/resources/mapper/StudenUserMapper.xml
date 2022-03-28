@@ -13,4 +13,49 @@
     <update id="upPassword">
         update student_user set password=#{password} where username = #{username}
     </update>
+
+
+<!--    学生列表-->
+    <select id="getStudentUserList" resultType="com.gdufe.laboratorysystem.entity.User">
+        SELECT  * from student_user
+        <where>
+            <if test="username != '' and username !=null and username != 'null'">
+                and username like concat(concat('%',#{username}),'%')
+            </if>
+
+            <if test="name != '' and name !=null and name != 'null'">
+               and name like concat(concat('%',#{name}),'%')
+            </if>
+            <if test="createTime != '' and createTime !=null and createTime != 'null'">
+                and TO_DAYS(create_time)= TO_DAYS(#{createTime})
+            </if>
+
+        </where>
+    </select>
+
+
+<!--    批量添加用户-->
+    <insert id="addStudentUserList">
+        INSERT INTO `laboratory_system`.`student_user`(`stuid`, `username`, `password`, `status`, `create_time`, `email`, `role`, `name`)
+        VALUES
+        <foreach collection="list" item="user" index="index" separator=",">
+            (#{user.userid}, #{user.username}, #{user.password},#{user.status}, #{user.createTime}, #{user.email}, #{user.role}, #{user.name})
+        </foreach>
+    </insert>
+
+
+<!--    添加一个学生用户-->
+    <insert id="addStudentUser" parameterType="com.gdufe.laboratorysystem.entity.User">
+            INSERT INTO `laboratory_system`.`student_user`(`stuid`, `username`, `password`, `status`, `create_time`, `email`, `role`, `name`)
+            VALUES (#{userid}, #{username}, #{password},'正常', #{createTime}, #{email}, #{role}, #{name})
+
+</insert>
+
+    <!--    批量删除学生-->
+    <delete id="delStudentUserList" parameterType="java.lang.String">
+        DELETE FROM `laboratory_system`.`student_user` WHERE
+        <foreach collection="array" separator="or" item="id" index="index" >
+            username = #{id}
+        </foreach>
+    </delete>
 </mapper>

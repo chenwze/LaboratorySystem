@@ -10,30 +10,18 @@ import java.sql.Date;
  * @version: 1.0
  */
 public class Notice {
-    private int id;
+    private String id;
     private String title;
     private String content;
-    private Date time;
-    private String username;
-    private int display;
+    private String time;
+    private String adminUsername;
+    private String display;
 
-    @Override
-    public String toString() {
-        return "Notice{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", content='" + content + '\'' +
-                ", date=" + time +
-                ", username='" + username + '\'' +
-                ", display=" + display +
-                '}';
-    }
-
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -53,27 +41,39 @@ public class Notice {
         this.content = content;
     }
 
-    public Date getDate() {
+    public String getTime() {
         return time;
     }
 
-    public void setDate(Date date) {
-        this.time = date;
+    public void setTime(String time) {
+        this.time = time;
     }
 
-    public String getUsername() {
-        return username;
+    public String getAdminUsername() {
+        return adminUsername;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setAdminUsername(String adminUsername) {
+        this.adminUsername = adminUsername;
     }
 
-    public int getDisplay() {
+    public String getDisplay() {
         return display;
     }
 
-    public void setDisplay(int display) {
+    public void setDisplay(String display) {
         this.display = display;
+    }
+
+    @Override
+    public String toString() {
+        return "Notice{" +
+                "id='" + id + '\'' +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", time='" + time + '\'' +
+                ", adminUsername='" + adminUsername + '\'' +
+                ", display=" + display +
+                '}';
     }
 }

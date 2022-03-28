@@ -6,4 +6,53 @@
     <select id="getShowNotice" resultType="com.gdufe.laboratorysystem.entity.Notice">
         select title,time,content from notice where display = 1;
     </select>
+
+<!--    管理员发布公告-->
+    <insert id="addNotice" parameterType="com.gdufe.laboratorysystem.entity.Notice" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO `laboratory_system`.`notice`
+            (`id`, `title`, `content`, `time`, `admin_username`, `display`)
+            VALUES (#{id}, #{title}, #{content}, #{time}, #{adminUsername}, 1)
+    </insert>
+
+
+<!--    管理员获取公告列表-->
+    <select id="getNoticeList" resultType="com.gdufe.laboratorysystem.entity.Notice">
+        select *  from notice
+        <where>
+            <if test="id !='' and id !=null and id !='null'" >
+                and id = #{id}
+            </if>
+
+            <if test="display !='' and display !=null and display !='null'" >
+                and display = #{display}
+            </if>
+
+            <if test="title !='' and title !=null and title !='null'">
+                and title = #{title}
+            </if>
+
+            <if test="adminUsername !='' and adminUsername !=null and adminUsername != 'null'">
+                and admin_username = #{adminUsername}
+            </if>
+
+            <if test="time != '' and time != null and time != 'null'">
+                and TO_DAYS(time) = TO_DAYS(#{time})
+            </if>
+
+
+        </where>
+    </select>
+
+<!--    公告详情信息-->
+    <select id="getdetailsNoticePage" resultType="com.gdufe.laboratorysystem.entity.Notice">
+        select * from  notice where id=#{id}
+    </select>
+
+<!--    批量删除公告-->
+    <delete id="delNoticeList" parameterType="java.lang.String">
+        DELETE FROM `laboratory_system`.`notice` WHERE
+        <foreach collection="array" separator="or" item="id" index="index" >
+            id = #{id}
+        </foreach>
+    </delete>
 </mapper>

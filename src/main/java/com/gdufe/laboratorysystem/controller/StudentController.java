@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.HtmlUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
@@ -59,7 +60,13 @@ public class StudentController {
     public String noticePage(Model model){
         List<Notice> showNotice = studentService.getShowNotice();
         for (Notice noticeList:showNotice){
-            System.out.println(noticeList.toString());
+//            System.out.println(noticeList.toString());
+
+            String temp = HtmlUtils.htmlEscapeHex(noticeList.getContent());
+            System.out.println(temp+"------------");
+            String returnHtml = HtmlUtils.htmlUnescape(temp);
+            System.out.println(returnHtml+"++++++++++++");
+            noticeList.setContent(returnHtml);
         }
         model.addAttribute("notices",showNotice);
         return "/student/studnet_notice";
@@ -284,6 +291,11 @@ public class StudentController {
     }
 
 
+    /**
+     * 取消预约记录
+     * @param id
+     * @return
+     */
     @PostMapping("/delReserve")
     @ResponseBody
     public Object  delReserve(String id){
