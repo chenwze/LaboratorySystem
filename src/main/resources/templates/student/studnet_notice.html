@@ -15,7 +15,7 @@
 <style type="text/css">
 
 </style>
-<body>
+<body style="background-color: rgba(243,243,243,0.45);">
 <!--  <div>-->
 <!--    公告标题-->
 <!--    <div>-->
@@ -36,19 +36,19 @@
 <!--          <div th:each="arrayS:${notices}">-->
 <!--              <h3 th:text="${arrayS.getTitle()}"></h3>-->
 <!--              <div th:text="${arrayS.getContent()}"></div>-->
-              <form  th:each="arrayS:${notices}" class="layui-form" id="changePassword"
-                     style="background: white; margin:0 auto; " >
+              <div  th:each="arrayS:${notices}"
+                     style=" margin:0 auto; padding: 20px 15px;" >
 
-                  <div class="layui-form-item layui-inline">
-                      <div class="layui-inline">
-                          <h3 th:text="${arrayS.title}"></h3>
+                  <div class="">
+                      <div class="">
+                          <h3 th:text="${arrayS.title}" style="text-align: center;margin-bottom: 15px;"></h3>
                           <div class=" text-justify">
                               <div th:utext="${arrayS.content}" style="overflow-x:auto;"></div>
                           </div>
                       </div>
 
                   </div>
-              </form>
+              </div>
       </div>
 
   </div>

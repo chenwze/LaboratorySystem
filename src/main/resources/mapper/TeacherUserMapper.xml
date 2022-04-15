@@ -9,9 +9,37 @@
         select * from teacher_user where username=#{username};
     </select>
 
+<!--    获取老师个人账号邮箱-->
+    <select id="getEmail">
+        select email from teacher_user where username = #{username}
+    </select>
+
     <!--更新密码-->
     <update id="upPassword">
         update teacher_user set password=#{password} where username = #{username}
+    </update>
+
+    <!--    设置账号状态-->
+    <update id="upStatus" parameterType="String">
+        update teacher_user set status = #{status} where username = #{username}
+    </update>
+    <!--更新老师账号信息-->
+    <update id="upTeacherUser" parameterType="com.gdufe.laboratorysystem.entity.User">
+        update student_user
+        <trim prefix="set" suffixOverrides=",">
+            <if test="status != null and status !='' and status !='null' ">
+                status = #{status},
+            </if>
+
+            <if test="email != null and email !='' and email !='null' ">
+                email = #{email},
+            </if>
+
+            <if test="name != null and name !='' and name !='null' ">
+                name = #{name},
+            </if>
+        </trim>
+        where username = #{username};
     </update>
 
 
@@ -58,4 +86,50 @@
             username = #{id}
         </foreach>
     </delete>
+
+
+    <!--管理员设置老师用户状态-->
+    <update id="adminSetStatus" parameterType="String">
+        update teacher_user set status = #{status} where username = #{username}
+    </update>
+
+    <!--管理员更新学生账号信息-->
+    <update id="adminUpTeacherUser" parameterType="com.gdufe.laboratorysystem.entity.User">
+        update teacher_user
+        <trim prefix="set" suffixOverrides=",">
+            <if test="status != null and status !='' and status !='null' ">
+                status = #{status},
+            </if>
+
+            <if test="email != null and email !='' and email !='null' ">
+                email = #{email},
+            </if>
+
+            <if test="name != null and name !='' and name !='null' ">
+                name = #{name},
+            </if>
+
+            <if test="createTime != null and createTime !='' and createTime !='null' ">
+                create_time = #{createTime},
+            </if>
+
+            <if test="password != null and password !='' and password !='null' ">
+                password = #{password},
+            </if>
+
+            <if test="status != null and status !='' and status !='null' ">
+                status = #{status},
+            </if>
+
+            <if test="role != null and role !='' and role !='null' ">
+                role = #{role},
+            </if>
+        </trim>
+        where username = #{username};
+    </update>
+
+    <!--    忘记密码，修改密码-->
+    <update id="upPasswrodEmail">
+        UPDATE `laboratory_system`.`teacher_user` SET `password` = #{password} WHERE `username` = #{username} and `email` = #{email}
+    </update>
 </mapper>

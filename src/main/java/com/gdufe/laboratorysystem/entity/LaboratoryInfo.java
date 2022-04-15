@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @version: 1.0
  */
 public class LaboratoryInfo implements Serializable {
-    private int labid;
+    private String labid;
     //实验楼名称
     private String buildingName;
     //容纳数
@@ -44,11 +44,11 @@ public class LaboratoryInfo implements Serializable {
         this.roomNumber = roomNumber;
     }
 
-    public int getLabid() {
+    public String getLabid() {
         return labid;
     }
 
-    public void setLabid(int labid) {
+    public void setLabid(String labid) {
         this.labid = labid;
     }
 

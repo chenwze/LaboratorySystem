@@ -11,10 +11,18 @@ public interface TeacherInfoDao {
     //根据用户名查找个人信息
 //    Map<String,Object> getTeacherInfo(String username);
 
-    //根据条件查询用户信息结果集
-    List<TeacherInfo> getStudentInfoAll(TeacherInfo teacherInfo);
+    /**
+     * 老师个人信息列表
+     * @param teacherInfo
+     * @return
+     */
+    List<TeacherInfo> getTeacherinfoList(TeacherInfo teacherInfo);
 
-
+    //获取单个老师信息
     TeacherInfo getTeacherInfo(String usernam);
 
+    /**
+     * 更新修改老师个人信息
+     */
+    int upTeacherInfo(TeacherInfo teacherInfo);
 }

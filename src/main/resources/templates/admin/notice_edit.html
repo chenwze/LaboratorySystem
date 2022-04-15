@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header"  th:content="${_csrf.headerName}"/>
+    <title>编辑公告页面</title>
+    <link rel="stylesheet" href="../../static/layui/css/layui.css" th:href="@{/layui/css/layui.css}">
+    <script src="../../static/js/jquery-3.6.0.min.js" th:src="@{/js/jquery-3.6.0.min.js}" type="text/javascript"></script>
+    <script src="../../static/layui/layui.js" th:src="@{/layui/layui.js}" type="text/javascript"></script>
+    <script type="text/javascript" src="https://unpkg.com/wangeditor@3.1.1/release/wangEditor.min.js"></script>
+</head>
+<body>
+<!--    <form>-->
+<!--        <div id="editor" style="width: 200px;"> </div>-->
+<!--    </form>-->
+    <form style="width: 600px;margin: 0 auto;">
+        <h1 style="text-align: center;margin-bottom: 10px;">编辑公告页面</h1>
+
+        <div class="layui-form-item" style="">
+            <input style="display:none;" name = "id" th:value="${notice.getId()}">
+            <div class="layui-input-block" style="margin-left: 0px;">
+                <input name="title" th:value="${notice.getTitle()}" class="layui-input"  placeholder="公告标题" >
+            </div>
+        </div>
+
+        <div class="layui-form-item" style="">
+            <div class="layui-input-block" style="margin-left: 0px;">
+                <textarea th:utext="${notice.getContent()}" name="mdmContent" id="mdmContent" lay-verify="content" class="layui-input" style="height:100px;width: 350px;" ></textarea>
+            </div>
+        </div>
+        <button id="btn" type="button" onclick="upNotice();" class="layui-btn layui-btn-normal layui-input-inline" style="width: max-content;float: right;">修改公告</button>
+        <div style="clear:right;"></div>
+    </form>
+<div style="clear:right;"></div>
+
+</body>
+
+<script type="text/javascript">
+    // var E = window.wangEditor
+    // var editor = new E('#editor')
+    // // 或者 var editor = new E( document.getElementById('editor') )
+    // editor.create();
+    //
+    // console.log(editor.txt.text())//获取富文本编辑器的
+    var layedits;
+    var indexs;
+    layui.use(['form','layedit'],function (){
+        layedits = layui.layedit;
+        indexs=layedits.build('mdmContent'
+        ,{tool:[
+                'strong'
+                ,'italic'
+                ,'underline'
+                ,'del'
+                ,'|'
+                ,'left'
+                ,'center'
+                ,'right'
+            ]}
+        )
+        console.log(layedits.getContent(indexs));
+    })
+
+    function upNotice (){
+        console.log(layedits.getContent(indexs));
+        var data = $("form").serializeArray();
+        var $linkTypeLabel = [ {
+            "name" : "content",
+            "value" : layedits.getContent(indexs)
+        } ];
+        $.merge(data, $linkTypeLabel);
+        console.log(data);
+        var header = $("meta[name='_csrf_header']").attr("content");
+        var token = $("meta[name='_csrf']").attr("content");
+        $.ajax({
+            url: '/admin/upNotice',
+            type: 'POST',
+            async: false,
+            contentType: 'application/x-www-form-urlencoded;charset=UTF-8',
+            data:data,
+            dataType: 'json',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(header, token);
+
+            },
+            success: function (data) {
+                console.log(data);
+                if (data.id !='' && data != null){
+                    alert(data.msg);
+                    location.reload();
+                    closeIfame();
+
+                }else {
+                    alert("发布失败，重新提交！！");
+                }
+
+
+            }
+        })
+    }
+
+    //关闭弹窗
+    function closeIfame() {
+        //使用data获取传送过的obj参数
+        //在子页面关闭弹出层
+        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+        parent.layer.close(index); //再执行关闭
+        location.reload();
+    }
+</script>
+</html>

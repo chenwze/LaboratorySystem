@@ -35,4 +35,7 @@ public interface ReserveDao {
      * 取消预约
      */
     int delReserve(@Param("id") String id ,@Param("username") String username);
+
+//    管理员查询实验室预约记录
+    List<Reserve> getAdminReserveList(Reserve reserve, LaboratoryInfo laboratoryInfo);
 }

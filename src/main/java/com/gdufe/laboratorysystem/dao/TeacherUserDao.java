@@ -28,6 +28,14 @@ public interface TeacherUserDao {
      */
     int upPassword(@Param("username") String username,@Param("password") String password);
 
+    /**
+     * 忘记密码，修改密码
+     * @param
+     * @return
+     */
+    int upPasswrodEmail(@Param("username") String username,@Param("password") String password
+            ,@Param("email") String email);
+
 
     List<User> getTeacherUserList(User user);
 
@@ -39,4 +47,20 @@ public interface TeacherUserDao {
 
     //批量删除公告
     int delTeacherUserList(String[] ids);
+
+    //更新老师账号个人信息
+    int upTeacherUser(User user);
+
+    //设置状态
+    int upStatus(String status);
+
+    //获取老师账号邮件
+    String getEmail(String username);
+
+    //管理员设置老师老师用户
+    int adminSetStatus(String status);
+    /**
+     * 管理员更新老师账号信息
+     */
+    int adminUpTeacherUser(User user);
 }

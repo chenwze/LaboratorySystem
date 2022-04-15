@@ -26,7 +26,7 @@
     <!--    获取已预约时间列表,根据实验室唯一编号labid，预约时间-->
     <select id="getReserveTimeList" resultType="com.gdufe.laboratorysystem.entity.Reserve">
         select DISTINCT reserve_time as reserveTime from  reserve
-        where reserve_time > now() and username =#{username};
+        where reserve_time > now() and username = #{username};
     </select>
 
 <!--    添加预约记录-->
@@ -63,4 +63,33 @@
     <delete id="delReserve" >
         DELETE FROM reserve where id=#{id}  and username = #{username}
     </delete>
+
+<!--    管理员查询实验室预约记录-->
+    <select id="getAdminReserveList" resultMap="ReserveLabor" >
+        SELECT * FROM `reserve` LEFT JOIN laboratory_info on laboratory_info.labid=reserve.labid
+        <where>
+            <if test="reserve.username !='' and reserve.username != null and reserve.username !='null'">
+                and reserve.username=#{reserve.username}
+            </if>
+
+            <if test="laboratoryInfo.buildingName != '' and laboratoryInfo.buildingName != null and laboratoryInfo.buildingName!='null'">
+                and building_name like concat(concat('%',#{laboratoryInfo.buildingName}),'%')
+            </if>
+
+            <if test="laboratoryInfo.category != '' and laboratoryInfo.category != null and laboratoryInfo.category !='null'">
+                and category like concat(concat('%',#{laboratoryInfo.category}),'%')
+            </if>
+
+            <if test="reserve.reserveTime != '' and reserve.reserveTime != null and reserve.reserveTime != 'null' ">
+                and  reserve.reserve_time = #{reserve.reserveTime}
+            </if>
+
+            <if test="reserve.userType != '' and reserve.userType != null and reserve.userType != 'null' ">
+                and  reserve.user_type = #{reserve.userType}
+            </if>
+
+        </where>
+
+    </select>
+
 </mapper>

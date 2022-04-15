@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -61,8 +63,10 @@
                 ,'right'
             ]}
         )
+        layedits.setContent("ssssssssssss");
         console.log(layedits.getContent(indexs));
     })
+
     function addNotice (){
         console.log(layedits.getContent(indexs));
         var data = $("form").serializeArray();

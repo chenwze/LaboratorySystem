@@ -8,9 +8,13 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.HtmlUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -97,7 +101,7 @@ public class StudentController {
      */
     @PostMapping("/upPassword")
     @ResponseBody
-    public  Object upPassword(User user,Model model,HttpServletRequest request){
+    public  HashMap upPassword(User user,Model model,HttpServletRequest request){
         System.out.println("----------"+user.toString());
         //旧密码
         String oldPassword = request.getParameter("old-password");
@@ -109,12 +113,12 @@ public class StudentController {
         System.out.println(newPassword1+"-------"+newPassword2+"++++++"+oldPassword);
         boolean bool = studentService.upPassword(oldPassword, newPassword1);
         if (bool){
-            Map map=new HashMap();
+            HashMap map=new HashMap();
             map.put("status",200);
             map.put("user",user);
             return map;
         }else {
-            Map map=new HashMap();
+            HashMap map=new HashMap();
             map.put("status",400);
             map.put("user",user);
             return map;
@@ -290,6 +294,40 @@ public class StudentController {
         return "/student/student_info";
     }
 
+    /**
+     * 修改个人账号信息页
+     *
+     */
+    @RequestMapping("/changeUserInfo")
+    public String changeUserInfo(Model model){
+        System.out.println("AdminController.changeUserInfo");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            //获取当前用户名
+            String currentUserName = authentication.getName();
+            User studentUser = studentService.getStudentUser(currentUserName);
+            model.addAttribute("studentUser", studentUser);
+//        String staticPath = this.getClass().getClassLoader().getResource("static").getFile();
+//        System.out.println("staticPath = " + staticPath);
+            return "/student/student_user_edit";
+        }else {
+            return "/login";
+        }
+    }
+
+    /**
+     *修改保存学生账号信息
+     */
+    @RequestMapping("upUserInfo")
+    @ResponseBody
+    public HashMap upUserInfo(MultipartFile file, User user){
+        System.out.println("user.getName() = " + user.getName());
+//        String s = ImgHeadUtils.imgHead(file);
+//        System.out.println("s = " + s);
+//        map.put("sss","Sss");
+        HashMap hashMap = studentService.upStudentUserInfo(file, user);
+        return hashMap;
+    }
 
     /**
      * 取消预约记录

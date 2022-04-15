@@ -21,4 +21,10 @@ public interface LaboratoryInfoDao {
 
     //根据实验室编号labid查找实验室
     LaboratoryInfo getLaboratoryInfo(@Param("labid") String labid);
+
+    //管理员查询实验室列表
+    List<LaboratoryInfo> getAdminLaboratoryInfoList( LaboratoryInfo laboratoryInfo );
+
+    //查看实验的状态，开放或其他
+    String getLaboratoryStatus(String labid);
 }

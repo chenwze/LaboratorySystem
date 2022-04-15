@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header"  th:content="${_csrf.headerName}"/>
+    <title>实验室预约记录</title>
+    <link th:href="@{/login/css/bootstrap.min.css}" href="../static/login/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/login/css/signin.css}" href="../static/login/css/signin.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../static/layui/css/layui.css" th:href="@{/layui/css/layui.css}">
+    <script src="../../static/js/jquery-3.6.0.min.js" th:src="@{/js/jquery-3.6.0.min.js}" type="text/javascript"></script>
+    <script src="../../static/layui/layui.js" th:src="@{/layui/layui.js}" type="text/javascript"></script>
+</head>
+
+<style type="text/css">
+    .my-label{
+        width: max-content;
+    }
+    html body{
+        height: auto;
+    }
+    .layui-laypage .pageNum{
+        background-color: #009688;
+        color: #fff;
+    }
+    .layui-laypage .pageNum:hover{
+        color: #fff;
+    }
+
+    .layui-laypage a:hover{
+        background-color: #009688;
+        color: #fff;
+    }
+    button:focus{
+        outline: none;
+        outline: 0;
+        border-color: transparent;
+    }
+    body .demo-class .layui-layer-btn0{
+        border-color: #E6E3E6;
+        background-color: #FFF;
+        color: black;
+    }
+    body .demo-class .layui-layer-btn1{
+        border-color: #4898d5;
+        background-color: #2e8ded;
+        color: #fff;
+    }
+    .btttt{
+        color: #fff;
+    }
+</style>
+<body>
+<div>
+    <div>
+        <!--        查找表单-->
+        <form class="layui-form" action="/admin/getAdminReserveList">
+            <div class="layui-form-item " style="margin-bottom:0px;" >
+                <div class="layui-inline">
+                    <label class="layui-form-label my-label">用户类型</label>
+                    <div class="layui-input-inline">
+                        <input  th:value="${userType}" name="userType" class="layui-input"  placeholder="预约用户类型" >
+                    </div>
+
+                    <label class="layui-form-label my-label">用户账号</label>
+                    <div class="layui-input-inline">
+                        <input  th:value="${username}" name="username" class="layui-input"  placeholder="预约用户账号"  >
+                    </div>
+
+                    <label class="layui-form-label my-label">预约时间</label>
+                    <div class="layui-input-inline">
+                        <input id="test2" th:value="${reserveTime}" name="reserveTime" class="layui-input" readonly lay-verify="required|date" type="data" placeholder="预约时间"  >
+                    </div>
+                    <button id="btn" type="submit" class="layui-btn layui-btn-normal layui-input-inline" style="width: max-content">查找</button>
+                </div>
+            </div>
+
+            <div class="layui-form-item " style="margin-bottom:0px; ">
+                <div class="layui-inline">
+
+                    <label class="layui-form-label my-label">实验楼名</label>
+                    <div class="layui-input-inline">
+                        <input  th:value="${buildingName}" class="layui-input"  name="buildingName" placeholder="实验楼"  >
+                    </div>
+
+                    <label class="layui-form-label my-label">实验类型</label>
+                    <div class="layui-input-inline">
+                        <input th:value="${category}"  class="layui-input" name="category" placeholder="实验室类型"  >
+                    </div>
+<!--                    <button id="btn" type="submit" class="layui-btn layui-btn-normal layui-input-inline" style="width: max-content">查找</button>-->
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+
+    <div>
+        <!--        数据列表-->
+        <div>
+            <input type="file" id="exe_file" onchange ="uploadFile()" name="file" style="display:none" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" >
+            <button class="layui-btn" onclick="addStudentPage()">添加</button>
+            <button class="layui-btn" onclick="addStudentInfoExe();">EXE添加</button>
+            <button class="layui-btn" onclick="delStudentInfolist();">删除</button>
+        </div>
+        <div>
+            <table class="layui-table" lay-size="sm" style="border-spacing: 0;">
+                <thead style="background-color: #009688;color: #fff;">
+                    <tr style="background-color: #393D49;color: #fff;" >
+                        <th>预约编号</th>
+                        <th>实验楼</th>
+                        <th>房间号</th>
+                        <th>实验类别</th>
+                        <th>用户类型</th>
+                        <th>预约账号</th>
+                        <th>容纳数</th>
+                        <th>预约时间</th>
+                        <th>操做</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="arrayS,iterStat:${pageInfo.list}">
+                    <td th:text="${arrayS.id}"></td>
+                    <td th:text="${arrayS.laboratoryInfo.buildingName}"></td>
+                    <td th:text="${arrayS.laboratoryInfo.roomNumber}"></td>
+                    <td th:text="${arrayS.laboratoryInfo.category}"></td>
+                    <td th:text="${arrayS.userType}"></td>
+                    <td th:text="${arrayS.username}"></td>
+
+                    <td th:text="${arrayS.laboratoryInfo.capacity}"></td>
+
+                    <td th:text="${arrayS.reserveTime}"></td>
+                    <td>
+<!--                        th:data-pid="${project.id}" th:data-cid="${c.id}" th:onclick="doComment(this.getAttribute('data-cid'),this.getAttribute('data-pid'))"-->
+                        <a id="del-resever" href="javascript:void(0)" th:data-id="${arrayS.id}" th:onclick="dalReserve(this.getAttribute('data-id'))">取消预约</a>
+                        <a id="btn-resever" href="javascript:void(0)" th:data-id="${arrayS.id}" th:onclick="reserve_info(getAttribute('data-id'))">详情</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <!--        数据列表结束-->
+    </div>
+
+    <!--    分页开始-->
+    <div style="text-align: center;">
+        <div  class="layui-box  layui-laypage-default layui-laypage">
+            <!--        <ul class="pagination-flickr pagination m-b-5 pull-right">-->
+            <th:block th:if="${pageInfo.hasPreviousPage}">
+                <a  th:href="@{'/admin/getAdminReserveList?pageNum='+${pageInfo.prePage}
+                +'&buildingName='+${buildingName}
+                +'&category='+${category}
+                 +'&reserveTime='+${reserveTime}
+                 +'&username='+${username}+'&userType='+${userType}}" aria-label="Previous">
+                    <i class="fa fa-angle-left"></i>&nbsp;上一页
+                </a>
+            </th:block>
+
+            <th:block th:each="navIndex :${ pageInfo.navigatepageNums}">
+
+                <a th:class="${pageInfo.pageNum}==${navIndex}?'pageNum':''"
+                   th:href="@{'/admin/getAdminReserveList?pageNum='+${navIndex}
+                   +'&buildingName='+${buildingName}
+                   +'&category='+${category}
+                   +'&reserveTime='+${reserveTime}
+                   +'&username='+${username}+'&userType='+${userType}}" th:text="${navIndex}"></a>
+
+            </th:block>
+
+            <th:block th:if="${pageInfo.hasNextPage}">
+                <a th:href="@{'/admin/getAdminReserveList?pageNum='+${pageInfo.nextPage}
+                +'&buildingName='+${buildingName}
+                +'&category='+${category}
+                +'&reserveTime='+${reserveTime}
+                +'&username='+${username}+'&userType='+${userType}}" aria-label="Next">
+                    下一页&nbsp;<i class="fa fa-angle-right"></i>
+                </a>
+            </th:block>
+            <th:block th:if="${pageInfo.pages}>0">
+                <span th:text="'共'+${pageInfo.pages}+'页'"></span>
+            </th:block>
+        </div>
+    </div>
+
+</div>
+
+</body>
+<script type="text/javascript">
+
+    //取消预约
+    function dalReserve(id){
+
+        var header = $("meta[name='_csrf_header']").attr("content");
+        var token = $("meta[name='_csrf']").attr("content");
+        var data = {'id':id};
+            $.ajax({
+                url: '/admin/delReserve',
+                type: 'POST',
+                async: true,
+                data: data,
+                dataType: 'json',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token);
+                },
+                success: function (data) {
+                    window.location.reload();
+                    if (data.status==200){
+                        alert("取消成功");
+                    }else {
+                        alert("取消失败");
+                    }
+
+                    // closeIfame();
+                },
+                error:function (){
+                    alert("请求失败！！");
+                    window.location.reload();
+                }
+            })
+
+    }
+
+
+    //预约信息页
+    function reserve_info(name){
+        //获取被选中的option标签
+        // var vs = $('select  option:selected').val();
+        var reserve=document.getElementById('test2').value;
+        // alert(vs);
+        // alert(reserve);
+
+        var layer = layui.layer;
+        //iframe层
+        var index = layer.open({
+            type: 2,
+            title: '预约实验室',
+            shadeClose: true,
+            shade: 0.8,
+            scrollbar: false,
+            area: ['70%', '99%'],//宽 高
+            content:'/admin/reservePage?labid='+name+'&reserve='+reserve
+            // ,btn:['<div class="btttt">保存</div>','取消']
+            ,closeBtn:1
+            ,yes:function (index){
+                alert(index.date());
+                // layer.close(index);
+
+            }
+            ,end: function(date){
+                // alert(date);
+                // window.location.href="/admin/getLaboratoryInfoList?category=电脑房";
+            }
+        });
+    }
+
+
+    $("#myselect").change(function(){
+        str = document.getElementById("myselect").value;
+        obj = document.getElementById("type");
+        for(i=0;i<obj.length;i++){
+            if(obj[i].value==str)
+                obj[i].selected = true;
+        }
+    });
+
+    //日期插件
+    layui.use('laydate', function(){
+        // var markJson={"2022-3-15":"","2022-10-10":"","2022-4-1":""};
+        // console.log(markJson);
+        function disabled_date() {
+            // var mm = value.year + '-' + value.month + '-' + value.date;
+
+            // $('.laydate-theme-grid table tbody').find('[lay-ymd="' + mm + '"]').removeClass('layui-this');
+
+            // if(appointmentDate!=null && appointmentDate!=''){
+            //     var dates = appointmentDate.split(",");
+            //     for(var i=0;i<dates.length;i++){
+            //         if(dates[i]=="7"){
+            //             dates[i] = 0;
+            //         }
+            //         $("table>tbody>tr").find("td:eq("+dates[i]+")").addClass('laydate-disabled');
+            //     }
+            // }
+            //
+            // if(markJson!=null){
+            //     for(var key in markJson){
+            //         var dates = key.split("-");
+            //         // dates[1] = dates[1] * 1;
+            //         var mm = dates[0] + '-' + dates[1] + '-' + dates[2];
+            //         console.log(mm)
+            //         $('.laydate-theme-grid table tbody').find('[lay-ymd="' + mm + '"]').addClass('laydate-disabled');
+            //         // keys.push(key);
+            //     }
+            // }
+
+        }
+
+        var laydate = layui.laydate;
+
+        laydate.render({
+            elem: '#test2',
+            trigger : 'click',
+            theme: 'grid',
+            showBottom: false,
+            // ready: function(value){//控件在打开时触发，回调返回一个参数
+            //     disabled_date(); //得到初始的日期时间对象：{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+            // },
+            //  change: function(value, date){ //监听日期被切换
+            //      disabled_date();
+            //      //执行函数
+            // }
+        });
+
+        //日历插件调用方法
+
+        //     function loding_date(new_date, data) {
+        //
+        //         laydate.render({
+        //             elem: '#date-list'
+        //             , type: 'date'
+        //             , theme: 'grid'
+        //             , max: '2099-06-16 23:59:59'
+        //             , position: 'static'
+        //             , range: false
+        //             , value: '2022-3-10'
+        //             , min:getNowFormatDate()
+        //             , isInitValue: false
+        //             , calendar: false
+        //             , btns: false
+        //             , mark:{
+        //                 '2022-3-15':'',
+        //                 '2022-3-16':''
+        //             }//重要json！
+        //             , ready: function (value) {
+        //                 disabled_date(value,$("#appointmentDate").val());
+        //                 hide_mr(data);
+        //             }
+        //             , done: function (value, date) {
+        //                 dateset(value,data);
+        //             }
+        //             , change: function (value, date) {
+        //                 disabled_date(date,$("#appointmentDate").val());
+        //                 hide_mr(data);
+        //             }
+        //         });
+        //     }
+        //
+        //     /**
+        //      *设置不可选择的星期
+        //      *value:选中的值
+        //      *appointmentDate星期：如1,2,3,4,5,6,7
+        //      */
+        //     function disabled_date(value,appointmentDate) {
+        //         var mm = value.year + '-' + value.month + '-' + value.date;
+        //         $('.laydate-theme-grid table tbody').find('[lay-ymd="' + mm + '"]').removeClass('layui-this');
+        //
+        //         if(appointmentDate!=null && appointmentDate!=''){
+        //             var dates = appointmentDate.split(",");
+        //             for(var i=0;i<dates.length;i++){
+        //                 if(dates[i]=="7"){
+        //                     dates[i] = 0;
+        //                 }
+        //                 $("table>tbody>tr").find("td:eq("+dates[i]+")").addClass('ng-laydate-disabled');
+        //             }
+        //         }
+        //
+        //     }
+        //
+    });
+
+</script>
+
+</html>

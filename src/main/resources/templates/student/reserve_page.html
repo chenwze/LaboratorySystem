@@ -112,7 +112,7 @@
 
 <script type="text/javascript">
     function addReserve() {
-
+        inputNull(1)
         var data = $("form").serialize();
         console.log(data);
         var header = $("meta[name='_csrf_header']").attr("content");
@@ -131,8 +131,14 @@
             success: function (data) {
                 console.log(data.labid);
                 inputNull(data.labid);
-                alert("预约成功");
-                closeIfame();
+                if (data.labid != null){
+                    alert("预约成功");
+                    closeIfame();
+                }else {
+                    alert("预约失败");
+                }
+
+
             }
         })
     }

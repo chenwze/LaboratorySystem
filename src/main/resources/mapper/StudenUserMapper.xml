@@ -13,7 +13,7 @@
     <update id="upPassword">
         update student_user set password=#{password} where username = #{username}
     </update>
-
+    
 
 <!--    学生列表-->
     <select id="getStudentUserList" resultType="com.gdufe.laboratorysystem.entity.User">
@@ -33,6 +33,10 @@
         </where>
     </select>
 
+    <!--获取学生账号邮件-->
+    <select id="getEmail" resultType="String">
+        select email FROM student_user where username = #{username};
+    </select>
 
 <!--    批量添加用户-->
     <insert id="addStudentUserList">
@@ -58,4 +62,82 @@
             username = #{id}
         </foreach>
     </delete>
+
+    <!--更新账号信息-->
+    <update id="upStudentUser" parameterType="com.gdufe.laboratorysystem.entity.User">
+        update student_user
+        <trim prefix="set" suffixOverrides=",">
+            <if test="status != null and status !='' and status !='null' ">
+                status = #{status},
+            </if>
+
+            <if test="email != null and email !='' and email !='null' ">
+                email = #{email},
+            </if>
+
+            <if test="name != null and name !='' and name !='null' ">
+                name = #{name},
+            </if>
+
+            <if test="headPortrait != null and headPortrait != ''">
+                head_Portrait = #{headPortrait},
+            </if>
+        </trim>
+        where username = #{username};
+    </update>
+
+    <!--    设置账号状态-->
+    <update id="UpStatus" parameterType="String">
+        update student_user set status = #{status} where username = #{username}
+    </update>
+
+    <!--    管理员更新学生密码-->
+    <update id="adminUpPassword" parameterType="String">
+        update student_user set password=#{password} where username = #{username}
+    </update>
+    
+    <!--管理员设置学生用户状态-->
+    <update id="adminSetStatus" parameterType="String">
+        update student_user set status = #{status} where username = #{username}
+    </update>
+
+    <!--管理员更新学生账号信息-->
+    <update id="adminUpStudentUser" parameterType="com.gdufe.laboratorysystem.entity.User">
+        update student_user
+        <trim prefix="set" suffixOverrides=",">
+            <if test="status != null and status !='' and status !='null' ">
+                status = #{status},
+            </if>
+
+            <if test="email != null and email !='' and email !='null' ">
+                email = #{email},
+            </if>
+
+            <if test="name != null and name !='' and name !='null' ">
+                name = #{name},
+            </if>
+
+            <if test="createTime != null and createTime !='' and createTime !='null' ">
+                create_time = #{createTime},
+            </if>
+
+            <if test="password != null and password !='' and password !='null' ">
+                password = #{password},
+            </if>
+
+            <if test="status != null and status !='' and status !='null' ">
+                status = #{status},
+            </if>
+
+            <if test="role != null and role !='' and role !='null' ">
+                role = #{role},
+            </if>
+        </trim>
+        where username = #{username};
+    </update>
+
+<!--    忘记密码，修改密码-->
+    <update id="upPasswrodEmail">
+        UPDATE `laboratory_system`.`student_user` SET `password` = #{password} WHERE `username` = #{username} and `email` = #{email}
+    </update>
 </mapper>

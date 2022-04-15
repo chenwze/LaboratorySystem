@@ -3,9 +3,72 @@
 <mapper namespace="com.gdufe.laboratorysystem.dao.TeacherInfoDao">
 
 
-    <!--查找个人信息-->
+    <!--查找老师个人信息-->
     <select id="getTeacherInfo" resultType="com.gdufe.laboratorysystem.entity.TeacherInfo">
         select * from teacher_info where username=#{username};
     </select>
+
+<!--    查找老师个人信息列表-->
+    <select id="getTeacherinfoList" resultType="com.gdufe.laboratorysystem.entity.TeacherInfo">
+        SELECT  * from teacher_info
+        <where>
+            <if test="username != '' and username !=null and username != 'null'">
+                and username like concat(concat('%',#{username}),'%')
+            </if>
+
+            <if test="name != '' and name !=null and name != 'null'">
+                and name like concat(concat('%',#{name}),'%')
+            </if>
+            <!--            <if test="createTime != '' and createTime !=null and createTime != 'null'">-->
+            <!--                and TO_DAYS(create_time)= TO_DAYS(#{createTime})-->
+            <!--            </if>-->
+
+        </where>
+    </select>
+
+
+    <!--更新老师个人信息-->
+    <update id="upTeacherInfo" parameterType="com.gdufe.laboratorysystem.entity.TeacherInfo">
+        update teacher_info
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name != null and name !='' and name !='null' ">
+                name = #{name},
+            </if>
+
+            <if test="position != null and position !='' and position !='null' ">
+                position = #{position},
+            </if>
+
+            <if test="college != null and college !='' and college !='null' ">
+                college = #{college},
+            </if>
+
+            <if test="address != null and address !='' and address !='null' ">
+                address = #{address},
+            </if>
+
+            <if test="resignationDate != null and resignationDate !='' and resignationDate !='null' ">
+                resignation_date = #{resignationDate},
+            </if>
+
+            <if test="entryDate != null and studayDate !='' and entryDate !='null' ">
+                entry_date = #{entryDate},
+            </if>
+
+            <if test="tel != null and tel !='' and tel !='null' ">
+                tel = #{tel},
+            </if>
+
+            <if test="sex != null and sex !='' and sex !='null' ">
+                sex = #{sex},
+            </if>
+
+            <if test=" age != 0 and age gt 0 and age != null ">
+                age = #{age},
+            </if>
+
+        </trim>
+        where username = #{username};
+    </update>
 
 </mapper>

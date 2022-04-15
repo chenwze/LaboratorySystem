@@ -87,7 +87,7 @@
     <div>
         <!--        数据列表-->
         <div>
-            <table class="layui-table" lay-size="sm" style="border-spacing: 0;">
+            <table class="layui-table" lay-size="" style="border-spacing: 0;">
                 <thead style="background-color: #009688;color: #fff;">
                     <tr style="background-color: #393D49;color: #fff;" >
                         <th>预约编号</th>
@@ -111,7 +111,7 @@
                     <td>
 <!--                        th:data-pid="${project.id}" th:data-cid="${c.id}" th:onclick="doComment(this.getAttribute('data-cid'),this.getAttribute('data-pid'))"-->
                         <a id="del-resever" href="javascript:void(0)" th:data-id="${arrayS.id}" th:onclick="dalReserve(this.getAttribute('data-id'))">取消预约</a>
-                        <a id="btn-resever" th:onclick="'reserve_info('+${arrayS.labid}+');'">详情</a>
+                        <a id="btn-resever" th:data-id="${arrayS.id}" th:onclick="'reserve_info('this.getAttribute('data-id')');'">详情</a>
                     </td>
                 </tr>
                 </tbody>

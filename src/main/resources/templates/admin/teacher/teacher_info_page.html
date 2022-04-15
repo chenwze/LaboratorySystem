@@ -1,0 +1,133 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>老师账号信息</title>
+    <link rel="stylesheet" href="../../../static/layui/css/layui.css" th:href="@{/layui/css/layui.css}">
+    <script src="../../../static/js/jquery-3.6.0.min.js" th:src="@{/js/jquery-3.6.0.min.js}"></script>
+    <script src="../../../static/layui/layui.js" th:src="@{/layui/layui.js}"></script>
+</head>
+<style type="text/css">
+    .layui-form .layui-form-item{
+        margin-bottom: 0px;
+    }
+</style>
+<body>
+
+<form class="layui-form " style="text-align: center;" >
+    <!--个人信息-->
+        <h2>个人信息</h2>
+        <table class="layui-inline" border="1px solid #ccc" cellspacing="0" cellpadding="0">
+            <tr>
+                <td>
+                    <label class="layui-form-label">账号/学号</label>
+                </td>
+                <td>
+                    <input type="text" th:value="${teacherInfo.username}"  style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >
+                </td>
+                <td>
+                    <label class="layui-form-label">姓名</label>
+                </td>
+                <td>
+                    <input type="text" th:value="${teacherInfo.name}" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >
+                </td>
+            </tr>
+
+
+            <tr>
+                <td>
+                    <label class="layui-form-label">年龄</label>
+                </td>
+                <td>
+                    <input type="text" th:value="${teacherInfo.age}" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >
+                </td>
+                <td>
+                    <label class="layui-form-label">性别</label>
+                </td>
+                <td>
+                    <input type="text" th:value="${teacherInfo.sex}" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <label class="layui-form-label">联系方式</label>
+                </td>
+                <td>
+                    <input type="text" th:value="${teacherInfo.tel}" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >
+                </td>
+                <td>
+                    <label class="layui-form-label">入职时间</label>
+                </td>
+                <td>
+                    <input type="text" th:value="${teacherInfo.entryDate}" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <label class="layui-form-label">离职时间</label>
+                </td>
+                <td>
+                    <input type="text" th:value="${teacherInfo.resignationDate}" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >
+                </td>
+                <td>
+                    <label class="layui-form-label">学院</label>
+                </td>
+                <td>
+                    <input type="text" th:value="${teacherInfo.college}" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >
+                </td>
+            </tr>
+
+            <tr>
+
+                <td>
+                    <label class="layui-form-label">职位</label>
+                </td>
+                <td>
+                    <input type="text" th:value="${teacherInfo.position}" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >
+                </td>
+
+                <td>
+                    <label class="layui-form-label"></label>
+                </td>
+                <td>
+                    <input type="text"  style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <label class="layui-form-label">出生年月日</label>
+                </td>
+                <td>
+                    <input type="text" th:value="${teacherInfo.birth}" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >
+                </td>
+                <td>
+                    <label class="layui-form-label"></label>
+                </td>
+                <td>
+                    <input type="text" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <label class="layui-form-label">家庭住址</label>
+                </td>
+                <td colspan="3">
+                    <input type="text" th:value="${teacherInfo.address}" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >
+                </td>
+            </tr>
+
+        </table>
+
+
+</form>
+
+</body>
+</html>

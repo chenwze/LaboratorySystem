@@ -24,7 +24,12 @@ public interface StudentUserDao {
     //根据用户名查询个人账号信息
     User getUserInfo(@Param("username") String username);
 
-    /**
+ /**
+  * 忘记密码，更新密码
+  */
+   int upPasswrodEmail(@Param("username") String username,@Param("password") String password
+                       ,@Param("email") String email);
+ /**
      * 更新用户密码
      *
      */
@@ -41,4 +46,26 @@ public interface StudentUserDao {
 
     //批量删除公告
     int delStudentUserList(String[] ids);
+
+    //更新账号状态
+    int UpStatus(User user);
+
+    //更新账号信息
+    int upStudentUser(User user);
+
+    String getEmail(String username);
+
+
+    /**
+     * 管理员更新学生密码
+     */
+    int adminUpPassword(@Param("username") String username,@Param("password") String password);
+
+    /**
+     * 管理员更新学生密码
+     */
+    int adminSetStatus(@Param("username") String username,@Param("status") String status);
+
+    //    <!--管理员更新学生账号信息-->
+    int adminUpStudentUser(User user);
 }

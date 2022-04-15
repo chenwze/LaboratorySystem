@@ -1,9 +1,11 @@
 package com.gdufe.laboratorysystem.service;
 
-import com.gdufe.laboratorysystem.entity.Notice;
-import com.gdufe.laboratorysystem.entity.User;
+import com.gdufe.laboratorysystem.entity.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @program: LaboratorySystem
@@ -13,8 +15,12 @@ import java.util.List;
  * @version: 1.0
  */
 public interface AdminService {
+    LaboratoryThing add(LaboratoryThing laboratoryThing);
     //发布公告
     public Notice addNotice(Notice notice);
+
+    //修改公告
+    int upNotice(Notice notice);
 
     //公告详情信息
     Notice getdetailsNoticePage(Notice notice);
@@ -25,6 +31,14 @@ public interface AdminService {
     //批量删除公告
     int delNoticeList(String[] ids);
 
+    //获取密码
+    String getPassword();
+
+    //管理员账号信息
+    User getAdminUser();
+
+    //更新管理员账号信息
+    HashMap upAdminUserIfo(MultipartFile file,User name);
     //学生列表
     List<User> getStudentUserList(User user);
 
@@ -56,5 +70,56 @@ public interface AdminService {
      */
     int addTeacherUser(User user);
 
+    /**
+     * 学生个人信息列表
+     * @param studentInfo
+     * @return
+     */
+    List<StudentInfo> getStudentInfoList(StudentInfo studentInfo);
 
+    /**
+     * 学生个人详情信息
+     * @param username
+     * @return
+     */
+    StudentInfo getStudentInfo(String username);
+
+
+    /**
+     * 学生个人信息列表
+     * @param teacherInfo
+     * @return
+     */
+    List<TeacherInfo> getTeacherInfoList(TeacherInfo teacherInfo);
+
+    /**
+     * 老师个人详情信息
+     * @param username
+     * @return
+     */
+    TeacherInfo getTeacherInfo(String username);
+
+    /**
+     * 获取实验室信息列表
+     * @param laboratoryInfo
+     * @param reserve
+     * @return
+     */
+    List<LaboratoryInfo> getLaboratoryInfoList(LaboratoryInfo laboratoryInfo, String reserve);
+
+    /**
+     * 实验室预约记录
+     * @param reserve
+     * @param laboratoryInfo
+     * @return
+     */
+
+    List<Reserve> getAdminReserveList(Reserve reserve,LaboratoryInfo laboratoryInfo);
+    //更新管理员密码
+    HashMap upAdminPassword(String oldPassword,String newPassword);
+    
+//    HashMap upPassword(String newPassword);
+
+    //超级管理员更新密码
+    HashMap upPassword(String username,String password);
 }

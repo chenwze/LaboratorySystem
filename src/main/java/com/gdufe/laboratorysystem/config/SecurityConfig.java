@@ -91,7 +91,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // 自定义用户授权管理
         http.authorizeRequests()
-                .antMatchers( "/register", "userLogin", "/index", "/reisterPage","/").permitAll()
+                .antMatchers( "/register", "/userlogin","/userLogin", "/index", "/reisterPage","/","/retrievePassword"
+                                ,"/verCode","/user/**").permitAll()
                 .antMatchers("/test/**","/login/**","/getUserInfo").permitAll()
                 .antMatchers("/student/**").hasAuthority("student")
                 .antMatchers("/teacher/**").hasAuthority("teacher")
@@ -109,7 +110,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // 自定义用户退出控制
         http.logout().logoutUrl("/mylogout").logoutSuccessUrl("/login");
-
+        http.sessionManagement().invalidSessionUrl("/login");
         // 开启Remember-me功能
         http.rememberMe().rememberMeParameter("rememberme") //须与登录表单勾选框中name属性值一致
                 .tokenValiditySeconds(60*60*24) //设置“记住我”中Token有效期为200s

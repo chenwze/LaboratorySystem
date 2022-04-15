@@ -14,7 +14,7 @@ public class Reserve implements Serializable {
     //预约表唯一编号
     private String  id;
     //实验室唯一编号
-    private int labid;
+    private String labid;
     //预约时间
     private String reserveTime;
     //预约实验的用户名
@@ -41,11 +41,11 @@ public class Reserve implements Serializable {
         this.id = id;
     }
 
-    public int getLabid() {
+    public String getLabid() {
         return labid;
     }
 
-    public void setLabid(int labid) {
+    public void setLabid(String labid) {
         this.labid = labid;
     }
 

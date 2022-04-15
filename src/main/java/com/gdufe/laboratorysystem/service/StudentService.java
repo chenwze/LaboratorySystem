@@ -3,13 +3,19 @@ package com.gdufe.laboratorysystem.service;
 import com.gdufe.laboratorysystem.dao.LaboratoryInfoDao;
 import com.gdufe.laboratorysystem.entity.*;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public interface StudentService {
     //获取用户信息
     User getStudentUser(String username);
+
+
+    //更新学生账号信息
+    HashMap upStudentUserInfo(MultipartFile file, User name);
 
     //获取显示的公告
     List<Notice> getShowNotice();

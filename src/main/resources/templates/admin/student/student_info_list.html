@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1,shrink-to-fit=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header"  th:content="${_csrf.headerName}"/>
+  <title>学生信息列表</title>
+  <link th:href="@{/login/css/bootstrap.min.css}" href="../static/login/css/bootstrap.min.css" rel="stylesheet">
+  <link th:href="@{/login/css/signin.css}" href="../static/login/css/signin.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../../static/layui/css/layui.css" th:href="@{/layui/css/layui.css}">
+  <script src="../../../static/js/jquery-3.6.0.min.js" th:src="@{/js/jquery-3.6.0.min.js}" type="text/javascript"></script>
+  <script src="../../../static/layui/layui.js" th:src="@{/layui/layui.js}" type="text/javascript"></script>
+</head>
+<style>
+  /* Switch开关样式 */
+  input[type='checkbox'].switch {
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    position: relative;
+    width: 40px;
+    height: 20px;
+    background: #ccc;
+    border-radius: 10px;
+    transition: border-color .3s, background-color .3s;
+  }
+
+  input[type='checkbox'].switch::after {
+    content: '';
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0, 0, 2px, #999;
+    transition: .4s;
+    top: 2px;
+    position: absolute;
+    left: 2px;
+  }
+
+  input[type='checkbox'].switch:checked {
+    background: rgb(19, 206, 102);
+  }
+
+  /* 当input[type=checkbox]被选中时：伪元素显示下面样式 位置发生变化 */
+  input[type='checkbox'].switch:checked::after {
+    content: '';
+    position: absolute;
+    left: 55%;
+    top: 2px;
+  }
+</style>
+<style type="text/css">
+  .my-label{
+    width: max-content;
+  }
+  html body{
+    height: auto;
+  }
+  .layui-laypage .pageNum{
+    background-color: #009688;
+    color: #fff;
+  }
+  .layui-laypage .pageNum:hover{
+    color: #fff;
+  }
+
+  .layui-laypage a:hover{
+    background-color: #009688;
+    color: #fff;
+  }
+  button:focus{
+    outline: none;
+    outline: 0;
+    border-color: transparent;
+  }
+  body .demo-class .layui-layer-btn0{
+    border-color: #E6E3E6;
+    background-color: #FFF;
+    color: black;
+  }
+  body .demo-class .layui-layer-btn1{
+    border-color: #4898d5;
+    background-color: #2e8ded;
+    color: #fff;
+  }
+  /*.btttt{*/
+  /*    color: #fff;*/
+  /*}*/
+</style>
+<body>
+<div>
+  <div>
+    <!--        查找表单-->
+    <form class="layui-form" action="/admin/getStudentInfoList">
+      <div class="layui-form-item ">
+        <div class="layui-inline">
+
+          <label class="layui-form-label my-label">账号ID</label>
+          <div class="layui-input-inline">
+            <input  th:value="${username}" class="layui-input"  name="username" placeholder="账号ID"  >
+          </div>
+
+          <label class="layui-form-label my-label">用户名称</label>
+          <div class="layui-input-inline">
+            <input th:value="${name}"  class="layui-input" name="name" placeholder="用户名称"  >
+          </div>
+
+<!--          <label class="layui-form-label my-label">注册时间</label>-->
+<!--          <div class="layui-input-inline">-->
+<!--            <input id="test2" th:value="${createTime}" name="createTime" class="layui-input" readonly lay-verify="required|date" type="data" placeholder="注册时间"  >-->
+<!--          </div>-->
+
+          <button id="btn" type="submit" class="layui-btn layui-btn-normal layui-input-inline" style="width: max-content">查找</button>
+        </div>
+
+      </div>
+
+      <!--            <div class="layui-form-item ">-->
+      <!--                <div class="layui-inline">-->
+      <!--                    <label class="layui-form-label my-label">公告标题</label>-->
+      <!--                    <div class="layui-input-inline">-->
+      <!--                        <input  th:value="${title}" class="layui-input"  name="title" placeholder="公告标题"  >-->
+      <!--                    </div>-->
+      <!--                </div>-->
+      <!--            </div>-->
+    </form>
+  </div>
+
+
+  <div>
+    <!--        数据列表-->
+    <div>
+      <div>
+        <input type="file" id="exe_file" onchange ="uploadFile()" name="file" style="display:none" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" >
+        <button class="layui-btn" onclick="addStudentPage()">添加</button>
+        <button class="layui-btn" onclick="addStudentInfoExe();">EXE添加</button>
+        <button class="layui-btn" onclick="delStudentInfolist();">删除</button>
+      </div>
+
+      <table class="layui-table" lay-size="" width="100%">
+        <thead style="background-color: #009688;color: #fff;">
+        <tr style="background-color: #393D49;color: #fff;" >
+          <th style="min-width: 15px;"><input id="checkbox" onclick="checkAll();" type="checkbox"></th>
+          <th>账号ID</th>
+          <th>姓名</th>
+          <th>年龄</th>
+          <th>性别</th>
+          <th>联系电话</th>
+          <th>入学日期</th>
+          <th>住址</th>
+          <th>操作</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="arrayS,iterStat:${pageInfo.list}">
+          <!--                    <td th:text="${arrayS.id}"></td>-->
+          <th style="min-width: 15px;"><input type="checkbox" name="checkbox" th:value="${arrayS.username}"></th>
+          <td th:text="${arrayS.username}"></td>
+          <td>
+            <div th:text="${arrayS.name}"></div>
+          </td>
+          <td th:text="${arrayS.age}"></td>
+          <td th:text="${arrayS.sex}"></td>
+          <td th:text="${arrayS.tel}"></td>
+          <td th:text="${arrayS.studayDate}"></td>
+          <td th:text="${arrayS.address}"></td>
+          <td>
+            <a id="del-resever" href="javascript:void(0)" th:data-id="${arrayS.username}" th:onclick="detailsStudentInfo(this.getAttribute('data-id'))">详情</a>
+            <a id="del-resever" href="javascript:void(0)" th:data-id="${arrayS.username}" th:onclick="detailsStudentInfo(this.getAttribute('data-id'))">编辑</a>
+            <a id="del-resever" href="javascript:void(0)" th:data-id="${arrayS.username}" th:onclick="detailsStudentInfo(this.getAttribute('data-id'))">删除</a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <!--        数据列表结束-->
+  </div>
+
+  <div style="text-align: center;">
+    <div  class="layui-box  layui-laypage-default layui-laypage">
+      <!--        <ul class="pagination-flickr pagination m-b-5 pull-right">-->
+      <th:block th:if="${pageInfo.hasPreviousPage}">
+        <a  th:href="@{'/admin/getStudentInfoList?pageNum='+${pageInfo.prePage}
+                +'&name='+${name}
+                +'&username='+${username}}" aria-label="Previous">
+          <i class="fa fa-angle-left"></i>&nbsp;上一页
+        </a>
+      </th:block>
+
+      <th:block th:each="navIndex :${ pageInfo.navigatepageNums}">
+
+        <a th:class="${pageInfo.pageNum}==${navIndex}?'pageNum':''"
+           th:href="@{'/admin/getStudentInfoList?pageNum='+${navIndex}
+                  +'&name='+${name}
+                   +'&username='+${username}}" th:text="${navIndex}"></a>
+
+      </th:block>
+
+      <th:block th:if="${pageInfo.hasNextPage}">
+        <a th:href="@{'/admin/getStudentInfoList?pageNum='+${pageInfo.nextPage}
+               +'&name='+${name}
+                +'&username='+${username}}" aria-label="Next">
+          下一页&nbsp;<i class="fa fa-angle-right"></i>
+        </a>
+      </th:block>
+      <th:block th:if="${pageInfo.pages}>0">
+        <span th:text="'共'+${pageInfo.pages}+'页'"></span>
+      </th:block>
+    </div>
+  </div>
+
+</div>
+
+</body>
+<script type="text/javascript">
+  //用exe表格添加学生用户
+  function addStudentInfoExe(){
+    document.getElementById("exe_file").click();
+  }
+  //选择文件后自动上传
+  function uploadFile() {
+    var myform = new FormData();
+    myform.append('file',$('#exe_file')[0].files[0]);
+    console.log(myform);
+    var header = $("meta[name='_csrf_header']").attr("content");
+    var token = $("meta[name='_csrf']").attr("content");
+    var loading = layer.load(1, {
+      shade: true,
+      shade: [0.5, '#000'],
+      // time: 50*1000
+    });
+    $.ajax({
+      url: "/admin/addStudentInfoExe",
+      type: "POST",
+      data: myform,
+      contentType: false,
+      processData: false,
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader(header, token);
+      },
+      success: function (data) {
+        layer.close(loading);
+        alert("成功添加"+data.num+"记录！");
+        console.log(data);
+        location.reload();
+      },
+      error:function(data){
+        layer.close(loading);
+        alert("添加识别，请重试！！");
+        console.log(data)
+        location.reload();
+      }
+    });
+  }
+
+
+  // $('#checkbox').onclick(){
+  //     $("input[name='checkbox']").attr("checked","true");
+  // }
+
+  function addStudentPage(){
+    var layer = layui.layer;
+    //iframe层
+    var index = layer.open({
+      type: 2,
+      title: '添加学生用户',
+      shadeClose: true,
+      shade: 0.8,
+      scrollbar: false,
+      area: ['70%', '99%'],//宽 高
+      content:'/admin/studentInfoPage',
+      end : function() {
+        location.reload();
+      }
+    });
+  }
+
+
+
+  //批量删除学生信息
+  function delStudentInfolist(){
+    var chk_value =[];
+    $('input[name="checkbox"]:checked').each(function(){
+      chk_value.push($(this).val());
+    });
+    // alert(chk_value.length==0 ?'你还没有选择任何内容！':chk_value);
+    if(chk_value.length==0){
+      alert("你还没有选择任何内容!");
+    }else {
+      var header = $("meta[name='_csrf_header']").attr("content");
+      var token = $("meta[name='_csrf']").attr("content");
+      var data="dataList="+chk_value;
+      // console.log(JSON.stringify(data));
+      console.log(data);
+      $.ajax({
+        url: '/admin/delStudentInfoList',
+        type: 'POST',
+        async: false,
+        data:data,
+
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader(header, token);
+        },
+        success: function (data) {
+          console.log(data.num);
+          // console.log(data.labid);
+          // inputNull(data.labid);
+          if (data.num>0){
+            alert("成功删除"+data.num+"条记录！！");
+          }else{
+            alert("删除错误！");
+          }
+
+          // closeIfame();
+          location.reload();
+        },
+        error:function (){
+          alert("删除错误！");
+          location.reload();
+        }
+
+
+      })
+    }
+  }
+
+  //全选操作
+  function checkAll(){
+    if ( $("#checkbox").is(":checked") ){
+      $("input[name='checkbox']").prop("checked",true);
+    }else {
+      $("input[name='checkbox']").prop("checked",false);
+      // $("input[name='checkbox']").removeAttr("checked");
+    }
+
+
+  }
+
+  //详情信息
+  function detailsStudentInfo(username){
+    //获取被选中的option标签
+    // var vs = $('select  option:selected').val();
+    // var reserve=document.getElementById('test2').value;
+    // alert(vs);
+    // alert(reserve);
+
+    var layer = layui.layer;
+    //iframe层
+    var index = layer.open({
+      type: 2,
+      title: '学生个人信息',
+      shadeClose: true,
+      shade: 0.8,
+      scrollbar: false,
+      area: ['70%', '99%'],//宽 高
+      content:'/admin/detailsStudentInfoPage?username='+username
+      // ,btn:['<div class="btttt">保存</div>','取消']
+      // ,closeBtn:1
+      // ,end: function(date){
+      //     alert(date);
+      //     window.location.href="/admin/studentInfoList";
+      // }
+    });
+  }
+
+
+  $("#myselect").change(function(){
+    str = document.getElementById("myselect").value;
+    obj = document.getElementById("type");
+    for(i=0;i<obj.length;i++){
+      if(obj[i].value==str)
+        obj[i].selected = true;
+    }
+  });
+
+  //日期插件
+  layui.use('laydate', function(){
+    // var markJson={"2022-3-15":"","2022-10-10":"","2022-4-1":""};
+    // console.log(markJson);
+    function disabled_date() {
+      // var mm = value.year + '-' + value.month + '-' + value.date;
+
+      // $('.laydate-theme-grid table tbody').find('[lay-ymd="' + mm + '"]').removeClass('layui-this');
+
+      // if(appointmentDate!=null && appointmentDate!=''){
+      //     var dates = appointmentDate.split(",");
+      //     for(var i=0;i<dates.length;i++){
+      //         if(dates[i]=="7"){
+      //             dates[i] = 0;
+      //         }
+      //         $("table>tbody>tr").find("td:eq("+dates[i]+")").addClass('laydate-disabled');
+      //     }
+      // }
+      //
+      // if(markJson!=null){
+      //     for(var key in markJson){
+      //         var dates = key.split("-");
+      //         // dates[1] = dates[1] * 1;
+      //         var mm = dates[0] + '-' + dates[1] + '-' + dates[2];
+      //         console.log(mm)
+      //         $('.laydate-theme-grid table tbody').find('[lay-ymd="' + mm + '"]').addClass('laydate-disabled');
+      //         // keys.push(key);
+      //     }
+      // }
+
+    }
+
+    var laydate = layui.laydate;
+
+    laydate.render({
+      elem: '#test2',
+      // min:1,
+      trigger : 'click',
+      theme: 'grid',
+      showBottom: true,
+      btns: ['clear', 'now', 'confirm']
+      // ready: function(value){//控件在打开时触发，回调返回一个参数
+      //     disabled_date(); //得到初始的日期时间对象：{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+      // },
+      //  change: function(value, date){ //监听日期被切换
+      //      disabled_date();
+      //      //执行函数
+      // }
+    });
+
+    //日历插件调用方法
+
+    //     function loding_date(new_date, data) {
+    //
+    //         laydate.render({
+    //             elem: '#date-list'
+    //             , type: 'date'
+    //             , theme: 'grid'
+    //             , max: '2099-06-16 23:59:59'
+    //             , position: 'static'
+    //             , range: false
+    //             , value: '2022-3-10'
+    //             , min:getNowFormatDate()
+    //             , isInitValue: false
+    //             , calendar: false
+    //             , btns: false
+    //             , mark:{
+    //                 '2022-3-15':'',
+    //                 '2022-3-16':''
+    //             }//重要json！
+    //             , ready: function (value) {
+    //                 disabled_date(value,$("#appointmentDate").val());
+    //                 hide_mr(data);
+    //             }
+    //             , done: function (value, date) {
+    //                 dateset(value,data);
+    //             }
+    //             , change: function (value, date) {
+    //                 disabled_date(date,$("#appointmentDate").val());
+    //                 hide_mr(data);
+    //             }
+    //         });
+    //     }
+    //
+    //     /**
+    //      *设置不可选择的星期
+    //      *value:选中的值
+    //      *appointmentDate星期：如1,2,3,4,5,6,7
+    //      */
+    //     function disabled_date(value,appointmentDate) {
+    //         var mm = value.year + '-' + value.month + '-' + value.date;
+    //         $('.laydate-theme-grid table tbody').find('[lay-ymd="' + mm + '"]').removeClass('layui-this');
+    //
+    //         if(appointmentDate!=null && appointmentDate!=''){
+    //             var dates = appointmentDate.split(",");
+    //             for(var i=0;i<dates.length;i++){
+    //                 if(dates[i]=="7"){
+    //                     dates[i] = 0;
+    //                 }
+    //                 $("table>tbody>tr").find("td:eq("+dates[i]+")").addClass('ng-laydate-disabled');
+    //             }
+    //         }
+    //
+    //     }
+    //
+  });
+
+</script>
+<!--<script type="text/javascript">-->
+<!--    layui.define([ 'element', 'form', 'layer', 'laypage' ], function(exports) {-->
+<!--        var element = layui.element();-->
+<!--        var form = layui.form();-->
+<!--        var layer = layui.layer;-->
+<!--        var laypage = layui.laypage;-->
+
+<!--        var pindex = "${requestScope.page.pindex}";// 当前页-->
+<!--        var ptotalpages = "${requestScope.page.ptotalpages}";// 总页数-->
+<!--        var pcount = "${requestScope.page.pcount}";// 总记录数-->
+<!--        var psize = "${requestScope.page.psize}";// 每一页的记录数-->
+
+<!--        // 分页-->
+<!--        laypage({-->
+<!--            cont : 'form_page', // 页面上的id-->
+<!--            pages : ptotalpages,//总页数-->
+<!--            curr : pindex,//当前页。-->
+<!--            skip : true,-->
+<!--            jump : function(obj, first) {-->
+
+<!--                $("#pindex").val(obj.curr);//设置当前页-->
+<!--                $("#psize").val($("#page_size").val())-->
+<!--                //防止无限刷新,-->
+<!--                //只有监听到的页面index 和当前页不一样是才出发分页查询-->
+<!--                if (obj.curr != pindex || psize != $("#psize").val()) {-->
+<!--                    document.f1.submit();-->
+<!--                }-->
+<!--            }-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
+<script type="text/javascript">
+
+  // $("#btn-resever").click(function () {
+  //     layui.use("layer", function () {
+  //         var layer = layui.layer;
+  //         //iframe层
+  //         layer.open({
+  //             type: 2,
+  //             title: 'layer mobile页',
+  //             shadeClose: true,
+  //             shade: 0.8,
+  //             area: ['70%', '90%'],//宽 高
+  //             content: '<iframe data-frameid="' + id + '" scrolling="auto" frameborder="0" src="' + url + '" style="width:100%;height:99%;"></iframe>'
+  //
+  //         });
+  //     });
+  // });
+
+</script>
+</html>

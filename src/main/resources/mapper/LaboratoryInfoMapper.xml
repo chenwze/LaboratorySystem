@@ -26,4 +26,30 @@
     <select id="getLaboratoryInfo" resultType="com.gdufe.laboratorysystem.entity.LaboratoryInfo">
         select * from laboratory_info where labid=#{labid};
     </select>
+
+
+    <!--    管理员获取实验室列表,可以根据实验楼，实验室类别-->
+    <select id="getAdminLaboratoryInfoList" resultType="com.gdufe.laboratorysystem.entity.LaboratoryInfo">
+        select * from  laboratory_info lab
+        <where>
+            <if test="buildingName != '' and buildingName != null and buildingName!='null'">
+                and building_name like concat(concat('%',#{buildingName}),'%')
+            </if>
+
+            <if test="category != '' and category != null and category !='null'">
+                and category like concat(concat('%',#{category}),'%')
+            </if>
+
+            <if test="roomNumber != '' and roomNumber != null and roomNumber != 'null' ">
+               and room_number like concat(concat('%',#{roomNumber}),'%')
+            </if>
+
+        </where>
+
+    </select>
+
+    <!--    查询实验室状态，开放获取其他-->
+    <select id="getLaboratoryStatus" resultType="String">
+        select status from laboratory_info where labid = #{labid}
+    </select>
 </mapper>

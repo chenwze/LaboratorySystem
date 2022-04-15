@@ -12,6 +12,15 @@
   <script src="../../static/js/jquery-3.6.0.min.js" th:src="@{/js/jquery-3.6.0.min.js}" type="text/javascript"></script>
   <script src="../../static/layui/layui.js" th:src="@{/layui/layui.js}" type="text/javascript"></script>
 </head>
+<style>
+  /*.layui-this{*/
+  /*  background-color: rgba(243,243,243,0.45);*/
+  /*  border-color: rgba(243,243,243,0.45) ;*/
+  /*}*/
+  /*.layui-tab-title .layui-this:after{*/
+  /*  height: 40px;*/
+  /*}*/
+</style>
 <body class="layui-layout-body">
 
 <!-- 顶部区域 -->
@@ -21,7 +30,8 @@
     <ul class="layui-nav layui-layout-right">
       <li class="layui-nav-item">
         <a href="javascript:;">
-          <img th:src="@{/login/img/login.jpg}" src="../../static/login/img/login.jpg" class="layui-nav-img">
+
+          <img th:src="${#authentication.principal.getHeadPortrait()}" src="../../static/login/img/login.jpg" class="layui-nav-img">
 <!--          <span sec:authentication="principal.username"></span>-->
           <span sec:authentication="principal.name"></span>
         </a>
@@ -199,7 +209,7 @@
 <!--      </ul>-->
 
       <!--tab页主体内容区域-->
-      <div class="layui-tab-content">
+      <div class="layui-tab-content" >
 
       </div>
 
@@ -226,8 +236,8 @@
 <!--</form>-->
 
 
-<script>
-
+<script type="text/javascript">
+    $(".layui-this").parent().attr("style","border-color:red");
   layui.use(['element','layer'], function () {
     var $ = layui.jquery;
     var element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块

@@ -14,6 +14,12 @@
             VALUES (#{id}, #{title}, #{content}, #{time}, #{adminUsername}, 1)
     </insert>
 
+    <update id="upNotice">
+        update `laboratory_system`.`notice` set title = #{title}
+                ,content = #{content},time = #{time},admin_username =#{adminUsername}
+        where id = #{id}
+
+    </update>
 
 <!--    管理员获取公告列表-->
     <select id="getNoticeList" resultType="com.gdufe.laboratorysystem.entity.Notice">
@@ -28,7 +34,7 @@
             </if>
 
             <if test="title !='' and title !=null and title !='null'">
-                and title = #{title}
+                and title like concat(concat('%',#{title}),'%')
             </if>
 
             <if test="adminUsername !='' and adminUsername !=null and adminUsername != 'null'">
@@ -55,4 +61,7 @@
             id = #{id}
         </foreach>
     </delete>
+
+<!--    设置公告状态-->
+
 </mapper>

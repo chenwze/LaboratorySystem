@@ -4,21 +4,26 @@ import com.gdufe.laboratorysystem.dao.*;
 import com.gdufe.laboratorysystem.entity.*;
 
 import com.gdufe.laboratorysystem.service.StudentService;
+import com.gdufe.laboratorysystem.utils.ImgHeadUtils;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
 
 /**
  * @program: LaboratorySystem
@@ -47,12 +52,59 @@ public class StudentServiceImpl implements StudentService {
 
     @Value("${system.user.password.secret}")
     private String secret;
+    /*更新认证信息*/
+    public static void setLoginUser(UserDetails userDetails) {
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities()));
+    }
 
     @Override
     public User getStudentUser(String username) {
         System.out.println("sssssssssssssssss");
         User user = studentUserDao.getUserInfo(username);
         return user;
+    }
+
+    /**
+     * 更新学生账号信息
+     * @param file
+     * @param user
+     * @return
+     */
+    @Override
+    @Transactional
+    public HashMap upStudentUserInfo(MultipartFile file, User user){
+        HashMap hashMap = new HashMap();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            //获取当前用户名
+            String currentUserName = authentication.getName();
+            user.setUsername(currentUserName);
+            hashMap.put("msg","未登录");
+            hashMap.put("status","201");
+        }
+        String urlPasth=null;
+        if (file != null){
+            urlPasth = ImgHeadUtils.imgHead(file);
+        }
+
+        if (urlPasth != null){
+            user.setHeadPortrait(urlPasth);
+        }
+
+        int i = studentUserDao.upStudentUser(user);
+        if (i==1){
+            hashMap.put("status","200");
+            hashMap.put("msg","更新成功");
+            //更新信息
+
+//            user = studentUserDao.getStudent(user.getUsername());
+//            setLoginUser(user);
+        }else{
+            hashMap.put("status","201");
+            hashMap.put("msg","更新失败，请重试！！");
+        }
+        return hashMap;
     }
 
     @Override
@@ -131,6 +183,13 @@ public class StudentServiceImpl implements StudentService {
                     reserve.setUserType(array.toString());
                 }
             }
+
+            //判断实验室状态
+            String laboratoryStatus = laboratoryInfoDao.getLaboratoryStatus(reserve.getLabid());
+            if (laboratoryStatus == null || laboratoryStatus.equals("")  || !laboratoryStatus.equals("开放")){
+                System.out.println("laboratoryStatus = " + laboratoryStatus);
+                return laboratoryStatus;
+            }
             reserve.setId(UUID.randomUUID().toString().replaceAll("-",""));
             System.out.println(reserve.toString()+"===============");
             int i = reserveDao.addReserve(reserve);
@@ -206,6 +265,7 @@ public class StudentServiceImpl implements StudentService {
         return null;
     }
 
+    //删除预定
     @Override
     @Transactional(rollbackFor=Exception.class)
     public boolean delReserve(String id) {

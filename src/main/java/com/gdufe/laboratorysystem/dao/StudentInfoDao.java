@@ -26,5 +26,14 @@ public interface StudentInfoDao {
 
     StudentInfo getStudentInfo(String usernam);
 
+    /**
+     * 学生个人信息列表
+     */
+    List<StudentInfo> getStudentInfoList(StudentInfo studentInfo);
 
+    /**
+     * 更新学生个人信息
+     *
+     */
+    int upStudentInfo(StudentInfo studentInfo);
 }

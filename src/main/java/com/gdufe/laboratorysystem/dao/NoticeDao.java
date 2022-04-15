@@ -22,6 +22,9 @@ public interface NoticeDao {
     //添加公告
     int addNotice(Notice notice);
 
+    //修改公告
+    int upNotice(Notice notice);
+
     //管理员查看公告列表
     List<Notice> getNoticeList(Notice notice);
 

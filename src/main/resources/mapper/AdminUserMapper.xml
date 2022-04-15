@@ -4,4 +4,57 @@
     <select id="getAdmin" resultType="com.gdufe.laboratorysystem.entity.User">
         select *,admin_user.adminid userid from admin_user where username=#{username};
     </select>
+<!--    获取密码-->
+    <select id="getPassword" resultType="String">
+        select password from admin_user where username = #{username};
+    </select>
+<!--    获取管理账号信息-->
+<!--    <select id="getAdminUser" resultType="com.gdufe.laboratorysystem.entity.User">-->
+<!--        select * from  admin_user where username=#{username};-->
+<!--    </select>-->
+<!--    根据用户名查询管理员个人信息-->
+    <select id="getAdminInfo" resultType="com.gdufe.laboratorysystem.entity.AdminInfo">
+        select * from admin_info where username = #{username};
+    </select>
+<!--更新管理员账号信息-->
+    <update id="upAdminUserInfo" parameterType="com.gdufe.laboratorysystem.entity.User">
+        update admin_user
+        <set>
+            <if test="name != null and name !=''">
+                name = #{name},
+            </if>
+            <if test="headPortrait != null and headPortrait != ''">
+                head_Portrait = #{headPortrait},
+            </if>
+        </set>
+        where username = #{username}
+    </update>
+
+
+<!--    修改管理员用户名密码-->
+    <update id="upPassword">
+        update admin_user set password = #{password} where username = #{username}
+    </update>
+
+<!--    超级管理员superUsername是登录用户-->
+    <update id="upAdminPasswrod">
+        update admin_user set password = #{password} where username = #{username} and '10001' = #{superUsername}
+    </update>
+
+    <!--查询管理员信息列表-->
+    <select id="getAdminInfoList" resultType="com.gdufe.laboratorysystem.entity.TeacherInfo">
+--         select * from teacher_info  where username in (select teacher_username FROM admin_info where
+--             admin_info.admin_username='10001') and name like '李老师'
+            SELECT * from teacher_info te ,admin_info ad
+                <where>
+                    <if test="1==1">
+                        te.username = ad.teacher_username
+                    </if>
+                </where>
+    </select>
+
+    <!--    忘记密码，修改密码-->
+    <update id="upPasswrodEmail">
+        UPDATE `laboratory_system`.`admin_user` SET `password` = #{password} WHERE `username` = #{username} and `email` = #{email}
+    </update>
 </mapper>

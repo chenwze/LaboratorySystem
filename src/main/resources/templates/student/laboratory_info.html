@@ -82,7 +82,7 @@
 <!--</style>-->
 <style type="text/css">
     .my-label{
-        width: max-content;
+        white-space:nowrap;
     }
     html body{
         height: auto;
@@ -143,6 +143,16 @@
                 </div>
 
             </div>
+
+            <div class="layui-form-item ">
+                <div class="layui-inline">
+
+                    <label class="layui-form-label my-label">实验室状态</label>
+                    <div class="layui-input-inline">
+                        <input  th:value="${buildingName}" class="layui-input"  name="buildingName" placeholder="实验楼"  >
+                    </div>
+                </div>
+            </div>
         </form>
     </div>
 
@@ -156,6 +166,7 @@
                         <th>实验楼</th>
                         <th>房间号</th>
                         <th>实验类别</th>
+                        <th>实验室状态</th>
                         <th>容纳数</th>
                         <th>操做</th>
                     </tr>
@@ -166,9 +177,12 @@
                         <td th:text="${arrayS.buildingName}"></td>
                         <td th:text="${arrayS.roomNumber}"></td>
                         <td th:text="${arrayS.category}"></td>
+                        <td th:text="${arrayS.status}"></td>
                         <td th:text="${arrayS.capacity}"></td>
                         <td>
-                            <a  th:onclick="'reserve_info('+${arrayS.labid}+');'">预约</a>
+                            <a th:if="${arrayS.status}=='开放'" title="预约" href ="#" th:data-id="${arrayS.labid}" th:onclick="reserve_info(this.getAttribute('data-id'))">预约</a>
+                            <a th:if="${arrayS.status}!='开放'" title="实验室已关闭"  href ="javascript:return false;" onclick="return false;" style="cursor: default;">预约</a>
+
                         </td>
                     </tr>
                 </tbody>

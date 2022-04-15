@@ -26,4 +26,66 @@
         select * from student_info where username=#{username};
     </select>
 
+    <!--    学生个人信息列表-->
+    <select id="getStudentInfoList" resultType="com.gdufe.laboratorysystem.entity.StudentInfo">
+        SELECT  * from student_info
+        <where>
+            <if test="username != '' and username !=null and username != 'null'">
+                and username like concat(concat('%',#{username}),'%')
+            </if>
+
+            <if test="name != '' and name !=null and name != 'null'">
+                and name like concat(concat('%',#{name}),'%')
+            </if>
+<!--            <if test="createTime != '' and createTime !=null and createTime != 'null'">-->
+<!--                and TO_DAYS(create_time)= TO_DAYS(#{createTime})-->
+<!--            </if>-->
+
+        </where>
+    </select>
+
+    <!--更新学生个人信息-->
+    <update id="upStudentInfo" parameterType="com.gdufe.laboratorysystem.entity.StudentInfo">
+        update student_info
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name != null and name !='' and name !='null' ">
+                name = #{name},
+            </if>
+
+            <if test="major != null and major !='' and major !='null' ">
+                major = #{major},
+            </if>
+
+            <if test="college != null and college !='' and college !='null' ">
+                college = #{college},
+            </if>
+
+            <if test="address != null and address !='' and address !='null' ">
+                address = #{address},
+            </if>
+
+            <if test="graduationDate != null and graduationDate !='' and graduationDate !='null' ">
+                graduation_date = #{graduationDate},
+            </if>
+
+            <if test="studayDate != null and studayDate !='' and studayDate !='null' ">
+                studay_date = #{studayDate},
+            </if>
+
+            <if test="tel != null and tel !='' and tel !='null' ">
+                tel = #{tel},
+            </if>
+
+            <if test="sex != null and sex !='' and sex !='null' ">
+                sex = #{sex},
+            </if>
+
+            <if test=" age != 0 and age gt 0 and age != null ">
+                age = #{age},
+            </if>
+
+        </trim>
+        where username = #{username};
+    </update>
+
 </mapper>

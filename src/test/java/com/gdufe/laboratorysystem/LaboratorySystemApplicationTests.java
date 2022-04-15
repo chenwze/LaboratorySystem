@@ -1,17 +1,22 @@
 package com.gdufe.laboratorysystem;
 
+import com.gdufe.laboratorysystem.controller.UserController;
 import com.gdufe.laboratorysystem.dao.LaboratoryInfoDao;
 import com.gdufe.laboratorysystem.dao.StudentInfoDao;
 import com.gdufe.laboratorysystem.dao.StudentUserDao;
 import com.gdufe.laboratorysystem.entity.LaboratoryInfo;
 import com.gdufe.laboratorysystem.entity.StudentInfo;
+import com.gdufe.laboratorysystem.entity.VerificationCode;
+import com.gdufe.laboratorysystem.service.impl.UserServiceImpl;
 import com.gdufe.laboratorysystem.utils.CommonExcel;
+import com.gdufe.laboratorysystem.utils.VerCodeGenerateUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.client.RestTemplate;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -22,7 +27,34 @@ import java.util.UUID;
 
 @SpringBootTest
 class LaboratorySystemApplicationTests {
+@Autowired
+private UserServiceImpl service;
 
+@Autowired
+    UserController userController;
+    @Test
+    void setEmTest() throws MessagingException {
+//        VerificationCode verificationCode = new VerificationCode();
+//        String checkCode= VerCodeGenerateUtil.generateVerCode();
+//        verificationCode.setCode(checkCode);
+//        verificationCode.setEmail("xucxun@qq.com");
+//        Long time = System.currentTimeMillis();
+//        verificationCode.setStartTime(time);
+//        verificationCode.setEndTime(time+1000*60*5);
+//        verificationCode.setId(UUID.randomUUID().toString().replaceAll("-",""));
+//        service.sendEmail(verificationCode);
+        userController.verCode(null,null,null,null);
+    }
+
+
+    @Test
+    void thingTest(){
+        for (int i=25;i<50;i++){
+            System.out.println(UUID.randomUUID().toString().replaceAll("-","").length());
+//            String s = UUID.randomUUID().toString().replaceAll("-", "");
+//            System.out.println("INSERT INTO `laboratory_system`.`laboratory_thing`(`id`, `labid`, `type`, `way`, `name`, `describe`, `time`) VALUES ('"+s+"', '10', '电脑"+i+"', '同一购买', '李某', 'win7电脑', '2022-04-13 01:09:25');");
+        }
+    }
     @Test
     void dateTest() throws Exception {
 //        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
