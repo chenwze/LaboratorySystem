@@ -6,9 +6,13 @@ import com.gdufe.laboratorysystem.utils.UserInfo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -48,6 +52,40 @@ public class TeacherController {
             return "redirect:/userLogin";
         }
 
+    }
+
+    /**
+     * 编辑账号信息页
+     * @return
+     */
+    @RequestMapping("/changeUserInfo")
+    public String changeUserInfo(Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            //获取当前用户名
+            String currentUserName = authentication.getName();
+            User teacherUser = teacherService.getTeacherUser(currentUserName);
+            model.addAttribute("teacherUser", teacherUser);
+
+            return "/teacher/teacher_user_edit";
+        }else {
+            return "/login";
+        }
+
+    }
+
+    /**
+     *修改保存学生账号信息
+     */
+    @RequestMapping("upUserInfo")
+    @ResponseBody
+    public HashMap upUserInfo(MultipartFile file, User user){
+        System.out.println("user.getName() = " + user.getName());
+//        String s = ImgHeadUtils.imgHead(file);
+//        System.out.println("s = " + s);
+//        map.put("sss","Sss");
+        HashMap hashMap = teacherService.upTeacherUserInfo(file, user);
+        return hashMap;
     }
 
 
@@ -140,6 +178,9 @@ public class TeacherController {
         if (!"null".equals(laboratoryInfo.getCategory())){
             model.addAttribute("category",laboratoryInfo.getCategory());
         }
+        if (laboratoryInfo.getStatus() !=null && !(laboratoryInfo.getStatus().equals("null")) && !(laboratoryInfo.getStatus().equals(""))){
+            model.addAttribute("status",laboratoryInfo.getStatus());
+        }
 
         System.out.println(reserve+"+++++++++++++");
 
@@ -211,6 +252,20 @@ public class TeacherController {
 //        }
     }
 
+    /**
+     * 查看预约详情
+     * @return
+     */
+    @RequestMapping("/detailReservePage")
+    public String detailReservePage(String id,Model model){
+        System.out.println(id);
+        Reserve detailReserve = teacherService.getDetailReserve(id);
+        if (detailReserve==null){
+            return "redirect:/userLogin";
+        }
+        model.addAttribute("detailReserve",detailReserve);
+        return "/teacher/detail_reserve_page";
+    }
 
     //分页查询预约数据
 //    @ResponseBody

@@ -1,7 +1,9 @@
 package com.gdufe.laboratorysystem.service;
 
 import com.gdufe.laboratorysystem.entity.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +12,11 @@ public interface TeacherService {
     //获取用户信息
     User getTeacherUser(String username);
 
+    /**
+     * 修改用户信息
+     * @return
+     */
+    HashMap upTeacherUserInfo(MultipartFile file, User name);
     //获取显示的公告
     List<Notice> getShowNotice();
 
@@ -28,6 +35,13 @@ public interface TeacherService {
      * @return
      */
     String addReserve(Reserve reserve);
+
+
+    /**
+     * 查看详情预约记录
+     */
+    Reserve getDetailReserve(String id);
+
 
     /**
      *

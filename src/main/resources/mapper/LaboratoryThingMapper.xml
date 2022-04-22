@@ -2,25 +2,139 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.gdufe.laboratorysystem.dao.LaboratoryThingDao">
 <!--   查询实验室物品-->
-    <select id="getLaboratoryThingList">
-        select * from laboratory_thing
+<!--    <select id="getLaboratoryThingList">-->
+<!--        select * from laboratory_thing-->
+<!--        <where>-->
+<!--            <if test="id != '' and id != null and id != 'null'">-->
+<!--                id = #{id},-->
+<!--            </if>-->
+
+<!--            <if test="type != '' and type != null and type != 'null'">-->
+<!--                type like  concat(concat('%',#{type}),'%')-->
+<!--            </if>-->
+
+<!--            <if test="name != '' and name != null and name != 'null'">-->
+<!--                name like  concat(concat('%',#{name}),'%')-->
+<!--            </if>-->
+
+<!--            <if test="time != '' and id != time and id != 'time'">-->
+<!--                TO_DAYS(time) = TO_DAYS(#{time})-->
+<!--            </if>-->
+
+<!--        </where>-->
+<!--    </select>-->
+    <resultMap id="LaboratoryTingInfo" type="com.gdufe.laboratorysystem.entity.LaboratoryThing">
+        <id property="id" column="id"/>
+        <result property="labid" column="labid"/>
+        <result property="type" column="type"/>
+        <result property="way" column="way"/>
+        <result property="name" column="name"/>
+        <result property="introduce" column="introduce"/>
+        <result property="time" column="time"/>
+        <collection property="laboratoryInfo" column="labid"
+                    javaType="com.gdufe.laboratorysystem.entity.LaboratoryInfo">
+            <id property="labid" column="labid"/>
+            <id property="buildingName" column="building_name"/>
+            <id property="category" column="category"/>
+            <id property="roomNumber" column="room_number"/>
+            <id property="capacity" column="capacity"/>
+            <id property="describe" column="describe"/>
+            <id property="status" column="status"/>
+
+        </collection>
+    </resultMap>
+
+
+<!--    获取实验室物品信息-->
+    <select id="getLaboratoryThing" resultMap="LaboratoryTingInfo">
+        SELECT * FROM `laboratory_thing` LEFT JOIN laboratory_info on laboratory_thing.labid=laboratory_info.labid
+        where  id=#{id}
+    </select>
+
+    <!--    获取实验室物品列表-->
+    <select id="getLaboratoryThingList" resultMap="LaboratoryTingInfo">
+        SELECT * FROM `laboratory_thing` LEFT JOIN laboratory_info on laboratory_thing.labid=laboratory_info.labid
         <where>
-            <if test="id != '' and id != null and id != 'null'">
-                id = #{id},
+            <if test="laboratory_thing.time != '' and laboratory_thing.time != null and laboratory_thing.time !='null'">
+                and laboratory_thing.time >= #{laboratory_thing.time}
             </if>
 
-            <if test="type != '' and type != null and type != 'null'">
-                type like  concat(concat('%',#{type}),'%')
+            <if test="laboratory_thing.type != '' and laboratory_thing.type != null and laboratory_thing.type !='null'">
+                and laboratory_thing.type like concat(concat('%',#{laboratory_thing.type}),'%')
             </if>
 
-            <if test="name != '' and name != null and name != 'null'">
-                name like  concat(concat('%',#{name}),'%')
+            <if test="laboratory_thing.name != '' and laboratory_thing.name != null and laboratory_thing.name !='null'">
+                and laboratory_thing.name like concat(concat('%',#{laboratory_thing.name}),'%')
             </if>
 
-            <if test="time != '' and id != time and id != 'time'">
-                TO_DAYS(time) = TO_DAYS(#{time})
+            <if test="laboratory_thing.way != '' and laboratory_thing.way != null and laboratory_thing.way !='null'">
+                and laboratory_thing.way like concat(concat('%',#{laboratory_thing.way}),'%')
+            </if>
+
+            <if test="laboratory_info.buildingName != '' and laboratory_info.buildingName != null and laboratory_info.buildingName !='null'">
+                and laboratory_info.building_name like concat(concat('%',#{laboratory_info.buildingName}),'%')
+            </if>
+
+            <if test="laboratory_info.roomNumber != '' and laboratory_info.roomNumber != null and laboratory_info.roomNumber !='null'">
+                and laboratory_info.room_number like concat(concat('%',#{laboratory_info.roomNumber}),'%')
             </if>
 
         </where>
     </select>
+
+<!--    添加物品-->
+    <insert id="addLabThing">
+        INSERT INTO `laboratory_system`.`laboratory_thing`(`id`, `labid`, `type`, `way`, `name`, `introduce`, `time`)
+         VALUES (#{id}, #{labid}, #{type}, #{way}, #{name}, #{introduce}, #{time})
+    </insert>
+
+<!--    批量删除物品-->
+    <delete id="delLabThingList" parameterType="java.lang.String" >
+        DELETE FROM `laboratory_system`.`laboratory_thing` WHERE
+        <foreach collection="array" separator="or" item="id" index="index" >
+            id = #{id}
+        </foreach>
+    </delete>
+
+    <!--    表格批量添加实验室物品信息-->
+    <insert id="addLaboratoryThingList">
+        INSERT INTO `laboratory_system`.`laboratory_thing`(`id`, `labid`, `type`, `way`, `name`, `introduce`, `time`)
+        VALUES
+        <foreach collection="list" item="laboratoryThing" index="index" separator=",">
+            (#{laboratoryThing.id}, #{laboratoryThing.labid}, #{laboratoryThing.type}, #{laboratoryThing.way}, #{laboratoryThing.name}, #{laboratoryThing.introduce}, #{laboratoryThing.time})
+        </foreach>
+    </insert>
+
+
+    <!--    更新实验室物品信息-->
+    <update id="upLaboratoryThing">
+        update laboratory_thing
+        <trim prefix="set" suffixOverrides=",">
+            <if test="labid != null and labid !='' and labid !='null' ">
+                labid = #{labid},
+            </if>
+
+            <if test="type != null and type !='' and type !='null' ">
+                type = #{type},
+            </if>
+
+            <if test="way != null and way !='' and way !='null' ">
+                way = #{way},
+            </if>
+
+            <if test="name != null and name !='' and name !='null' ">
+                name = #{name},
+            </if>
+
+            <if test="introduce != null and introduce !='' and introduce !='null' ">
+                introduce = #{introduce},
+            </if>
+
+            <if test="time != null and time !='' and time !='null' ">
+                time = #{time},
+            </if>
+
+        </trim>
+        where id = #{id}
+    </update>
 </mapper>

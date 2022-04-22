@@ -22,7 +22,7 @@ public class ImgHeadUtils {
      * @return
      */
     public  static  String imgHead(MultipartFile file){
-        String url_path =null;
+        String url_path = null;
         if (file != null && !file.isEmpty()){
             System.out.println("AdminController.upUserInfo");
             //获取项目classes/static的地址

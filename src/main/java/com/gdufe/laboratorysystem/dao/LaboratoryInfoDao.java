@@ -27,4 +27,22 @@ public interface LaboratoryInfoDao {
 
     //查看实验的状态，开放或其他
     String getLaboratoryStatus(String labid);
+
+    //添加实验室
+    int addLaboratoryInfo(LaboratoryInfo laboratoryInfo);
+
+    //表格批量添加实验室
+    int addLaboratoryInfoList(List<LaboratoryInfo> laboratoryInfoList);
+
+    //批量删除实验室
+    int delLaboratoryInfoList(String[] ids);
+
+    //更新实验室信息
+    int upLaboratoryInfo(LaboratoryInfo laboratoryInfo);
+
+    //修改实验室状态
+    int upStatus(@Param("labid") String labid ,@Param("status") String status);
+
+    //获取实验室labid
+    String getLabid(LaboratoryInfo laboratoryInfo);
 }

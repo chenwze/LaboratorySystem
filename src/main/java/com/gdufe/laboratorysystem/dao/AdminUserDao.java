@@ -1,6 +1,7 @@
 package com.gdufe.laboratorysystem.dao;
 
 import com.gdufe.laboratorysystem.entity.AdminInfo;
+import com.gdufe.laboratorysystem.entity.LaboratoryThing;
 import com.gdufe.laboratorysystem.entity.TeacherInfo;
 import com.gdufe.laboratorysystem.entity.User;
 import org.apache.ibatis.annotations.Param;
@@ -34,19 +35,43 @@ public interface AdminUserDao {
     //根据用户名查询个人账号信息
     User getUserInfo(@Param("username") String username);
     /**
-     * 更新管理园账号信息
+     * 更新管理员账号信息
      */
     int upAdminUserInfo(User user);
     /**
      * 修改管理员用户名密码
      */
     int upPassword(@Param("username") String username,@Param("password") String password);
-    ///超级管理员superUsername是登录用户
+
+    ///超级管理员是登录用户
     int upAdminPasswrod(@Param("username") String username,@Param("password") String password,
                         @Param("superUsername") String superUsername);
 
     /**
-     * 超级管理员账号查询管理列表
+     * 超级管理员信息查询管理列表
      */
     List<T> getAdminInfoList(@Param("username") String username , TeacherInfo teacherInfo);
+
+
+
+    //管理员列表
+    List<User> getAdminUserList(User user);
+
+    //重置密码
+    int resetPasssword(@Param("username") String username,@Param("password")String password);
+
+    //添加管理员账号
+    int addAdminUser(User user);
+
+    //是否存在邮箱
+    boolean existEmail(String email,String username);
+
+    //超管
+    int upSAdminUserInfo(User user);
+
+    //批量删除管理员账号
+    int delAdminUserList(String[] ids);
+
+//    获取实验室物品列表
+    List<LaboratoryThing> getLaboratoryThingList(LaboratoryThing laboratoryThing);
 }

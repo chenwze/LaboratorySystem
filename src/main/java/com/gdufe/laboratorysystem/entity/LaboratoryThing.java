@@ -13,16 +13,17 @@ public class LaboratoryThing {
     private String type;
     private String way;
     private String name;
-    private String describe;
+    private String introduce;
     private String time;
     private String buildingName;
+    private LaboratoryInfo laboratoryInfo;
 
-    public String getBuildingName() {
-        return buildingName;
+    public LaboratoryInfo getLaboratoryInfo() {
+        return laboratoryInfo;
     }
 
-    public void setBuildingName(String buildingName) {
-        this.buildingName = buildingName;
+    public void setLaboratoryInfo(LaboratoryInfo laboratoryInfo) {
+        this.laboratoryInfo = laboratoryInfo;
     }
 
     public String getId() {
@@ -65,12 +66,12 @@ public class LaboratoryThing {
         this.name = name;
     }
 
-    public String getDescribe() {
-        return describe;
+    public String getIntroduce() {
+        return introduce;
     }
 
-    public void setDescribe(String describe) {
-        this.describe = describe;
+    public void setIntroduce(String introduce) {
+        this.introduce = introduce;
     }
 
     public String getTime() {
@@ -79,5 +80,13 @@ public class LaboratoryThing {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public String getBuildingName() {
+        return buildingName;
+    }
+
+    public void setBuildingName(String buildingName) {
+        this.buildingName = buildingName;
     }
 }

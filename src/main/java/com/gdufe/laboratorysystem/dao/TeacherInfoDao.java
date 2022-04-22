@@ -25,4 +25,20 @@ public interface TeacherInfoDao {
      * 更新修改老师个人信息
      */
     int upTeacherInfo(TeacherInfo teacherInfo);
+
+    /**
+     * 老师账号是否存在
+     */
+    boolean existUsername(String username);
+
+    /*
+    添加老师个人信息
+     */
+    int addTeacherInfo(TeacherInfo teacherInfo);
+
+    //批量添加老师个人信息
+    int addTeacherInfoList(List<TeacherInfo> teacherInfoList);
+
+    //批量删除老师个人信息
+    int delTeacherInfoList(String[] ids);
 }

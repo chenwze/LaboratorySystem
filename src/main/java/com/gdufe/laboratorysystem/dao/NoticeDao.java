@@ -30,4 +30,7 @@ public interface NoticeDao {
 
     //批量删除公告
     int delNoticeList(String[] ids);
+
+    //设置公告状态
+    int upNoticeStatus(Notice notice);
 }

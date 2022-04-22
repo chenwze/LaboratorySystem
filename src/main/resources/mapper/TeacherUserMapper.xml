@@ -23,9 +23,10 @@
     <update id="upStatus" parameterType="String">
         update teacher_user set status = #{status} where username = #{username}
     </update>
+
     <!--更新老师账号信息-->
     <update id="upTeacherUser" parameterType="com.gdufe.laboratorysystem.entity.User">
-        update student_user
+        update teacher_user
         <trim prefix="set" suffixOverrides=",">
             <if test="status != null and status !='' and status !='null' ">
                 status = #{status},
@@ -37,6 +38,10 @@
 
             <if test="name != null and name !='' and name !='null' ">
                 name = #{name},
+            </if>
+
+            <if test="headPortrait != null and headPortrait != ''">
+                head_Portrait = #{headPortrait},
             </if>
         </trim>
         where username = #{username};
@@ -132,4 +137,9 @@
     <update id="upPasswrodEmail">
         UPDATE `laboratory_system`.`teacher_user` SET `password` = #{password} WHERE `username` = #{username} and `email` = #{email}
     </update>
+
+<!--    查询邮箱是否空-->
+    <select id="nonEmptyEmail" resultType="boolean">
+        select COUNT(*) from  teacher_user where email = #{email}
+    </select>
 </mapper>

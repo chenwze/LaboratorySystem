@@ -33,7 +33,7 @@
                 <textarea name="mdmContent" id="mdmContent" lay-verify="content" class="layui-input" style="height:100px;width: 350px;" ></textarea>
             </div>
         </div>
-        <button id="btn" type="button" onclick="addNotice();" class="layui-btn layui-btn-normal layui-input-inline" style="width: max-content;float: right;">发布公告</button>
+        <button id="btn" type="button" onclick="addNotice();" class="layui-btn  layui-input-inline" style="width: max-content;float: right;">发布公告</button>
         <div style="clear:right;"></div>
     </form>
 <div style="clear:right;"></div>
@@ -61,7 +61,7 @@
                 ,'left'
                 ,'center'
                 ,'right'
-            ]}
+            ],height:'200'}
         )
         layedits.setContent("ssssssssssss");
         console.log(layedits.getContent(indexs));
@@ -91,16 +91,30 @@
             },
             success: function (data) {
                 console.log(data);
-                if (data.id !='' && data != null){
-                    alert("发布成功！！");
-                    location.reload();
-                    closeIfame();
-
+                if(data.status==200){
+                    layer.alert(data.msg,{icon:1,title:false},function (){
+                        location.reload();
+                        closeIfame();
+                    })
                 }else {
-                    alert("发布失败，重新提交！！");
+                    layer.alert(data.msg,{icon:2,title:false});
                 }
+                // if (data.id !='' && data != null){
+                //     // alert("发布成功！！");
+                //     layer.alert("发布成功",{icon:6,title:false},function (){
+                //         location.reload();
+                //         closeIfame();
+                //     })
+                //     // location.reload();
+                //     // closeIfame();
+                //
+                // }else {
+                //     alert("发布失败，重新提交！！");
+                // }
 
 
+            },error:function (e){
+                alert("ssss");
             }
         })
     }

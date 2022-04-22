@@ -14,9 +14,14 @@
                 and category like concat(concat('%',#{laboratoryInfo.category}),'%')
             </if>
 
+            <if test="laboratoryInfo.status != '' and laboratoryInfo.status != null and laboratoryInfo.status != 'null' ">
+                and status like concat(concat('%',#{laboratoryInfo.status}),'%')
+            </if>
+
             <if test="reserve != '' and reserve != null and reserve != 'null' ">
                 and lab.labid not in (SELECT labid FROM reserve WHERE Date(reserve_time) = #{reserve})
             </if>
+
 
         </where>
 
@@ -44,6 +49,10 @@
                and room_number like concat(concat('%',#{roomNumber}),'%')
             </if>
 
+            <if test="status != '' and status != null and status != 'null' ">
+                and status like concat(concat('%',#{status}),'%')
+            </if>
+
         </where>
 
     </select>
@@ -51,5 +60,71 @@
     <!--    查询实验室状态，开放获取其他-->
     <select id="getLaboratoryStatus" resultType="String">
         select status from laboratory_info where labid = #{labid}
+    </select>
+
+<!--   添加实验室-->
+    <insert id="addLaboratoryInfo">
+        INSERT INTO `laboratory_system`.`laboratory_info`(`labid`, `building_name`, `capacity`, `category`, `describe`, `status`, `room_number`)
+        VALUES (#{labid},#{buildingName} ,#{capacity} ,#{category} ,#{describe} ,#{status} ,#{roomNumber} )
+    </insert>
+
+<!--    表格批量添加实验室-->
+    <insert id="addLaboratoryInfoList">
+        INSERT INTO `laboratory_system`.`laboratory_info`(`labid`, `building_name`, `capacity`, `category`, `describe`, `status`, `room_number`)
+        VALUES
+        <foreach collection="list" item="laboratoryInfo" index="index" separator=",">
+            (#{laboratoryInfo.labid}, #{laboratoryInfo.buildingName}, #{laboratoryInfo.capacity}, #{laboratoryInfo.category},#{laboratoryInfo.describe},#{laboratoryInfo.status},#{laboratoryInfo.roomNumber})
+        </foreach>
+    </insert>
+
+<!--    批量删除实验室-->
+    <delete id="delLaboratoryInfoList" parameterType="java.lang.String" >
+        DELETE FROM `laboratory_system`.`laboratory_info` WHERE
+        <foreach collection="array" separator="or" item="id" index="index" >
+            labid = #{id}
+        </foreach>
+    </delete>
+
+<!--    更新实验室信息-->
+    <update id="upLaboratoryInfo">
+        update laboratory_info
+        <trim prefix="set" suffixOverrides=",">
+            <if test="buildingName != null and buildingName !='' and buildingName !='null' ">
+                building_name = #{buildingName},
+            </if>
+
+            <if test="capacity != null and capacity != 0 and capacity gt 0  ">
+                capacity = #{capacity},
+            </if>
+
+            <if test="category != null and category !='' and category !='null' ">
+                category = #{category},
+            </if>
+
+            <if test="status != null and status !='' and status !='null' ">
+                status = #{status},
+            </if>
+
+            <if test="roomNumber != null and roomNumber !='' and roomNumber !='null' ">
+                room_number = #{roomNumber},
+            </if>
+
+<!--            <if test=" != null and describe !='' and describe !='null' ">-->
+<!--                describe = #{describe},-->
+<!--            </if>-->
+
+        </trim>
+        where labid = #{labid}
+    </update>
+
+<!--    更新实验室状态-->
+    <update id="upStatus">
+        update laboratory_info set status = #{status} where labid = #{labid};
+    </update>
+
+<!--    获取实验室labid-->
+    <select id="getLabid" resultType="String">
+        select labid from  laboratory_info
+        where building_name = #{buildingName} and room_number = #{roomNumber} LIMIT 1
     </select>
 </mapper>

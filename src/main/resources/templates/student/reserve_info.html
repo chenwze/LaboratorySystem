@@ -47,12 +47,16 @@
         color: black;
     }
     body .demo-class .layui-layer-btn1{
-        border-color: #4898d5;
-        background-color: #2e8ded;
+        /*border-color: #4898d5;*/
+        /*background-color: #2e8ded;*/
         color: #fff;
     }
     .btttt{
         color: #fff;
+    }
+    .layui-layer-btn .layui-layer-btn0{
+        background-color: #009688;
+        color: #fff!important;
     }
 </style>
 <body>
@@ -76,7 +80,7 @@
                     <div class="layui-input-inline">
                         <input id="test2" th:value="${reserveTime}" name="reserveTime" class="layui-input" readonly lay-verify="required|date" type="data" placeholder="预约时间"  >
                     </div>
-                    <button id="btn" type="submit" class="layui-btn layui-btn-normal layui-input-inline" style="width: max-content">查找</button>
+                    <button id="btn" type="submit" class="layui-btn  layui-input-inline" style="width: max-content">查找</button>
                 </div>
 
             </div>
@@ -86,6 +90,10 @@
 
     <div>
         <!--        数据列表-->
+<!--        <div>-->
+<!--            <button class="layui-btn" onclick="delStudentInfolist();">取消预约</button>-->
+<!--        </div>-->
+
         <div>
             <table class="layui-table" lay-size="" style="border-spacing: 0;">
                 <thead style="background-color: #009688;color: #fff;">
@@ -94,6 +102,7 @@
                         <th>实验楼</th>
                         <th>房间号</th>
                         <th>实验类别</th>
+                        <th>实验室状态</th>
                         <th>容纳数</th>
                         <th>预约时间</th>
                         <th>操做</th>
@@ -106,12 +115,13 @@
                     <td th:text="${arrayS.laboratoryInfo.buildingName}"></td>
                     <td th:text="${arrayS.laboratoryInfo.roomNumber}"></td>
                     <td th:text="${arrayS.laboratoryInfo.category}"></td>
+                    <td th:text="${arrayS.laboratoryInfo.status}"></td>
                     <td th:text="${arrayS.laboratoryInfo.capacity}"></td>
                     <td th:text="${arrayS.reserveTime}"></td>
                     <td>
 <!--                        th:data-pid="${project.id}" th:data-cid="${c.id}" th:onclick="doComment(this.getAttribute('data-cid'),this.getAttribute('data-pid'))"-->
-                        <a id="del-resever" href="javascript:void(0)" th:data-id="${arrayS.id}" th:onclick="dalReserve(this.getAttribute('data-id'))">取消预约</a>
-                        <a id="btn-resever" th:data-id="${arrayS.id}" th:onclick="'reserve_info('this.getAttribute('data-id')');'">详情</a>
+                        <button  id="del-resever" class="layui-btn  layui-btn-xs" th:data-id="${arrayS.id}" th:onclick="dalReserve(this.getAttribute('data-id'))">取消预约</button>
+                        <button id="btn-resever" class="layui-btn  layui-btn-xs" th:data-id="${arrayS.id}" th:onclick="det_reserve_info(this.getAttribute('data-id'))">详情</button>
                     </td>
                 </tr>
                 </tbody>
@@ -168,62 +178,56 @@
         var header = $("meta[name='_csrf_header']").attr("content");
         var token = $("meta[name='_csrf']").attr("content");
         var data = {'id':id};
+
             $.ajax({
                 url: '/student/delReserve',
                 type: 'POST',
-                async: true,
+                async: false,
                 data: data,
                 dataType: 'json',
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader(header, token);
                 },
                 success: function (data) {
-                    window.location.reload();
                     if (data.status==200){
-                        alert("取消成功");
-                    }else {
-                        alert("取消失败");
-                    }
+                        loading=layer.alert("取消成功",{icon:1,title:false},function (){
+                            window.location.reload();
 
+                        });
+                    }else {
+                        loading=layer.alert("取消失败",{icon:2,title:false},function (){
+                            window.location.reload();
+                        });
+                    }
+                    // window.location.reload();
                     // closeIfame();
                 },
                 error:function (){
-                    alert("请求失败！！");
-                    window.location.reload();
+                    loading=layer.alert("请求错误",{icon:2,title:false},function (){
+                        window.location.reload();
+                    });
                 }
             })
 
     }
 
-
-    function reserve_info(name){
-        //获取被选中的option标签
-        // var vs = $('select  option:selected').val();
-        var reserve=document.getElementById('test2').value;
-        // alert(vs);
-        // alert(reserve);
+    // 预约记录详情
+    function det_reserve_info(id){
 
         var layer = layui.layer;
         //iframe层
         var index = layer.open({
             type: 2,
-            title: '预约实验室',
+            title: '预约记录详情',
             shadeClose: true,
             shade: 0.8,
             scrollbar: false,
             area: ['70%', '99%'],//宽 高
-            content:'/student/reservePage?labid='+name+'&reserve='+reserve
-            // ,btn:['<div class="btttt">保存</div>','取消']
-            ,closeBtn:1
-            ,yes:function (index){
-                alert(index.date());
-                // layer.close(index);
+            content:'/student/detailReservePage?id='+id,
+            end:function (){
+                window.location.reload();
+            }
 
-            }
-            ,end: function(date){
-                // alert(date);
-                // window.location.href="/student/getLaboratoryInfoList?category=电脑房";
-            }
         });
     }
 
@@ -285,112 +289,9 @@
             // }
         });
 
-        //日历插件调用方法
 
-        //     function loding_date(new_date, data) {
-        //
-        //         laydate.render({
-        //             elem: '#date-list'
-        //             , type: 'date'
-        //             , theme: 'grid'
-        //             , max: '2099-06-16 23:59:59'
-        //             , position: 'static'
-        //             , range: false
-        //             , value: '2022-3-10'
-        //             , min:getNowFormatDate()
-        //             , isInitValue: false
-        //             , calendar: false
-        //             , btns: false
-        //             , mark:{
-        //                 '2022-3-15':'',
-        //                 '2022-3-16':''
-        //             }//重要json！
-        //             , ready: function (value) {
-        //                 disabled_date(value,$("#appointmentDate").val());
-        //                 hide_mr(data);
-        //             }
-        //             , done: function (value, date) {
-        //                 dateset(value,data);
-        //             }
-        //             , change: function (value, date) {
-        //                 disabled_date(date,$("#appointmentDate").val());
-        //                 hide_mr(data);
-        //             }
-        //         });
-        //     }
-        //
-        //     /**
-        //      *设置不可选择的星期
-        //      *value:选中的值
-        //      *appointmentDate星期：如1,2,3,4,5,6,7
-        //      */
-        //     function disabled_date(value,appointmentDate) {
-        //         var mm = value.year + '-' + value.month + '-' + value.date;
-        //         $('.laydate-theme-grid table tbody').find('[lay-ymd="' + mm + '"]').removeClass('layui-this');
-        //
-        //         if(appointmentDate!=null && appointmentDate!=''){
-        //             var dates = appointmentDate.split(",");
-        //             for(var i=0;i<dates.length;i++){
-        //                 if(dates[i]=="7"){
-        //                     dates[i] = 0;
-        //                 }
-        //                 $("table>tbody>tr").find("td:eq("+dates[i]+")").addClass('ng-laydate-disabled');
-        //             }
-        //         }
-        //
-        //     }
-        //
     });
 
 </script>
-<!--<script type="text/javascript">-->
-<!--    layui.define([ 'element', 'form', 'layer', 'laypage' ], function(exports) {-->
-<!--        var element = layui.element();-->
-<!--        var form = layui.form();-->
-<!--        var layer = layui.layer;-->
-<!--        var laypage = layui.laypage;-->
 
-<!--        var pindex = "${requestScope.page.pindex}";// 当前页-->
-<!--        var ptotalpages = "${requestScope.page.ptotalpages}";// 总页数-->
-<!--        var pcount = "${requestScope.page.pcount}";// 总记录数-->
-<!--        var psize = "${requestScope.page.psize}";// 每一页的记录数-->
-
-<!--        // 分页-->
-<!--        laypage({-->
-<!--            cont : 'form_page', // 页面上的id-->
-<!--            pages : ptotalpages,//总页数-->
-<!--            curr : pindex,//当前页。-->
-<!--            skip : true,-->
-<!--            jump : function(obj, first) {-->
-
-<!--                $("#pindex").val(obj.curr);//设置当前页-->
-<!--                $("#psize").val($("#page_size").val())-->
-<!--                //防止无限刷新,-->
-<!--                //只有监听到的页面index 和当前页不一样是才出发分页查询-->
-<!--                if (obj.curr != pindex || psize != $("#psize").val()) {-->
-<!--                    document.f1.submit();-->
-<!--                }-->
-<!--            }-->
-<!--        });-->
-<!--    });-->
-<!--</script>-->
-<script type="text/javascript">
-
-    // $("#btn-resever").click(function () {
-    //     layui.use("layer", function () {
-    //         var layer = layui.layer;
-    //         //iframe层
-    //         layer.open({
-    //             type: 2,
-    //             title: 'layer mobile页',
-    //             shadeClose: true,
-    //             shade: 0.8,
-    //             area: ['70%', '90%'],//宽 高
-    //             content: '<iframe data-frameid="' + id + '" scrolling="auto" frameborder="0" src="' + url + '" style="width:100%;height:99%;"></iframe>'
-    //
-    //         });
-    //     });
-    // });
-
-</script>
 </html>

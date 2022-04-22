@@ -127,13 +127,8 @@ public class StudentController {
 
 
     }
-//    //获取实验室信息列表
-//    @RequestMapping("/getLaboratoryInfoList")
-//    public String getLaboratoryInfoList(Model model, LaboratoryInfo laboratoryInfo){
-//        PageInfo<LaboratoryInfo> laboratoryInfoList = studentService.getLaboratoryInfoList(laboratoryInfo);
-//        model.addAttribute("data",laboratoryInfoList);
-//        return "/student/laboratory_info";
-//    }
+
+
     /**
      *
      * @param model 携带数据返回
@@ -143,7 +138,7 @@ public class StudentController {
      * @Author: Zoutao
      * @Date: 2018/12/6
      */
-//分页查询数据
+//分页查询数据，获取实验室信息列表
     @GetMapping("/getLaboratoryInfoList")
     public String LaboratoryInfoList(Model model, LaboratoryInfo laboratoryInfo,
                              String reserve,
@@ -160,8 +155,14 @@ public class StudentController {
         if (!"null".equals(laboratoryInfo.getCategory())){
             model.addAttribute("category",laboratoryInfo.getCategory());
         }
+        if (laboratoryInfo.getStatus() !=null && !(laboratoryInfo.getStatus().equals("null")) && !(laboratoryInfo.getStatus().equals(""))){
+            model.addAttribute("status",laboratoryInfo.getStatus());
+        }
+//        if (!"null".equals(laboratoryInfo.getStatus())){
+//            model.addAttribute("status",laboratoryInfo.getStatus());
+//        }
 
-        System.out.println(reserve+"+++++++++++++");
+        System.out.println(laboratoryInfo.getStatus()+"+++++++++++++");
 
         //为了程序的严谨性，判断非空：
         if(pageNum == null){
@@ -207,7 +208,6 @@ public class StudentController {
         Map laboratoryInfo = studentService.getLaboratoryInfo(labid);
         System.out.println(laboratoryInfo.get("laboratoryInfo"));
 
-        System.out.println("ddddddddddd"+labid+reserveTime);
         System.out.println(laboratoryInfo.get("reserveTimeList"));
         model.addAttribute("laboratoryInfo",laboratoryInfo);
         return "/student/reserve_page";
@@ -231,6 +231,20 @@ public class StudentController {
 //        }
     }
 
+    /**
+     * 查看预约详情
+     * @return
+     */
+    @RequestMapping("/detailReservePage")
+    public String detailReservePage(String id,Model model){
+        System.out.println(id);
+        Reserve detailReserve = studentService.getDetailReserve(id);
+        if (detailReserve==null){
+            return "redirect:/userLogin";
+        }
+        model.addAttribute("detailReserve",detailReserve);
+        return "/student/detail_reserve_page";
+    }
 
     //分页查询预约数据
 //    @ResponseBody
@@ -336,7 +350,7 @@ public class StudentController {
      */
     @PostMapping("/delReserve")
     @ResponseBody
-    public Object  delReserve(String id){
+    public Map  delReserve(String id){
         Map map=new HashMap();
         System.out.println(id+"=============");
         boolean bool = studentService.delReserve(id);

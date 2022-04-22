@@ -77,7 +77,7 @@ public class TestController {
      * @param response
      * @return
      */
-    @PostMapping("/test/testAjax1")
+    @GetMapping("/test/testAjax1")
     public void exportExce1l(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
 ////        List<TzJobSet> list = tzJobSetService.list();
 //        String resultName ="";
@@ -153,7 +153,7 @@ public class TestController {
      */
     public List<Map<String,Object>> getList(){
         List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
-        for(int i = 0; i<100;i++){
+        for(int i = 1; i<100;i++){
             Map<String,Object> map = new HashMap<String, Object>();
             map.put("number",1000+i);
             map.put("name", "张三"+i);
@@ -222,7 +222,7 @@ public class TestController {
             HSSFRichTextString text = new HSSFRichTextString(headers[i]);
             cell.setCellValue(text);
         }
-        for (int i=0;i<mapList.size();i++) {
+        for (int i=1;i<mapList.size();i++) {
             Map<String,Object> map = (Map<String, Object>) mapList.get(i);
             row = sheet.createRow(i+1);
             int j = 0;

@@ -54,6 +54,29 @@
     .btttt{
         color: #fff;
     }
+    .layui-layer-btn .layui-layer-btn0{
+        background-color: #009688!important;
+        color: #FFFFFF!important;
+    }
+    .layui-layer-setwin .layui-layer-close2{
+        display: none;
+    }
+    .layui-form-item .layui-inline{
+        margin-bottom: 0px;
+    }
+    #select{
+        border: solid 1px #f5f5f5;
+        background-color: #009688;
+        padding: 2px;
+        color: #fff;
+        padding: 3px 5px;
+    }
+
+    #select .noselect{
+        border:none;
+        background-color: #fff;
+        color: #000;
+    }
 </style>
 <body>
 <div>
@@ -76,7 +99,7 @@
                     <div class="layui-input-inline">
                         <input id="test2" th:value="${reserveTime}" name="reserveTime" class="layui-input" readonly lay-verify="required|date" type="data" placeholder="预约时间"  >
                     </div>
-                    <button id="btn" type="submit" class="layui-btn layui-btn-normal layui-input-inline" style="width: max-content">查找</button>
+                    <button id="btn" type="submit" class="layui-btn  layui-input-inline" style="width: max-content">查找</button>
                 </div>
             </div>
 
@@ -103,16 +126,17 @@
     <div>
         <!--        数据列表-->
         <div>
-            <input type="file" id="exe_file" onchange ="uploadFile()" name="file" style="display:none" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" >
-            <button class="layui-btn" onclick="addStudentPage()">添加</button>
-            <button class="layui-btn" onclick="addStudentInfoExe();">EXE添加</button>
-            <button class="layui-btn" onclick="delStudentInfolist();">删除</button>
+<!--            <input type="file" id="exe_file" onchange ="uploadFile()" name="file" style="display:none" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" >-->
+<!--            <button class="layui-btn layui-btn-sm" onclick="addResevePage()">添加</button>-->
+<!--            <button class="layui-btn layui-btn-sm" onclick="addStudentInfoExe();">EXE添加</button>-->
+            <button class="layui-btn layui-btn-sm" style="background-color: red;" onclick="delLaboratoryInfoList();">删除</button>
         </div>
         <div>
             <table class="layui-table" lay-size="sm" style="border-spacing: 0;">
                 <thead style="background-color: #009688;color: #fff;">
                     <tr style="background-color: #393D49;color: #fff;" >
-                        <th>预约编号</th>
+                        <th style="min-width: 15px;"><input id="checkbox" onclick="checkAll();" type="checkbox"></th>
+<!--                        <th>预约编号</th>-->
                         <th>实验楼</th>
                         <th>房间号</th>
                         <th>实验类别</th>
@@ -126,7 +150,8 @@
 
                 <tbody>
                 <tr th:each="arrayS,iterStat:${pageInfo.list}">
-                    <td th:text="${arrayS.id}"></td>
+                    <th style="min-width: 15px;"><input type="checkbox" name="checkbox" th:value="${arrayS.id}"></th>
+<!--                    <td th:text="${arrayS.id}"></td>-->
                     <td th:text="${arrayS.laboratoryInfo.buildingName}"></td>
                     <td th:text="${arrayS.laboratoryInfo.roomNumber}"></td>
                     <td th:text="${arrayS.laboratoryInfo.category}"></td>
@@ -138,8 +163,8 @@
                     <td th:text="${arrayS.reserveTime}"></td>
                     <td>
 <!--                        th:data-pid="${project.id}" th:data-cid="${c.id}" th:onclick="doComment(this.getAttribute('data-cid'),this.getAttribute('data-pid'))"-->
-                        <a id="del-resever" href="javascript:void(0)" th:data-id="${arrayS.id}" th:onclick="dalReserve(this.getAttribute('data-id'))">取消预约</a>
-                        <a id="btn-resever" href="javascript:void(0)" th:data-id="${arrayS.id}" th:onclick="reserve_info(getAttribute('data-id'))">详情</a>
+                        <button class="layui-btn-xs layui-btn" id="del-resever" href="javascript:void(0)" th:data-id="${arrayS.id}" th:onclick="dalReserve(this.getAttribute('data-id'))">取消预约</button>
+                        <button class="layui-btn-xs layui-btn" id="btn-resever" href="javascript:void(0)" th:data-id="${arrayS.id}" th:onclick="detailReserveInfoPage(getAttribute('data-id'))">详情</button>
                     </td>
                 </tr>
                 </tbody>
@@ -150,8 +175,18 @@
 
     <!--    分页开始-->
     <div style="text-align: center;">
-        <div  class="layui-box  layui-laypage-default layui-laypage">
+        <div  class="layui-box  layui-laypage-default layui-laypage" style="margin: 3px 0px;">
             <!--        <ul class="pagination-flickr pagination m-b-5 pull-right">-->
+            <th:block th:if="${1 != pageInfo.pageNum} and ${pageInfo.pages}>0">
+                <a  th:href="@{'/admin/getAdminReserveList?pageNum=1'
+                +'&buildingName='+${buildingName}
+                +'&category='+${category}
+                 +'&reserveTime='+${reserveTime}
+                 +'&username='+${username}+'&userType='+${userType}}" aria-label="Previous">
+                    <i class="fa fa-angle-left"></i>&nbsp;第一页
+                </a>
+            </th:block>
+
             <th:block th:if="${pageInfo.hasPreviousPage}">
                 <a  th:href="@{'/admin/getAdminReserveList?pageNum='+${pageInfo.prePage}
                 +'&buildingName='+${buildingName}
@@ -182,10 +217,34 @@
                     下一页&nbsp;<i class="fa fa-angle-right"></i>
                 </a>
             </th:block>
+
+            <th:block th:if="${pageInfo.lastPage != pageInfo.pageNum} and ${pageInfo.pages}>0">
+                <a th:href="@{'/admin/getAdminReserveList?pageNum='+${pageInfo.pages}
+                +'&buildingName='+${buildingName}
+                +'&category='+${category}
+                +'&reserveTime='+${reserveTime}
+                +'&username='+${username}+'&userType='+${userType}}" aria-label="Next">
+                    最后一页&nbsp;<i class="fa fa-angle-right"></i>
+                </a>
+            </th:block>
+
             <th:block th:if="${pageInfo.pages}>0">
                 <span th:text="'共'+${pageInfo.pages}+'页'"></span>
+                <span th:text="'共'+${pageInfo.getTotal()}+'条记录'"></span>
             </th:block>
         </div>
+
+        <th:block th:if="${pageInfo.pages}>0">
+            <span style="margin-right: 2px;margin-left: 3px;">跳转到</span>
+            <select name="pageNum" id="select" οnfοcus="selectFocus()"  onchange="onJumpPage()" >
+                <th:block th:each="i:${#numbers.sequence(1,pageInfo.pages)}">
+                    <option th:class="${i}==${pageInfo.pageNum}?'selected':'noselect'"
+                            th:selected="${i}==${pageInfo.pageNum}" th:value="${i}"
+                            οnclick="selectClick()" th:text="'第'+${i}+'页'">
+                    </option>
+                </th:block>
+            </select>
+        </th:block>
     </div>
 
 </div>
@@ -193,12 +252,91 @@
 </body>
 <script type="text/javascript">
 
+    //批量删除预约记录
+    function delLaboratoryInfoList(){
+        var chk_value =[];
+        $('input[name="checkbox"]:checked').each(function(){
+            chk_value.push($(this).val());
+        });
+        // alert(chk_value.length==0 ?'你还没有选择任何内容！':chk_value);
+        if(chk_value.length==0){
+            alert("你还没有选择任何内容!");
+        }else {
+            var header = $("meta[name='_csrf_header']").attr("content");
+            var token = $("meta[name='_csrf']").attr("content");
+            var data="ids="+chk_value;
+            // console.log(JSON.stringify(data));
+            console.log(data);
+            $.ajax({
+                url: '/admin/delReserveInfoList',
+                type: 'POST',
+                async: false,
+                data:data,
+
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token);
+                },
+                success: function (data) {
+                    if (data.status==200){
+                        loading=layer.alert("成功删除"+data.num+"条记录！",{icon:1,title:false},function (){
+                            window.location.reload();
+                        });
+                    }else {
+                        loading=layer.alert("删除失败！！",{icon:2,title:false},function (){
+                            window.location.reload();
+                        });
+                    }
+                },
+                error:function (){
+                    loading=layer.alert("出现错误 ！！",{icon:2,title:false},function (){
+                        window.location.reload();
+                    });
+                }
+
+
+            })
+        }
+    }
+
+    //全选操作
+    function checkAll(){
+        if ( $("#checkbox").is(":checked") ){
+            $("input[name='checkbox']").prop("checked",true);
+        }else {
+            $("input[name='checkbox']").prop("checked",false);
+            // $("input[name='checkbox']").removeAttr("checked");
+        }
+
+    }
+
+
+    //预约详情
+    function detailReserveInfoPage(id){
+
+        var layer = layui.layer;
+        //iframe层
+        var index = layer.open({
+            type: 2,
+            title: '预约详情',
+            shadeClose: true,
+            shade: 0.8,
+            scrollbar: false,
+            area: ['70%', '99%'],//宽 高
+            content:'/admin/detailReserveInfoPage?id='+id,
+            end : function() {
+                location.reload();
+            }
+        });
+    }
+
+
     //取消预约
     function dalReserve(id){
 
         var header = $("meta[name='_csrf_header']").attr("content");
         var token = $("meta[name='_csrf']").attr("content");
         var data = {'id':id};
+        loading=layer.msg("正在执行...",{icon:16,time:1000*30});
             $.ajax({
                 url: '/admin/delReserve',
                 type: 'POST',
@@ -209,23 +347,38 @@
                     xhr.setRequestHeader(header, token);
                 },
                 success: function (data) {
-                    window.location.reload();
+
                     if (data.status==200){
-                        alert("取消成功");
+                        loading=layer.alert(data.msg,{icon:1,title:false},function (){
+                            window.location.reload();
+                        });
                     }else {
-                        alert("取消失败");
+                        loading=layer.alert(data.msg,{icon:2,title:false},function (){
+                            window.location.reload();
+                        });
                     }
 
                     // closeIfame();
                 },
                 error:function (){
-                    alert("请求失败！！");
-                    window.location.reload();
+                    // alert("请求失败！！");
+                    loading=layer.alert("请求失败!!",{icon:5,title:false},function (){
+                        window.location.reload();
+                    });
                 }
             })
 
     }
 
+    //指定跳转页面
+    function onJumpPage(){
+        var dataParam = $("#form").serialize();
+        var pageNum = $("#select").val();
+        dataParam += "&"+"pageNum="+pageNum;
+        window.location.href="/admin/getAdminReserveList?"+dataParam;
+
+        console.log(dataParam);
+    }
 
     //预约信息页
     function reserve_info(name){

@@ -57,4 +57,120 @@
     <update id="upPasswrodEmail">
         UPDATE `laboratory_system`.`admin_user` SET `password` = #{password} WHERE `username` = #{username} and `email` = #{email}
     </update>
+
+<!--    获取管理员账号-->
+    <select id="getAdminUserList" resultType="com.gdufe.laboratorysystem.entity.User">
+        select * from  admin_user
+        <where>
+            <if test="username != '' and username != null and username !='null'">
+                and username like concat(concat('%',#{username}),'%')
+            </if>
+
+            <if test="status != '' and status != null and status !='null'">
+                and status like concat(concat('%',#{status}),'%')
+            </if>
+
+            <if test="email != '' and email != null and email !='null'">
+                and email like concat(concat('%',#{email}),'%')
+            </if>
+
+        </where>
+    </select>
+
+<!--    重置密码-->
+    <update id="resetPasssword">
+        update  admin_user SET `password` = #{password} WHERE `username` = #{username}
+    </update>
+
+<!--    添加管理员账号-->
+    <insert id="addAdminUser">
+        INSERT INTO `laboratory_system`.`admin_user`(`adminid`, `username`, `password`, `status`, `create_time`, `email`, `role`, `name`)
+        VALUES (#{userid}, #{username}, #{password},'正常', #{createTime}, #{email}, "admin", #{name})
+    </insert>
+
+
+<!--    邮箱是否存在-->
+    <select id="existEmail" resultType="boolean">
+        select COUNT(*) from  admin_user
+        <where>
+            <if test="1==1">
+                and email = #{email}
+            </if>
+
+            <if test="username != '' and username != null and username !='null'">
+                and username != username
+            </if>
+        </where>
+
+    </select>
+
+    <!--超管更新管理员账号信息-->
+    <update id="upSAdminUserInfo" parameterType="com.gdufe.laboratorysystem.entity.User">
+        update admin_user
+        <set>
+            <if test="name != null and name !=''">
+                name = #{name},
+            </if>
+
+            <if test="status != null and status !=''">
+                status = #{status},
+            </if>
+
+            <if test="email != '' and email != null and email !='null'">
+                email = #{email},
+            </if>
+
+            <if test="headPortrait != null and headPortrait != ''">
+                head_Portrait = #{headPortrait},
+            </if>
+
+
+        </set>
+        where username = #{username}
+    </update>
+
+
+    <!--    批量删除管理员账号-->
+    <delete id="delAdminUserList" parameterType="java.lang.String">
+        DELETE FROM `laboratory_system`.`admin_user` WHERE
+        <foreach collection="array" separator="or" item="id" index="index" >
+            username = #{id} and username !="10001"
+        </foreach>
+    </delete>
+
+
+<!--&lt;!&ndash;    获取实验室物品列表&ndash;&gt;-->
+<!--    <select id="getLaboratoryThingList" resultType="com.gdufe.laboratorysystem.entity.LaboratoryThing">-->
+<!--        SELECT * FROM `laboratory_thing` LEFT JOIN laboratory_info on laboratory_thing.labid=laboratory_info.labid-->
+<!--            <where>-->
+<!--                <if test="time != '' and time != null and time !='null'">-->
+<!--                    time >= #{time},-->
+<!--                </if>-->
+
+<!--                <if test="type != '' and type != null and type !='null'">-->
+<!--                    type = #{type},-->
+<!--                </if>-->
+
+<!--                <if test="name != '' and name != null and name !='null'">-->
+<!--                    name = #{name},-->
+<!--                </if>-->
+
+<!--                <if test="way != '' and way != null and way !='null'">-->
+<!--                    way = #{way},-->
+<!--                </if>-->
+
+<!--                <if test="buildingName != '' and buildingName != null and buildingName !='null'">-->
+<!--                    building_name = #{buildingName},-->
+<!--                </if>-->
+
+<!--                <if test="roomNumber != '' and roomNumber != null and roomNumber !='null'">-->
+<!--                    room_number = #{roomNumber},-->
+<!--                </if>-->
+
+<!--&lt;!&ndash;                <if test="email != '' and email != null and email !='null'">&ndash;&gt;-->
+<!--&lt;!&ndash;                    email = #{email},&ndash;&gt;-->
+<!--&lt;!&ndash;                </if>&ndash;&gt;-->
+<!--            </where>-->
+<!--&#45;&#45;         where reserve.username=#{username} and reserve.id = #{id}-->
+<!--    </select>-->
 </mapper>

@@ -21,7 +21,7 @@
     <ul class="layui-nav layui-layout-right">
       <li class="layui-nav-item">
         <a href="javascript:;">
-          <img th:src="@{/login/img/login.jpg}" src="../../static/login/img/login.jpg" class="layui-nav-img">
+          <img th:src="${#authentication.principal.getHeadPortrait()}" src="../../static/login/img/login.jpg" class="layui-nav-img">
 <!--          <span sec:authentication="principal.username"></span>-->
           <span sec:authentication="principal.name"></span>
         </a>

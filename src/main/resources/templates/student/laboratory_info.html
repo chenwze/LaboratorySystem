@@ -83,6 +83,7 @@
 <style type="text/css">
     .my-label{
         white-space:nowrap;
+        margin-right: 10px;
     }
     html body{
         height: auto;
@@ -117,6 +118,9 @@
     .btttt{
         color: #fff;
     }
+    .layui-form-select dl dd.layui-this{
+        background-color: #009688;
+    }
 </style>
 <body>
 <div>
@@ -130,16 +134,19 @@
                     <div class="layui-input-inline">
                         <input  th:value="${buildingName}" class="layui-input"  name="buildingName" placeholder="实验楼"  >
                     </div>
-
+                </div>
+                <div class="layui-inline">
                     <label class="layui-form-label my-label">实验室类型</label>
                     <div class="layui-input-inline">
                         <input th:value="${category}"  class="layui-input" name="category" placeholder="实验室类型"  >
                     </div>
+                </div>
+                <div class="layui-inline">
                     <label class="layui-form-label my-label">预约时间</label>
                     <div class="layui-input-inline">
                         <input id="test2" th:value="${reserve}" name="reserve" class="layui-input" readonly lay-verify="required|date" type="data" placeholder="预约时间"  >
                     </div>
-                    <button id="btn" type="submit" class="layui-btn layui-btn-normal layui-input-inline" style="width: max-content">查找</button>
+                    <button id="btn" type="submit" class="layui-btn  layui-input-inline" style="width: max-content">查找</button>
                 </div>
 
             </div>
@@ -149,7 +156,25 @@
 
                     <label class="layui-form-label my-label">实验室状态</label>
                     <div class="layui-input-inline">
-                        <input  th:value="${buildingName}" class="layui-input"  name="buildingName" placeholder="实验楼"  >
+                        <select name="status" lay-verify="">
+                            <th:block th:if="${status=='开放'}">
+                                <option value="" >---请选择---</option>
+                                <option value="开放" selected>开放</option>
+                                <option value="关闭">关闭</option>
+                            </th:block>
+                            <th:block th:if="${status=='关闭'}">
+                                <option value="">---请选择---</option>
+                                <option value="开放" >开放</option>
+                                <option value="关闭" selected>关闭</option>
+                            </th:block>
+                            <th:block th:if="${status==null}">
+                                <option value="" selected>---请选择---</option>
+                                <option value="开放" >开放</option>
+                                <option value="关闭">关闭</option>
+                            </th:block>
+
+                        </select>
+<!--                        <input  th:value="${status}" class="layui-input"  name="status" placeholder="实验楼"  >-->
                     </div>
                 </div>
             </div>
@@ -159,6 +184,7 @@
 
     <div>
 <!--        数据列表-->
+
         <div>
             <table class="layui-table" lay-size="sm">
                 <thead style="background-color: #009688;color: #fff;">
@@ -166,6 +192,7 @@
                         <th>实验楼</th>
                         <th>房间号</th>
                         <th>实验类别</th>
+                        <th width="200px">实验室描述</th>
                         <th>实验室状态</th>
                         <th>容纳数</th>
                         <th>操做</th>
@@ -177,12 +204,14 @@
                         <td th:text="${arrayS.buildingName}"></td>
                         <td th:text="${arrayS.roomNumber}"></td>
                         <td th:text="${arrayS.category}"></td>
+                        <td >
+                            <div style="width:200px;text-overflow: ellipsis;overflow: hidden;white-space:nowrap;" th:text="${arrayS.describe}"></div>
+                        </td>
                         <td th:text="${arrayS.status}"></td>
                         <td th:text="${arrayS.capacity}"></td>
                         <td>
-                            <a th:if="${arrayS.status}=='开放'" title="预约" href ="#" th:data-id="${arrayS.labid}" th:onclick="reserve_info(this.getAttribute('data-id'))">预约</a>
-                            <a th:if="${arrayS.status}!='开放'" title="实验室已关闭"  href ="javascript:return false;" onclick="return false;" style="cursor: default;">预约</a>
-
+                            <button class="layui-btn  layui-btn-xs" th:if="${arrayS.status}=='开放'" title="预约" href ="#" th:data-id="${arrayS.labid}" th:onclick="reserve_info(this.getAttribute('data-id'))">预约</button>
+                            <button class="layui-btn layui-btn-disabled layui-btn-xs"  th:if="${arrayS.status}!='开放'" title="实验室已关闭"  href ="javascript:return false;" th:onclick="return false;" style="cursor: default;">已关闭</button>
                         </td>
                     </tr>
                 </tbody>
@@ -199,7 +228,7 @@
                 <a  th:href="@{'/student/getLaboratoryInfoList?pageNum='+${pageInfo.prePage}
                 +'&buildingName='+${buildingName}
                 +'&category='+${category}
-                +'&reserve='+${reserve}}" aria-label="Previous">
+                +'&reserve='+${reserve}+'&status='+${status}}" aria-label="Previous">
                     <i class="fa fa-angle-left"></i>&nbsp;上一页
                 </a>
             </th:block>
@@ -210,7 +239,7 @@
                    th:href="@{'/student/getLaboratoryInfoList?pageNum='+${navIndex}
                    +'&buildingName='+${buildingName}
                     +'&category='+${category}
-                   +'&reserve='+${reserve}}" th:text="${navIndex}"></a>
+                   +'&reserve='+${reserve}+'&status='+${status}}" th:text="${navIndex}"></a>
 
             </th:block>
 
@@ -218,7 +247,7 @@
                 <a th:href="@{'/student/getLaboratoryInfoList?pageNum='+${pageInfo.nextPage}
                 +'&buildingName='+${buildingName}
                 +'&category='+${category}
-                +'&reserve='+${reserve}}" aria-label="Next">
+                +'&reserve='+${reserve}+'&status='+${status}}" aria-label="Next">
                     下一页&nbsp;<i class="fa fa-angle-right"></i>
                 </a>
             </th:block>
@@ -232,9 +261,9 @@
 
 </body>
 <script type="text/javascript">
+
     function reserve_info(name){
-        //获取被选中的option标签
-        // var vs = $('select  option:selected').val();
+
         var reserve=document.getElementById('test2').value;
         // alert(vs);
         // alert(reserve);
@@ -307,7 +336,7 @@
             min:1,
             trigger : 'click',
             theme: 'grid',
-            showBottom: false,
+            btns: ['clear', 'now', 'confirm'],
             // ready: function(value){//控件在打开时触发，回调返回一个参数
             //     disabled_date(); //得到初始的日期时间对象：{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
             // },
@@ -375,54 +404,5 @@
     });
 
 </script>
-<!--<script type="text/javascript">-->
-<!--    layui.define([ 'element', 'form', 'layer', 'laypage' ], function(exports) {-->
-<!--        var element = layui.element();-->
-<!--        var form = layui.form();-->
-<!--        var layer = layui.layer;-->
-<!--        var laypage = layui.laypage;-->
 
-<!--        var pindex = "${requestScope.page.pindex}";// 当前页-->
-<!--        var ptotalpages = "${requestScope.page.ptotalpages}";// 总页数-->
-<!--        var pcount = "${requestScope.page.pcount}";// 总记录数-->
-<!--        var psize = "${requestScope.page.psize}";// 每一页的记录数-->
-
-<!--        // 分页-->
-<!--        laypage({-->
-<!--            cont : 'form_page', // 页面上的id-->
-<!--            pages : ptotalpages,//总页数-->
-<!--            curr : pindex,//当前页。-->
-<!--            skip : true,-->
-<!--            jump : function(obj, first) {-->
-
-<!--                $("#pindex").val(obj.curr);//设置当前页-->
-<!--                $("#psize").val($("#page_size").val())-->
-<!--                //防止无限刷新,-->
-<!--                //只有监听到的页面index 和当前页不一样是才出发分页查询-->
-<!--                if (obj.curr != pindex || psize != $("#psize").val()) {-->
-<!--                    document.f1.submit();-->
-<!--                }-->
-<!--            }-->
-<!--        });-->
-<!--    });-->
-<!--</script>-->
-<script type="text/javascript">
-
-        // $("#btn-resever").click(function () {
-        //     layui.use("layer", function () {
-        //         var layer = layui.layer;
-        //         //iframe层
-        //         layer.open({
-        //             type: 2,
-        //             title: 'layer mobile页',
-        //             shadeClose: true,
-        //             shade: 0.8,
-        //             area: ['70%', '90%'],//宽 高
-        //             content: '<iframe data-frameid="' + id + '" scrolling="auto" frameborder="0" src="' + url + '" style="width:100%;height:99%;"></iframe>'
-        //
-        //         });
-        //     });
-        // });
-
-</script>
 </html>

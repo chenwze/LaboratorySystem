@@ -63,7 +63,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label">账号邮箱:</label>
                 <div class="layui-input-inline" >
-                    <input id="email" type="text" th:value="${StudentUser.email}" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >
+                    <input  id="email" type="text" th:value="${StudentUser.email}" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >
                 </div>
                 <div class="layui-form-mid layui-word-aux"><a href="#" style="color: #0000FF;">更换</a></div>
             </div>
@@ -95,7 +95,7 @@
                 <label class="layui-form-label" style="visibility: hidden;">编辑账号信息</label>
                 <div class="layui-input-inline" >
                     <!--                <input type="button" th:value="${adminUser.createTime}" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >-->
-                    <button style="width: 100%;" id="btn" type="button" class="layui-btn layui-btn-normal" onclick="changeUserInfo()">编辑账号信息</button>
+                    <button style="width: 100%;" id="btn" type="button" class="layui-btn " onclick="changeUserInfo()">编辑账号信息</button>
 
                 </div>
 

@@ -1,5 +1,7 @@
 package com.gdufe.laboratorysystem.entity;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.sql.Date;
 
 /**
@@ -11,7 +13,10 @@ import java.sql.Date;
  */
 public class Notice {
     private String id;
+
+    @NotBlank(message = "标题不能为空")
     private String title;
+    @NotBlank(message = "内容不能为空")
     private String content;
     private String time;
     private String adminUsername;

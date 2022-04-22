@@ -15,7 +15,7 @@
     <div class="layui-form-item ">
         <div class="layui-inline">
             <label class="layui-form-label">学生账号</label>
-            <div class="layui-input-inline">
+            <div class="layui-input-inline ">
                 <input  name="username" class="layui-input" placeholder="学生账号">
             </div>
         </div>
@@ -39,14 +39,14 @@
         </div>
     </div>
 
-    <div class="layui-form-item ">
-        <div class="layui-inline">
-            <label class="layui-form-label">用户权限</label>
-            <div class="layui-input-inline">
-                <input  name="role"  class="layui-input" placeholder="用户权限，多个权限用，分开">
-            </div>
-        </div>
-    </div>
+<!--    <div class="layui-form-item ">-->
+<!--        <div class="layui-inline">-->
+<!--            <label class="layui-form-label">用户权限</label>-->
+<!--            <div class="layui-input-inline">-->
+<!--                <input  name="role"  class="layui-input" placeholder="用户权限，多个权限用，分开">-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
 
     <div class="layui-form-item ">
         <div class="layui-inline">
@@ -56,7 +56,15 @@
             </div>
         </div>
     </div>
-    <button id="btn" onclick="addStudentUser();" type="button" class="layui-btn layui-btn-normal layui-input-inline" style="width: max-content">提交</button>
+    <div class="layui-form-item ">
+        <div class="layui-inline">
+            <label class="layui-form-label"></label>
+            <div class="layui-input-inline">
+                <button id="btn" onclick="addStudentUser();" type="button" class="layui-btn ">添加</button>
+                <button id="" onclick="closeIfame();" type="button" class="layui-btn ">取消</button>
+            </div>
+        </div>
+    </div>
 </form>
 </body>
 <script type="text/javascript">
@@ -69,28 +77,34 @@
         $.ajax({
             url: '/admin/addStudentUser',
             type: 'POST',
-            async: false,
             contentType: 'application/x-www-form-urlencoded;charset=UTF-8',
             data:data,
             // dataType: 'json',
             beforeSend: function (xhr) {
                 xhr.setRequestHeader(header, token);
-
+                loading=layer.msg("正在执执行...",{icon:16});
             },
             success: function (data) {
                 console.log(data);
                 // if (data.id !='' && data != null){
-                    alert("添加成功！！");
-                    location.reload();
-                    closeIfame();
+                //     alert("添加成功！！");
+                    // location.reload();
 
+                if (data.status==200){
+                    loading=layer.alert(data.msg,{icon:1,title:false},function (){
+                        closeIfame();
+                    })
+                }else {
+                    loading=layer.alert(data.msg,{icon:2,title:false})
+                        // closeIfame()
+                }
                 // }else {
                 //     alert("添加失败，请重新添加！！");
                 // }
 
             },
             error:function (){
-                alert("添加失败！！！");
+                loading=layer.alert("出现错误！",{icon:5,title:false});
             }
         })
     }

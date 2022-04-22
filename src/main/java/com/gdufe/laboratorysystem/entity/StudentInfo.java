@@ -23,6 +23,20 @@ public class StudentInfo extends BasicInformation implements Serializable,UserDe
     private String aclass;
 
     @Override
+    public String toString() {
+        return "StudentInfo{" +
+                "studayDate='" + studayDate + '\'' +
+                ", graduationDate='" + graduationDate + '\'' +
+                ", major='" + major + '\'' +
+                ", aclass='" + aclass + '\'' +
+                '}';
+    }
+
+    public void setStudayDate(String studayDate) {
+        this.studayDate = studayDate;
+    }
+
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         //以逗号分割,
         return AuthorityUtils.commaSeparatedStringToAuthorityList("student,ddd");
@@ -47,16 +61,6 @@ public class StudentInfo extends BasicInformation implements Serializable,UserDe
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    @Override
-    public String toString() {
-        return "StudentInfo{" +
-                "studayDate='" + studayDate + '\'' +
-                ", graduationDate='" + graduationDate + '\'' +
-                ", major='" + major + '\'' +
-                ", aclass='" + aclass + '\'' +
-                '}';
     }
 
     public String getStudayDate() {

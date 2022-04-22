@@ -97,15 +97,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/student/**").hasAuthority("student")
                 .antMatchers("/teacher/**").hasAuthority("teacher")
                 .antMatchers("/admin/**").hasAuthority("admin")
-//                .antMatchers("/detail/commom/**", "/commom/**", "/open/commom").hasRole("COMMOM")
-//                .antMatchers("/detail/vip/**", "/vip/**", "/open/vip").hasRole("VIP")
-//                .antMatchers("/detail/svip/**", "/svip/**", "/open/svip").hasRole("SVIP")
+                .antMatchers("/sAdmin/**").hasAuthority("superadmin")
                 .anyRequest().authenticated();
         // 自定义用户登录控制
         http.formLogin().loginPage("/userLogin").permitAll()
                 .usernameParameter("username").passwordParameter("password")
                 .defaultSuccessUrl("/").failureUrl("/userLogin?error");
-                http.csrf().disable();
+//                http.csrf().disable();
+
         http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
 
         // 自定义用户退出控制

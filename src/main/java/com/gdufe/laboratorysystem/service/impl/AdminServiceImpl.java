@@ -4,6 +4,7 @@ import com.gdufe.laboratorysystem.dao.*;
 import com.gdufe.laboratorysystem.entity.*;
 import com.gdufe.laboratorysystem.service.AdminService;
 import com.gdufe.laboratorysystem.utils.ImgHeadUtils;
+import net.minidev.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -84,11 +85,6 @@ public class AdminServiceImpl implements AdminService {
         return null;
     }
 
-    @Override
-    public LaboratoryThing add(LaboratoryThing laboratoryThing) {
-        LaboratoryThing add = laboratoryThingDao.add(laboratoryThing);
-        return add;
-    }
 
     /**
      * 修改公告
@@ -148,6 +144,43 @@ public class AdminServiceImpl implements AdminService {
         return i;
     }
 
+    /**
+     * 更新公告状态
+     * @param notice
+     * @return
+     */
+    @Override
+    public HashMap upNoticeStatus(Notice notice){
+        HashMap hashMap = new HashMap();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            //获取当前用户名
+            String currentUserName = authentication.getName();
+            notice.setAdminUsername(currentUserName);
+            int i = noticeDao.upNoticeStatus(notice);
+
+            if (i == 1){
+                hashMap.put("status","200");
+                //1:显示，0 隐藏
+                if (notice.getDisplay() !=null && notice.getDisplay().equals("1")){
+                    hashMap.put("msg","公告已显示!");
+                }else {
+                    hashMap.put("msg","公告已隐藏！");
+                }
+                return hashMap;
+
+            }else {
+                hashMap.put("status","201");
+                hashMap.put("msg","设置失败，请稍后重试！！");
+                return hashMap;
+            }
+
+        }else{  //未登录
+            hashMap.put("status","201");
+            hashMap.put("msg","未登录账号！！");
+            return hashMap;
+        }
+    }
 
     /**
      * 查看管理账号信息
@@ -177,7 +210,7 @@ public class AdminServiceImpl implements AdminService {
             //获取当前用户名
             String currentUserName = authentication.getName();
             user.setUsername(currentUserName);
-            hashMap.put("msg","未登录");
+//            hashMap.put("msg","未登录");
             hashMap.put("status","201");
         }
         String urlPasth=null;
@@ -253,7 +286,16 @@ public class AdminServiceImpl implements AdminService {
         return studentUserList;
     }
 
-
+    /**
+     * 学生用户
+     * @param username
+     * @return
+     */
+    @Override
+    public User getStudentUser(String username){
+        User studentUser = studentUserDao.getUserInfo(username);
+        return studentUser;
+    }
     //批量添加学生用户
     @Override
     @Transactional
@@ -269,10 +311,72 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public int addStudentUser(User user) {
-
+        int emptyUserEmail = studentUserDao.isEmptyUserEmail(user.getEmail());
+        if(emptyUserEmail>0){
+            return 10;
+        }
         System.out.println("+++++++++++++++++++"+user.toString());
         int i = studentUserDao.addStudentUser(user);
         return i;
+    }
+
+    /**
+     * 重置学生账号密码
+     * @param username
+     * @return
+     */
+    @Override
+    public  HashMap resetStudentPasssword(String username){
+        HashMap hashMap = new HashMap();
+        Pbkdf2PasswordEncoder encoder = new Pbkdf2PasswordEncoder(secret);
+        String password = encoder.encode("111111");
+//        int i = studentUserDao.upPassword(username, password);
+        int i = studentUserDao.upPassword(username, encoder.encode("111111"));
+        if (i==1){
+            hashMap.put("status","200");
+            hashMap.put("msg","重置密码成功，你的密码是：111111");
+            return hashMap;
+        }else{
+            hashMap.put("status","201");
+            hashMap.put("msg","重置密码失，请稍后重试！！");
+            return hashMap;
+        }
+    }
+
+    //修改学生账号信息
+    @Override
+    public HashMap upStudentUserInfo(MultipartFile file,User user){
+        HashMap hashMap = new HashMap();
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+//            //获取当前用户名
+////            String currentUserName = authentication.getName();
+////            user.setUsername(currentUserName);
+////            hashMap.put("msg","未登录");
+//            hashMap.put("status","201");
+//        }
+        String urlPasth=null;
+        if (file != null && !file.isEmpty() ){
+            urlPasth = ImgHeadUtils.imgHead(file);
+        }
+
+        if (urlPasth != null){
+            user.setHeadPortrait(urlPasth);
+        }
+
+        int i = studentUserDao.upStudentUser(user);
+        if (i==1){
+            hashMap.put("status","200");
+            hashMap.put("msg","更新成功");
+            //更新信息
+
+//            user = adminUserDao.getAdmin(user.getUsername());
+//            setLoginUser(user);
+        }else{
+            hashMap.put("status","201");
+            hashMap.put("msg","更新失败，请重试！！");
+        }
+        return hashMap;
     }
 
     /**
@@ -318,9 +422,51 @@ public class AdminServiceImpl implements AdminService {
     public int addTeacherUser(User user) {
 
         System.out.println("+++++++++++++++++++"+user.toString());
-        int i = teacherUserDao.addTeacherUser(user);
-        return i;
+        boolean nonEmptyEmail = teacherUserDao.nonEmptyEmail(user.getEmail());
+        System.out.println(nonEmptyEmail);
+        if (!nonEmptyEmail){
+            int i = teacherUserDao.addTeacherUser(user);
+            return i;
+        }else{
+            return 10;
+        }
+//        int i = teacherUserDao.addTeacherUser(user);
+//        return i;
     }
+
+    /**
+     * 重置老师账号密码
+     * @param username
+     * @return
+     */
+    @Override
+    public HashMap resetTeacherPasssword(String username){
+        HashMap hashMap = new HashMap();
+        Pbkdf2PasswordEncoder encoder = new Pbkdf2PasswordEncoder(secret);
+        String password = encoder.encode("111111");
+//        int i = studentUserDao.upPassword(username, password);
+        int i = teacherUserDao.upPassword(username, encoder.encode("111111"));
+        if (i==1){
+            hashMap.put("status","200");
+            hashMap.put("msg","重置密码成功，你的密码是：111111");
+            return hashMap;
+        }else{
+            hashMap.put("status","201");
+            hashMap.put("msg","重置密码失，请稍后重试！！");
+            return hashMap;
+        }
+
+    }
+
+    /**
+     * 老师用户
+     */
+    @Override
+    public User getTeacherUser(String username){
+        User teacher = teacherUserDao.getTeacher(username);
+        return teacher;
+    }
+
 
     /**
      * 批量删除老师账号
@@ -333,6 +479,41 @@ public class AdminServiceImpl implements AdminService {
         return i;
     }
 
+    //修改老师账号信息
+    @Override
+    public HashMap upTeacherUserInfo(MultipartFile file,User user){
+        HashMap hashMap = new HashMap();
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+//            //获取当前用户名
+////            String currentUserName = authentication.getName();
+////            user.setUsername(currentUserName);
+////            hashMap.put("msg","未登录");
+//            hashMap.put("status","201");
+//        }
+        String urlPasth=null;
+        if (file != null && !file.isEmpty() ){
+            urlPasth = ImgHeadUtils.imgHead(file);
+        }
+
+        if (urlPasth != null){
+            user.setHeadPortrait(urlPasth);
+        }
+
+        int i = teacherUserDao.upTeacherUser(user);
+        if (i==1){
+            hashMap.put("status","200");
+            hashMap.put("msg","更新成功");
+            //更新信息
+
+//            user = adminUserDao.getAdmin(user.getUsername());
+//            setLoginUser(user);
+        }else{
+            hashMap.put("status","201");
+            hashMap.put("msg","更新失败，请重试！！");
+        }
+        return hashMap;
+    }
 
     /**
      * 学生个人信息列表
@@ -341,6 +522,22 @@ public class AdminServiceImpl implements AdminService {
     public List<StudentInfo> getStudentInfoList(StudentInfo studentInfo) {
         List<StudentInfo> studentInfoList = studentInfoDao.getStudentInfoList(studentInfo);
         return studentInfoList;
+    }
+
+    //批量添加学生个人信息
+    @Override
+    public int addStudentInfoList(List<StudentInfo> studentInfoList){
+        int i = studentInfoDao.addStudentInfoList(studentInfoList);
+        return i;
+    }
+
+    /**
+     * 批量删除学生个人信息
+     */
+    @Override
+    public int delStudentInfoList(String[] ids){
+        int i = studentInfoDao.delStudentInfoList(ids);
+        return i;
     }
 
     /**
@@ -354,6 +551,46 @@ public class AdminServiceImpl implements AdminService {
         return studentInfo;
     }
 
+    //添加学生个人信息
+    @Override
+    public HashMap addStudentInfo(StudentInfo studentInfo){
+        HashMap hashMap = new HashMap();
+
+//        System.out.println("existsuername"+studentInfoDao.existUsername(studentInfo.getUsername()));
+        if (studentInfoDao.existUsername(studentInfo.getUsername())){
+            hashMap.put("status","201");
+            hashMap.put("msg","账号/学号已存在！！");
+            return hashMap;
+        }
+        int i = studentInfoDao.addStudentInfo(studentInfo);
+        if (i==1){
+            hashMap.put("status","200");
+            hashMap.put("msg","添加成功！！");
+        }else {
+            hashMap.put("status","201");
+            hashMap.put("msg","添加失败！！");
+        }
+        return hashMap;
+    }
+
+    //修改保存学生个人信息
+    @Override
+    public HashMap upStudentInfo(StudentInfo studentInfo){
+        HashMap hashMap = new HashMap();
+
+        int i = studentInfoDao.upStudentInfo(studentInfo);
+        if (i==1){
+            hashMap.put("status","200");
+            hashMap.put("msg","修改成功！！");
+        }else {
+            hashMap.put("status","201");
+            hashMap.put("msg","修改失败！！");
+        }
+        return hashMap;
+    }
+
+
+
     /**
      * 老师个人信息列表
      */
@@ -362,6 +599,7 @@ public class AdminServiceImpl implements AdminService {
         List<TeacherInfo> teacherinfoList = teacherInfoDao.getTeacherinfoList(teacherInfo);
         return teacherinfoList;
     }
+
 
     /**
      * 老师个人详情信息
@@ -372,6 +610,102 @@ public class AdminServiceImpl implements AdminService {
     public TeacherInfo getTeacherInfo(String username){
         TeacherInfo teacherInfo = teacherInfoDao.getTeacherInfo(username);
         return teacherInfo;
+    }
+
+    //添加老师个人信息
+    @Override
+    public HashMap addTeacherInfo(TeacherInfo teacherInfo){
+        HashMap hashMap = new HashMap();
+        if (teacherInfoDao.existUsername(teacherInfo.getUsername())){
+            hashMap.put("status","201");
+            hashMap.put("msg","账号/学号已存在！！");
+            return hashMap;
+        }
+        int i = teacherInfoDao.addTeacherInfo(teacherInfo);
+        if (i==1){
+            hashMap.put("status","200");
+            hashMap.put("msg","添加成功！！");
+        }else {
+            hashMap.put("status","201");
+            hashMap.put("msg","添加失败！！");
+        }
+        return hashMap;
+    }
+
+    //更新老师个人信息
+    @Override
+    public HashMap upTeacherInfo(TeacherInfo teacherInfo){
+        HashMap hashMap = new HashMap();
+        int i = teacherInfoDao.upTeacherInfo(teacherInfo);
+        if (i==1){
+            hashMap.put("status","200");
+            hashMap.put("msg","修改成功！！");
+        }else {
+            hashMap.put("status","201");
+            hashMap.put("msg","修改失败！！");
+        }
+        return hashMap;
+    }
+
+    //批量添加老师个人信息
+    @Override
+    public int addTeacherInfoList(List<TeacherInfo> teacherInfoList){
+        int i = teacherInfoDao.addTeacherInfoList(teacherInfoList);
+        return i;
+    }
+
+    /**
+     * 批量删除老师个人信息
+     */
+    @Override
+    public int delTeacherInfoList(String[] ids){
+        int i = teacherInfoDao.delTeacherInfoList(ids);
+        return i;
+    }
+
+
+    //获取实验详情信息
+    @Override
+    public LaboratoryInfo getLaboratoryInfo(String labid){
+        LaboratoryInfo laboratoryInfo = laboratoryInfoDao.getLaboratoryInfo(labid);
+        return laboratoryInfo;
+    }
+
+    //添加预约记录
+    @Override
+    public HashMap addReserve(String labid ,String reserveTime){
+        HashMap hashMap = new HashMap();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            //获取当前用户名
+//            String currentUserName = authentication.getName();
+//            user.setUsername(currentUserName);
+//            hashMap.put("msg","未登录");
+            Reserve reserve = new Reserve();
+            reserve.setId(UUID.randomUUID().toString().replaceAll("-",""));
+            reserve.setLabid(labid);
+            reserve.setReserveTime(reserveTime);
+            reserve.setUsername(authentication.getName());
+            reserve.setUserType("admin");
+            int i = reserveDao.addReserve(reserve);
+
+            if (i==1){
+                hashMap.put("status","200");
+                hashMap.put("msg","预约成功！！");
+                return hashMap;
+            }else{
+                hashMap.put("status","201");
+                hashMap.put("msg","预约失败！！");
+                return hashMap;
+            }
+
+
+        }else{
+            hashMap.put("status","201");
+            hashMap.put("msg","账号未登录！！");
+            return hashMap;
+        }
+
     }
 
     /**
@@ -397,6 +731,132 @@ public class AdminServiceImpl implements AdminService {
         List<Reserve> adminReserveList = reserveDao.getAdminReserveList(reserve, laboratoryInfo);
         return adminReserveList;
     }
+
+    //添加实验室
+    @Override
+    public HashMap addLaboratoryInfo(LaboratoryInfo laboratoryInfo){
+        HashMap hashMap =new HashMap();
+        laboratoryInfo.setLabid(UUID.randomUUID().toString().replaceAll("-",""));
+        int i = laboratoryInfoDao.addLaboratoryInfo(laboratoryInfo);
+        if (i==1){
+            hashMap.put("status","200");
+            hashMap.put("msg","添加成功！！");
+        }else{
+            hashMap.put("status","201");
+            hashMap.put("msg","添加失败！！");
+        }
+        return hashMap;
+    }
+
+    //表格批量添加实验室
+    @Override
+    public HashMap addLaboratoryInfoList(List<LaboratoryInfo> laboratoryInfoList){
+        HashMap hashMap =new HashMap();
+//        laboratoryInfo.setLabid(UUID.randomUUID().toString().replaceAll("-",""));
+        int i = laboratoryInfoDao.addLaboratoryInfoList(laboratoryInfoList);
+        if (i>0){
+            hashMap.put("status","200");
+            hashMap.put("msg","添加成功！！");
+            hashMap.put("num",i);
+        }else{
+            hashMap.put("status","201");
+            hashMap.put("msg","添加失败！！");
+        }
+        return hashMap;
+    }
+
+    //批量删除实验室
+    @Override
+    public HashMap delLaboratoryInfoList(String[] ids){
+        HashMap hashMap = new HashMap();
+        int i = laboratoryInfoDao.delLaboratoryInfoList(ids);
+        if (i>0){
+            hashMap.put("status","200");
+            hashMap.put("msg","删除成功");
+            hashMap.put("num",i);
+        }else{
+            hashMap.put("status","201");
+            hashMap.put("msg","删除失败！！");
+//            hashMap.put("num",i);
+        }
+        return hashMap;
+    }
+
+    //更新实验室信息
+    @Override
+    public HashMap upLaboratoryInfo(LaboratoryInfo laboratoryInfo){
+        HashMap hashMap = new HashMap();
+        int i = laboratoryInfoDao.upLaboratoryInfo(laboratoryInfo);
+        if (i==1){
+            hashMap.put("status","200");
+            hashMap.put("msg","修改成功！！");
+            return hashMap;
+        }else {
+            hashMap.put("status","201");
+            hashMap.put("msg","修改失败！！");
+            return hashMap;
+        }
+    }
+
+    //更新实验室状态
+    @Override
+    public HashMap upStatus(String labid ,String status){
+        HashMap hashMap = new HashMap();
+        int i = laboratoryInfoDao.upStatus(labid, status);
+        if (i==1){
+            hashMap.put("status","200");
+            hashMap.put("msg","实验室已"+status);
+            return hashMap;
+        }else{
+            hashMap.put("status","201");
+            hashMap.put("msg",status+"失败");
+            return hashMap;
+        }
+
+    }
+
+
+    //取消预约
+    @Override
+    public HashMap delReserveAdmin(String id){
+        HashMap hashMap = new HashMap();
+        int i = reserveDao.delReserveAdmin(id);
+        if (i==1){
+            hashMap.put("status","200");
+            hashMap.put("msg","取消成功！！！");
+            return hashMap;
+        }else{
+            hashMap.put("status","201");
+            hashMap.put("msg","取消失败！！！");
+            return hashMap;
+        }
+
+    }
+
+    //预约详情
+    @Override
+    public Reserve getDetailReserve(String id){
+        Reserve reserve = reserveDao.getDetailReserveAdmin(id);
+        return reserve;
+    }
+
+    //批量删除预约记录
+    @Override
+    public HashMap delReserveInfoList(String[] ids){
+        HashMap hashMap = new HashMap();
+        int i = reserveDao.delReserveInfoList(ids);
+        if (i>0){
+            hashMap.put("status","200");
+            hashMap.put("msg","删除成功！！");
+            hashMap.put("num",i);
+            return hashMap;
+        }else{
+            hashMap.put("status","201");
+            hashMap.put("msg","删除失败");
+            return hashMap;
+        }
+    }
+
 
     //获取密码
     @Override
@@ -465,5 +925,106 @@ public class AdminServiceImpl implements AdminService {
         return map;
     }
 
+    //
+    @Override
+    public String getLaboratoryId(LaboratoryInfo laboratoryInfo){
+        String labid = laboratoryInfoDao.getLabid(laboratoryInfo);
+        return labid;
+    }
 
+    //实验室物品列表
+    @Override
+    public List<LaboratoryThing> getLaboratoryThingList(LaboratoryThing laboratoryThing,LaboratoryInfo laboratoryInfo){
+        List<LaboratoryThing> laboratoryThingList = laboratoryThingDao.getLaboratoryThingList(laboratoryThing,laboratoryInfo);
+        return laboratoryThingList;
+    }
+
+
+    //添加物品
+    @Override
+    public HashMap addLabThing(LaboratoryThing laboratoryThing,LaboratoryInfo laboratoryInfo){
+        HashMap hashMap = new HashMap();
+        String labid = laboratoryInfoDao.getLabid(laboratoryInfo);
+        System.out.println(labid+"sssssssss");
+        laboratoryThing.setLabid(labid);
+        laboratoryThing.setId(UUID.randomUUID().toString().replaceAll("-",""));
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        laboratoryThing.setTime(df.format(new Date()));
+        int i = laboratoryThingDao.addLabThing(laboratoryThing);
+        if (i==1){
+            hashMap.put("status","200");
+            hashMap.put("msg","添加成功");
+            return hashMap;
+        }else{
+            hashMap.put("status","201");
+            hashMap.put("msg","添加失败");
+            return hashMap;
+        }
+    }
+
+
+    //批量删除物品
+    @Override
+    public HashMap delLaboratoryThingList(String[] ids){
+        HashMap hashMap = new HashMap();
+        int i = laboratoryThingDao.delLabThingList(ids);
+        if (i>0){
+            hashMap.put("status","200");
+            hashMap.put("msg","删除成功 ");
+            hashMap.put("num",i);
+            return hashMap;
+        }else{
+            hashMap.put("status","201");
+            hashMap.put("msg","删除失败");
+            return hashMap;
+        }
+
+    }
+
+
+    //批量表格添加物品
+    @Override
+    public HashMap addLaboratoryThingList(List<LaboratoryThing> laboratoryThingList){
+        HashMap hashMap = new HashMap();
+        int i = laboratoryThingDao.addLaboratoryThingList(laboratoryThingList);
+        if (i>0){
+            hashMap.put("status","200");
+            hashMap.put("msg","添加成功 ");
+            hashMap.put("num",i);
+            return hashMap;
+        }else{
+            hashMap.put("status","201");
+            hashMap.put("msg","添加失败");
+            return hashMap;
+        }
+    }
+
+    //获取物品详情信息
+    @Override
+    public LaboratoryThing getLaboratoryThing(String id){
+        LaboratoryThing laboratoryThing = laboratoryThingDao.getLaboratoryThing(id);
+        return laboratoryThing;
+    }
+
+    //修改保存物品信息
+    @Override
+   public HashMap upLaboratoryThing(LaboratoryThing laboratoryThing,LaboratoryInfo laboratoryInfo){
+        HashMap hashMap = new HashMap();
+        String labid = laboratoryInfoDao.getLabid(laboratoryInfo);
+        if (labid ==null || labid =="" ){
+            hashMap.put("status","201");
+            hashMap.put("msg","实验室不存在，请核对正确！！");
+            return hashMap;
+        }
+        int i = laboratoryThingDao.upLaboratoryThing(laboratoryThing);
+        if(i==1){
+            hashMap.put("status","200");
+            hashMap.put("msg","修改成功！！");
+            return hashMap;
+        }else{
+            hashMap.put("status","201");
+            hashMap.put("msg","修改失败！！");
+            return hashMap;
+        }
+    }
 }

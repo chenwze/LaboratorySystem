@@ -94,23 +94,52 @@
   /*.btttt{*/
   /*    color: #fff;*/
   /*}*/
+  #select{
+    border: solid 1px #f5f5f5;
+    background-color: #009688;
+    padding: 2px;
+    color: #fff;
+    padding: 3px 5px;
+  }
+
+  #select .noselect{
+    border:none;
+    background-color: #fff;
+    color: #000;
+  }
+
+  .layui-table[lay-size=sm] td, .layui-table[lay-size=sm] th{
+    font-size: 14px;
+  }
+  .layui-layer-btn .layui-layer-btn0{
+    color: #fff!important;
+    background-color: #009688!important;
+  }
+  .layui-layer-setwin .layui-layer-close2{
+    display: none;
+  }
 </style>
 <body>
 <div>
   <div>
     <!--        查找表单-->
-    <form class="layui-form" action="/admin/getStudentInfoList">
+    <form id="form" class="layui-form" action="/admin/getStudentInfoList">
       <div class="layui-form-item ">
         <div class="layui-inline">
 
-          <label class="layui-form-label my-label">账号ID</label>
+          <label class="layui-form-label my-label">账号</label>
           <div class="layui-input-inline">
-            <input  th:value="${username}" class="layui-input"  name="username" placeholder="账号ID"  >
+            <input  th:value="${username}" class="layui-input"  name="username" placeholder="账号"  >
           </div>
 
-          <label class="layui-form-label my-label">用户名称</label>
+          <label class="layui-form-label my-label">姓名</label>
           <div class="layui-input-inline">
-            <input th:value="${name}"  class="layui-input" name="name" placeholder="用户名称"  >
+            <input th:value="${name}"  class="layui-input" name="name" placeholder="姓名"  >
+          </div>
+
+          <label class="layui-form-label my-label">专业</label>
+          <div class="layui-input-inline">
+            <input th:value="${major}"  class="layui-input" name="major" placeholder="专业"  >
           </div>
 
 <!--          <label class="layui-form-label my-label">注册时间</label>-->
@@ -118,7 +147,7 @@
 <!--            <input id="test2" th:value="${createTime}" name="createTime" class="layui-input" readonly lay-verify="required|date" type="data" placeholder="注册时间"  >-->
 <!--          </div>-->
 
-          <button id="btn" type="submit" class="layui-btn layui-btn-normal layui-input-inline" style="width: max-content">查找</button>
+          <button id="btn" type="submit" class="layui-btn  layui-input-inline" style="width: max-content">查找</button>
         </div>
 
       </div>
@@ -140,19 +169,20 @@
     <div>
       <div>
         <input type="file" id="exe_file" onchange ="uploadFile()" name="file" style="display:none" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" >
-        <button class="layui-btn" onclick="addStudentPage()">添加</button>
-        <button class="layui-btn" onclick="addStudentInfoExe();">EXE添加</button>
-        <button class="layui-btn" onclick="delStudentInfolist();">删除</button>
+        <button class="layui-btn layui-btn-sm" onclick="addStudentInfoPage()">添加</button>
+        <button class="layui-btn layui-btn-sm" onclick="addStudentInfoExe();">EXE添加</button>
+        <button class="layui-btn layui-btn-sm" onclick="delStudentInfolist();">删除</button>
       </div>
 
-      <table class="layui-table" lay-size="" width="100%">
+      <table class="layui-table" lay-size="sm" width="100%">
         <thead style="background-color: #009688;color: #fff;">
         <tr style="background-color: #393D49;color: #fff;" >
           <th style="min-width: 15px;"><input id="checkbox" onclick="checkAll();" type="checkbox"></th>
-          <th>账号ID</th>
+          <th>账号</th>
           <th>姓名</th>
           <th>年龄</th>
           <th>性别</th>
+          <th>专业</th>
           <th>联系电话</th>
           <th>入学日期</th>
           <th>住址</th>
@@ -170,13 +200,16 @@
           </td>
           <td th:text="${arrayS.age}"></td>
           <td th:text="${arrayS.sex}"></td>
+          <td th:text="${arrayS.major}"></td>
           <td th:text="${arrayS.tel}"></td>
           <td th:text="${arrayS.studayDate}"></td>
-          <td th:text="${arrayS.address}"></td>
           <td>
-            <a id="del-resever" href="javascript:void(0)" th:data-id="${arrayS.username}" th:onclick="detailsStudentInfo(this.getAttribute('data-id'))">详情</a>
-            <a id="del-resever" href="javascript:void(0)" th:data-id="${arrayS.username}" th:onclick="detailsStudentInfo(this.getAttribute('data-id'))">编辑</a>
-            <a id="del-resever" href="javascript:void(0)" th:data-id="${arrayS.username}" th:onclick="detailsStudentInfo(this.getAttribute('data-id'))">删除</a>
+            <div style="width:200px;height:16px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;" th:text="${arrayS.address}"></div>
+          </td>
+          <td>
+            <button class="layui-btn layui-btn-xs" id="del-resever" href="javascript:void(0)" th:data-id="${arrayS.username}" th:onclick="detailsStudentInfo(this.getAttribute('data-id'))">详情</button>
+            <button class="layui-btn layui-btn-xs"  id="del-resever" href="javascript:void(0)" th:data-id="${arrayS.username}" th:onclick="editStudentInfo(this.getAttribute('data-id'))">编辑</button>
+<!--            <button class="layui-btn layui-btn-xs"  id="del-resever" href="javascript:void(0)" th:data-id="${arrayS.username}" th:onclick="detailsStudentInfo(this.getAttribute('data-id'))">删除</button>-->
           </td>
         </tr>
         </tbody>
@@ -188,10 +221,18 @@
   <div style="text-align: center;">
     <div  class="layui-box  layui-laypage-default layui-laypage">
       <!--        <ul class="pagination-flickr pagination m-b-5 pull-right">-->
+      <th:block th:if="${1 != pageInfo.pageNum} and ${pageInfo.pages}>0">
+        <a  th:href="@{'/admin/getStudentInfoList?pageNum=1'
+                +'&name='+${name}
+                +'&username='+${username}+'&major='+${major}}" aria-label="Previous">
+          <i class="fa fa-angle-left"></i>&nbsp;第一页
+        </a>
+      </th:block>
+
       <th:block th:if="${pageInfo.hasPreviousPage}">
         <a  th:href="@{'/admin/getStudentInfoList?pageNum='+${pageInfo.prePage}
                 +'&name='+${name}
-                +'&username='+${username}}" aria-label="Previous">
+                +'&username='+${username}+'&major='+${major}}" aria-label="Previous">
           <i class="fa fa-angle-left"></i>&nbsp;上一页
         </a>
       </th:block>
@@ -201,27 +242,62 @@
         <a th:class="${pageInfo.pageNum}==${navIndex}?'pageNum':''"
            th:href="@{'/admin/getStudentInfoList?pageNum='+${navIndex}
                   +'&name='+${name}
-                   +'&username='+${username}}" th:text="${navIndex}"></a>
-
+                   +'&username='+${username}+'&major='+${major}}" th:text="${navIndex}"></a>
       </th:block>
 
       <th:block th:if="${pageInfo.hasNextPage}">
         <a th:href="@{'/admin/getStudentInfoList?pageNum='+${pageInfo.nextPage}
                +'&name='+${name}
-                +'&username='+${username}}" aria-label="Next">
+                +'&username='+${username}+'&major='+${major}}" aria-label="Next">
           下一页&nbsp;<i class="fa fa-angle-right"></i>
         </a>
       </th:block>
+
+      <th:block th:if="${pageInfo.lastPage != pageInfo.pageNum} and ${pageInfo.pages}>0">
+        <a th:href="@{'/admin/getStudentInfoList?pageNum='+${pageInfo.pages}
+               +'&name='+${name}
+                +'&username='+${username}+'&major='+${major}}" aria-label="Next">
+          最后一页&nbsp;<i class="fa fa-angle-right"></i>
+        </a>
+      </th:block>
+
       <th:block th:if="${pageInfo.pages}>0">
         <span th:text="'共'+${pageInfo.pages}+'页'"></span>
+        <span th:text="'共'+${pageInfo.getTotal()}+'条记录'"></span>
       </th:block>
     </div>
+
+    <th:block th:if="${pageInfo.pages}>0">
+      <span style="margin-right: 2px;margin-left: 3px;">跳转到</span>
+      <select name="pageNum" id="select" οnfοcus="selectFocus()"  onchange="onJumpPage()" >
+        <th:block th:each="i:${#numbers.sequence(1,pageInfo.pages)}">
+          <option th:class="${i}==${pageInfo.pageNum}?'selected':'noselect'"
+                  th:selected="${i}==${pageInfo.pageNum}" th:value="${i}"
+                  οnclick="selectClick()" th:text="'第'+${i}+'页'">
+          </option>
+        </th:block>
+      </select>
+    </th:block>
+
   </div>
 
 </div>
 
 </body>
 <script type="text/javascript">
+
+
+  //指定跳转页面
+  function onJumpPage(){
+    var dataParam = $("#form").serialize();
+    var pageNum = $("#select").val();
+    dataParam += "&"+"pageNum="+pageNum;
+    window.location.href="/admin/getStudentInfoList?"+dataParam;
+
+    console.log(dataParam);
+  }
+
+
   //用exe表格添加学生用户
   function addStudentInfoExe(){
     document.getElementById("exe_file").click();
@@ -248,10 +324,19 @@
         xhr.setRequestHeader(header, token);
       },
       success: function (data) {
-        layer.close(loading);
-        alert("成功添加"+data.num+"记录！");
-        console.log(data);
-        location.reload();
+        if(data.status==200){
+          loading=layer.alert("成功添加"+data.num+"记录！！",{icon:1,title:false},function (){
+            window.location.reload();
+          })
+        }else{
+          loading=layer.alert(data.msg,{icon:2,title:false},function (){
+            window.location.reload();
+          })
+        }
+        // layer.close(loading);
+        // alert("成功添加"+data.num+"记录！");
+        // console.log(data);
+        // location.reload();
       },
       error:function(data){
         layer.close(loading);
@@ -267,17 +352,17 @@
   //     $("input[name='checkbox']").attr("checked","true");
   // }
 
-  function addStudentPage(){
+  function addStudentInfoPage(){
     var layer = layui.layer;
     //iframe层
     var index = layer.open({
       type: 2,
-      title: '添加学生用户',
-      shadeClose: true,
+      title: '添加学生信息',
+      shadeClose: false,
       shade: 0.8,
       scrollbar: false,
       area: ['70%', '99%'],//宽 高
-      content:'/admin/studentInfoPage',
+      content:'/admin/addStudentInfoPage',
       end : function() {
         location.reload();
       }
@@ -298,7 +383,7 @@
     }else {
       var header = $("meta[name='_csrf_header']").attr("content");
       var token = $("meta[name='_csrf']").attr("content");
-      var data="dataList="+chk_value;
+      var data="ids="+chk_value;
       // console.log(JSON.stringify(data));
       console.log(data);
       $.ajax({
@@ -311,21 +396,20 @@
           xhr.setRequestHeader(header, token);
         },
         success: function (data) {
-          console.log(data.num);
-          // console.log(data.labid);
-          // inputNull(data.labid);
-          if (data.num>0){
-            alert("成功删除"+data.num+"条记录！！");
-          }else{
-            alert("删除错误！");
+          if (data.status==200){
+            loading=layer.alert("成功删除"+data.num+"条记录！",{icon:1,title:false},function (){
+              window.location.reload();
+            });
+          }else {
+            loading=layer.alert("删除失败！！",{icon:2,title:false},function (){
+              window.location.reload();
+            });
           }
-
-          // closeIfame();
-          location.reload();
         },
         error:function (){
-          alert("删除错误！");
-          location.reload();
+          loading=layer.alert("出现错误 ！！",{icon:2,title:false},function (){
+            window.location.reload();
+          });
         }
 
 
@@ -342,7 +426,26 @@
       // $("input[name='checkbox']").removeAttr("checked");
     }
 
+  }
 
+  //编辑学生个人信息
+  function editStudentInfo(username){
+    var layer = layui.layer;
+    //iframe层
+    var index = layer.open({
+      type: 2,
+      title: '编辑学生个人信息',
+      shadeClose: true,
+      shade: 0.8,
+      scrollbar: false,
+      area: ['70%', '99%'],//宽 高
+      content:'/admin/editStudentInfo?username='+username
+      // ,btn:['<div class="btttt">保存</div>','取消']
+      // ,closeBtn:1
+      ,end: function(date){
+          window.location.reload();
+      }
+    });
   }
 
   //详情信息

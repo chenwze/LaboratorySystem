@@ -36,6 +36,17 @@ public interface ReserveDao {
      */
     int delReserve(@Param("id") String id ,@Param("username") String username);
 
+    //getDetailReserve预约详情记录
+    Reserve getDetailReserve(@Param("id") String id,@Param("username") String username);
+
+    //管理员预约详情记录
+    Reserve getDetailReserveAdmin(@Param("id") String id);
 //    管理员查询实验室预约记录
     List<Reserve> getAdminReserveList(Reserve reserve, LaboratoryInfo laboratoryInfo);
+
+    //管理员取消预约
+    int delReserveAdmin(String id);
+
+    //批量删除记录
+    int delReserveInfoList(String[] ids);
 }

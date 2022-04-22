@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.gdufe.laboratorysystem.dao.NoticeDao">
 
+
 <!--   查看显示的公告-->
     <select id="getShowNotice" resultType="com.gdufe.laboratorysystem.entity.Notice">
         select title,time,content from notice where display = 1;
@@ -63,5 +64,8 @@
     </delete>
 
 <!--    设置公告状态-->
-
+    <insert id="upNoticeStatus">
+        update `laboratory_system`.`notice` set display = #{display},admin_username =#{adminUsername}
+        where id = #{id}
+    </insert>
 </mapper>

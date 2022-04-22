@@ -37,6 +37,10 @@
             <if test="name != '' and name !=null and name != 'null'">
                 and name like concat(concat('%',#{name}),'%')
             </if>
+
+            <if test="major != null and major !='' and major !='null' ">
+                major = #{major},
+            </if>
 <!--            <if test="createTime != '' and createTime !=null and createTime != 'null'">-->
 <!--                and TO_DAYS(create_time)= TO_DAYS(#{createTime})-->
 <!--            </if>-->
@@ -72,20 +76,52 @@
                 studay_date = #{studayDate},
             </if>
 
+            <if test="birth != null and birth !='' and birth !='null' ">
+                birth = #{birth},
+            </if>
+
             <if test="tel != null and tel !='' and tel !='null' ">
                 tel = #{tel},
             </if>
 
-            <if test="sex != null and sex !='' and sex !='null' ">
+            <if test="sex =='男' or sex =='女' ">
                 sex = #{sex},
             </if>
 
-            <if test=" age != 0 and age gt 0 and age != null ">
+            <if test=" age !=null and age !=0   and age gt 0  ">
                 age = #{age},
             </if>
 
         </trim>
         where username = #{username};
     </update>
+
+<!--    添加学生个人信息-->
+    <insert id="addStudentInfo">
+        INSERT INTO `laboratory_system`.`student_info`(`username`, `name`, `age`, `sex`, `tel`, `studay_date`, `graduation_date`, `address`, `college`, `major`, `aclass`, `birth`, `head_portrait`)
+        VALUES (#{username}, #{name}, #{age}, #{sex},#{tel},#{studayDate} ,#{graduationDate} ,#{address},#{college} ,#{major},#{aclass},#{birth},#{headPortrait})
+    </insert>
+
+<!--    学生个人信息账号是否存在-->
+    <select id="existUsername" resultType="boolean">
+        select count(*) from student_info where username=#{username};
+    </select>
+
+<!--    批量删除学生个人信息-->
+    <delete id="delStudentInfoList" parameterType="java.lang.String" >
+        DELETE FROM `laboratory_system`.`student_info` WHERE
+        <foreach collection="array" separator="or" item="id" index="index" >
+            username = #{id}
+        </foreach>
+    </delete>
+
+    <!--    批量添加学生个人信息-->
+    <insert id="addStudentInfoList">
+        INSERT INTO `laboratory_system`.`student_info`(`username`, `name`, `age`, `sex`, `tel`, `studay_date`, `graduation_date`, `address`, `college`, `major`, `aclass`, `birth`, `head_portrait`)
+        VALUES
+        <foreach collection="list" item="studentInfo" index="index" separator=",">
+           (#{studentInfo.username}, #{studentInfo.name}, #{studentInfo.age}, #{studentInfo.sex},#{studentInfo.tel},#{studentInfo.studayDate},#{studentInfo.graduationDate},#{studentInfo.address},#{studentInfo.college} ,#{studentInfo.major},#{studentInfo.aclass},#{studentInfo.birth},#{studentInfo.headPortrait})
+        </foreach>
+    </insert>
 
 </mapper>

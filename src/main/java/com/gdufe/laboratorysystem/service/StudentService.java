@@ -42,6 +42,11 @@ public interface StudentService {
     List<Reserve> getReserveList(Reserve reserve,LaboratoryInfo laboratoryInfo);
 
     /**
+     * 查看详情预约记录
+     */
+    Reserve getDetailReserve(String id);
+
+    /**
      * 获取个人信息表
      */
     StudentInfo getStudentInfo();

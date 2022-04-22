@@ -20,7 +20,7 @@
 
 <form class="layui-form " style="text-align: center;" >
     <!--个人信息-->
-        <h2>个人信息</h2>
+        <h2 style="padding: 10px;">老师个人信息</h2>
         <table class="layui-inline" border="1px solid #ccc" cellspacing="0" cellpadding="0">
             <tr>
                 <td>
@@ -93,34 +93,36 @@
                 </td>
 
                 <td>
-                    <label class="layui-form-label"></label>
-                </td>
-                <td>
-                    <input type="text"  style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >
-                </td>
-            </tr>
-
-            <tr>
-                <td>
                     <label class="layui-form-label">出生年月日</label>
                 </td>
                 <td>
                     <input type="text" th:value="${teacherInfo.birth}" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >
                 </td>
-                <td>
-                    <label class="layui-form-label"></label>
-                </td>
-                <td>
-                    <input type="text" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >
-                </td>
             </tr>
+
+<!--            <tr>-->
+<!--                <td>-->
+<!--                    <label class="layui-form-label">出生年月日</label>-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                    <input type="text" th:value="${teacherInfo.birth}" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                    <label class="layui-form-label"></label>-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                    <input type="text" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >-->
+<!--                </td>-->
+<!--            </tr>-->
 
             <tr>
                 <td>
                     <label class="layui-form-label">家庭住址</label>
                 </td>
                 <td colspan="3">
-                    <input type="text" th:value="${teacherInfo.address}" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >
+                    <textarea type="text" th:text="${teacherInfo.address}" style="border: 0px;max-height: 40px;" class="layui-textarea" disabled="disabled" readonly="true"  >
+
+                    </textarea>
                 </td>
             </tr>
 

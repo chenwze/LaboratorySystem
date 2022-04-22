@@ -98,8 +98,8 @@ public class StudentServiceImpl implements StudentService {
             hashMap.put("msg","更新成功");
             //更新信息
 
-//            user = studentUserDao.getStudent(user.getUsername());
-//            setLoginUser(user);
+            user = studentUserDao.getStudent(user.getUsername());
+            setLoginUser(user);
         }else{
             hashMap.put("status","201");
             hashMap.put("msg","更新失败，请重试！！");
@@ -200,6 +200,9 @@ public class StudentServiceImpl implements StudentService {
             return "false";
     }
 
+    /*
+    预记录列表
+     */
     @Override
     public List<Reserve> getReserveList(Reserve reserve,LaboratoryInfo laboratoryInfo) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -208,8 +211,25 @@ public class StudentServiceImpl implements StudentService {
             String currentUserName = authentication.getName();
             reserve.setUsername(currentUserName);
         }
+        reserve.setUserType("student");
         List<Reserve> reserveList = reserveDao.getReserveList(reserve,laboratoryInfo);
         return reserveList;
+    }
+
+    /**
+     * 预约详情记录
+     * @return
+     */
+    @Override
+    public Reserve getDetailReserve(String id){
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+           String username = authentication.getName();
+            Reserve detailReserve = reserveDao.getDetailReserve(id, username);
+            return detailReserve;
+        }
+        return null;
     }
 
     //修改用户密码

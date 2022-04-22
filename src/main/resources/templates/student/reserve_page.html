@@ -33,9 +33,13 @@
     {
         background:rgba(216,54,54,0.5);
     }
+    .layui-layer-btn .layui-layer-btn0{
+        background-color: #009688;
+    }
 </style>
 <body>
     <form action="" method="post" id="form1">
+        <h1 style="padding: 10px;text-align: center;">预约实验室</h1>
         <div class="layui-form-item"  style="text-align: center;">
             <div class="layui-inline">
                 <label class="layui-form-label">实验楼</label>
@@ -71,7 +75,8 @@
             <div class="layui-inline input-focus">
                 <label class="layui-form-label input-focus">预约时间</label>
                 <div class="layui-input-inline">
-                    <input id="reserve-date" th:value="${reserve}" required="required" name="reserveTime" class="layui-input" readonly lay-verify="required|date" type="data" placeholder="预约时间"  >
+<!--                    <input id="reserve-date" th:value="${reserve}" required="required" name="reserveTime" class="layui-input" readonly lay-verify="required|date" type="data" placeholder="预约时间"  >-->
+                    <input id="reserve-date"  required="required" name="reserveTime" class="layui-input" readonly lay-verify="required|date" type="data" placeholder="预约时间"  >
                 </div>
             </div>
             <!--    <div class="layui-form-mid layui-word-aux">辅助文字</div>-->
@@ -87,12 +92,12 @@
 
         <div class="" style="text-align: center; ">
             <h2 >实验室说明</h2>
-            <p style="padding:10px;border: 1px silver solid; margin: 0 auto;width: 78%;text-align: left;">[[${laboratoryInfo.laboratoryInfo.describe}]]</p>
+            <p style="padding:10px;border: 1px silver solid; margin: 0 auto;width: 78%;max-height:150px;min-height:100px;text-align: left;">[[${laboratoryInfo.laboratoryInfo.describe}]]</p>
         </div>
         <div style="width: 78%;margin:0 auto;margin-top: 15px;">
             <div style="display: inline-block;float: right">
-                <button onclick="addReserve();" id="reserve-btn" type="button" class="layui-btn layui-btn-normal" >保存</button>
-                <button onclick="closeIfame();" type="" class="layui-btn layui-btn-normal">取消</button>
+                <button onclick="addReserve();" id="reserve-btn" type="button" class="layui-btn " >预约</button>
+                <button onclick="closeIfame();" type="" class="layui-btn ">取消</button>
             </div>
         </div>
     </form>
@@ -111,29 +116,38 @@
 </body>
 
 <script type="text/javascript">
+    //预约实验室
     function addReserve() {
         inputNull(1)
         var data = $("form").serialize();
         console.log(data);
         var header = $("meta[name='_csrf_header']").attr("content");
         var token = $("meta[name='_csrf']").attr("content");
+
         $.ajax({
             url: '/student/addReserve?',
             type: 'POST',
-            async: false,
+            sync: false,
             contentType: 'application/x-www-form-urlencoded;charset=UTF-8',
             data:data,
             dataType: 'json',
             beforeSend: function (xhr) {
                 xhr.setRequestHeader(header, token);
-
+                loading=layer.msg('正在处理..', {
+                    icon: 16
+                    ,shade: 0.3
+                    ,time: false
+                });
             },
             success: function (data) {
                 console.log(data.labid);
-                inputNull(data.labid);
+
                 if (data.labid != null){
-                    alert("预约成功");
-                    closeIfame();
+                    // alert("预约成功");
+                    loading=layer.alert("预约成功",{icon:1,title:false},function (){
+                        closeIfame();
+                    });
+
                 }else {
                     alert("预约失败");
                 }

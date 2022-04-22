@@ -94,6 +94,30 @@
   /*.btttt{*/
   /*    color: #fff;*/
   /*}*/
+  .layui-table[lay-size=sm] td, .layui-table[lay-size=sm] th{
+    font-size: 14px;
+  }
+
+  #select{
+    border: solid 1px #f5f5f5;
+    background-color: #009688;
+    padding: 2px;
+    color: #fff;
+    padding: 3px 5px;
+  }
+
+  #select .noselect{
+    border:none;
+    background-color: #fff;
+    color: #000;
+  }
+  .layui-layer-btn .layui-layer-btn0{
+    background-color: #009688;
+    color: #fff!important;
+  }
+  .layui-layer-setwin .layui-layer-close2{
+    display: none;
+  }
 </style>
 <body>
 <div>
@@ -118,7 +142,7 @@
             <input id="test2" th:value="${createTime}" name="createTime" class="layui-input" readonly lay-verify="required|date" type="data" placeholder="注册时间"  >
           </div>
 
-          <button id="btn" type="submit" class="layui-btn layui-btn-normal layui-input-inline" style="width: max-content">查找</button>
+          <button id="btn" type="submit" class="layui-btn  layui-input-inline" style="width: max-content">查找</button>
         </div>
 
       </div>
@@ -140,17 +164,17 @@
     <div>
       <div>
         <input type="file" id="exe_file" onchange ="uploadFile()" name="file" style="display:none" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" >
-        <button class="layui-btn" onclick="addTeacherPage()">添加</button>
-        <button class="layui-btn" onclick="addTeacherUserExe();">EXE添加</button>
-        <button class="layui-btn" onclick="delTeacherUserlist();">删除</button>
+        <button class="layui-btn layui-btn-sm" onclick="addTeacherPage()">添加</button>
+        <button class="layui-btn layui-btn-sm" onclick="addTeacherUserExe();">表格文件添加</button>
+        <button class="layui-btn layui-btn-sm" onclick="delTeacherUserlist();">删除</button>
       </div>
 
-      <table class="layui-table" lay-size="" width="100%">
+      <table class="layui-table" lay-size="sm" width="100%" style="font-size: 14px!important;">
         <thead style="background-color: #009688;color: #fff;">
         <tr style="background-color: #393D49;color: #fff;" >
           <th style="min-width: 15px;"><input id="checkbox" onclick="checkAll();" type="checkbox"></th>
           <th>账号ID</th>
-          <th style="width: 200px;">账号密码</th>
+<!--          <th style="width: 200px;">账号密码</th>-->
           <th>用户名称</th>
           <th>注册时间</th>
           <th>账号状态</th>
@@ -165,16 +189,27 @@
           <!--                    <td th:text="${arrayS.id}"></td>-->
           <th style="min-width: 15px;"><input type="checkbox" name="checkbox" th:value="${arrayS.username}"></th>
           <td th:text="${arrayS.username}"></td>
-          <td>
-            <div style="width:200px;height:16px;text-overflow: ellipsis;overflow: hidden;" th:text="${arrayS.password}"></div>
-          </td>
+<!--          <td>-->
+<!--            <div style="width:200px;height:16px;text-overflow: ellipsis;overflow: hidden;" th:text="${arrayS.password}"></div>-->
+<!--          </td>-->
           <td th:text="${arrayS.name}"></td>
           <td th:text="${arrayS.createTime}"></td>
           <td th:text="${arrayS.status}"></td>
           <td th:text="${arrayS.email}"></td>
           <td th:text="${arrayS.role}"></td>
+<!--          <td>-->
+<!--            <a id="del-resever" href="javascript:void(0)" th:data-id="${arrayS.username}" th:onclick="detailsNotice(this.getAttribute('data-id'))">详情</a>-->
+<!--          </td>-->
           <td>
-            <a id="del-resever" href="javascript:void(0)" th:data-id="${arrayS.username}" th:onclick="detailsNotice(this.getAttribute('data-id'))">详情</a>
+            <button class="layui-btn-xs layui-btn" id="del-resever" th:data-id="${arrayS.username}"
+                    th:onclick="detailsTeacherUser(this.getAttribute('data-id'))">详情</button>
+
+            <button class="layui-btn-xs layui-btn" id="del-resever" th:data-id="${arrayS.username}"
+                    th:onclick="editTeacherUser(this.getAttribute('data-id'))">编辑</button>
+
+            <button class="layui-btn-xs layui-btn" id="del-resever"  th:data-id="${arrayS.username}"
+                    th:onclick="resetPasssword(this.getAttribute('data-id'))">重置密码</button>
+
           </td>
         </tr>
         </tbody>
@@ -186,6 +221,15 @@
   <div style="text-align: center;">
     <div  class="layui-box  layui-laypage-default layui-laypage">
       <!--        <ul class="pagination-flickr pagination m-b-5 pull-right">-->
+      <th:block th:if="${1 != pageInfo.pageNum} and ${pageInfo.pages}>0">
+        <a  th:href="@{'/admin/teacherUserList?pageNum=1'
+                +'&name='+${name}
+                +'&username='+${username}
+                +'&createTime='+${createTime}}" aria-label="Previous">
+          <i class="fa fa-angle-left"></i>&nbsp;第一页
+        </a>
+      </th:block>
+
       <th:block th:if="${pageInfo.hasPreviousPage}">
         <a  th:href="@{'/admin/teacherUserList?pageNum='+${pageInfo.prePage}
                 +'&name='+${name}
@@ -213,16 +257,131 @@
           下一页&nbsp;<i class="fa fa-angle-right"></i>
         </a>
       </th:block>
+
+      <th:block th:if="${pageInfo.lastPage != pageInfo.pageNum} and ${pageInfo.pages}>0">
+        <a th:href="@{'/admin/teacherUserList?pageNum='+${pageInfo.pages}
+               +'&name='+${name}
+                +'&username='+${username}
+                +'&createTime='+${createTime}}" aria-label="Next">
+          最后一页&nbsp;<i class="fa fa-angle-right"></i>
+        </a>
+      </th:block>
+
       <th:block th:if="${pageInfo.pages}>0">
         <span th:text="'共'+${pageInfo.pages}+'页'"></span>
+        <span th:text="'共'+${pageInfo.getTotal()}+'条记录'"></span>
       </th:block>
     </div>
+
+    <th:block th:if="${pageInfo.pages}>0">
+      <span style="margin-right: 2px;margin-left: 3px;">跳转到</span>
+      <select name="pageNum" id="select" οnfοcus="selectFocus()"  onchange="onJumpPage()" >
+        <th:block th:each="i:${#numbers.sequence(1,pageInfo.pages)}">
+          <option th:class="${i}==${pageInfo.pageNum}?'selected':'noselect'"
+                  th:selected="${i}==${pageInfo.pageNum}" th:value="${i}"
+                  οnclick="selectClick()" th:text="'第'+${i}+'页'">
+          </option>
+        </th:block>
+      </select>
+    </th:block>
+
   </div>
 
 </div>
 
 </body>
 <script type="text/javascript">
+  //老师详情信息
+  function detailsTeacherUser(id){
+
+    var layer = layui.layer;
+    //iframe层
+    var index = layer.open({
+      type: 2,
+      title: '老师账号详情信息 ',
+      shadeClose: true,
+      shade: 0.8,
+      scrollbar: false,
+      area: ['70%', '99%'],//宽 高
+      content:'/admin/detailsTeacherUser?username='+id
+      ,end:function (){
+        window.location.reload();
+      }
+    });
+  }
+
+  /**
+   * 老师账号编辑
+   */
+  function editTeacherUser(username){
+    var layer = layui.layer;
+    //iframe层
+    var index = layer.open({
+      type: 2,
+      title: '老师账号详情信息 ',
+      shadeClose: true,
+      shade: 0.8,
+      scrollbar: false,
+      area: ['70%', '99%'],//宽 高
+      content:'/admin/editTeacherUser?username='+username
+      ,end:function (){
+        window.location.reload();
+      }
+    });
+  }
+
+
+  //重置老师账号密码
+  function resetPasssword(username){
+    var header = $("meta[name='_csrf_header']").attr("content");
+    var token = $("meta[name='_csrf']").attr("content");
+    $.ajax({
+      url: '/admin/resetTeacherPasssword',
+      type: 'POST',
+      // contentType: 'application/x-www-form-urlencoded;charset=UTF-8',
+      // contentType: 'application/json;charset=UTF-8',
+      data: {"username":username},
+      // dataType: 'json',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader(header, token);
+        loading=layer.msg("正在执执行...",{icon:16});
+      },
+      success: function (data) {
+        console.log(data);
+
+
+        if (data.status==200){
+          loading=layer.alert(data.msg,{icon:1,title:false},function (){
+            // closeIfame();
+            window.location.reload();
+          });
+        }else {
+          loading=layer.alert(data.msg,{icon:2,title:false},function (){
+            // closeIfame();
+            window.location.reload();
+          })
+
+        }
+
+      },
+      error:function (){
+        loading=layer.alert("出现错误！",{icon:5,title:false},function (){
+          window.location.reload();
+        });
+      }
+    })
+  }
+
+  //指定跳转页面
+  function onJumpPage(){
+    var dataParam = $("#form").serialize();
+    var pageNum = $("#select").val();
+    dataParam += "&"+"pageNum="+pageNum;
+    window.location.href="/admin/teacherUserList?"+dataParam;
+
+    console.log(dataParam);
+  }
+
   //用exe表格添加学生用户
   function addTeacherUserExe(){
     document.getElementById("exe_file").click();
@@ -234,11 +393,7 @@
     console.log(myform);
     var header = $("meta[name='_csrf_header']").attr("content");
     var token = $("meta[name='_csrf']").attr("content");
-    var loading = layer.load(1, {
-      shade: true,
-      shade: [0.5, '#000'],
-      // time: 50*1000
-    });
+    var loading = layer.msg("正在添加...",{icon: 16,time:1000*60});
     $.ajax({
       url: "/admin/addTeacherUserExe",
       type: "POST",
@@ -249,10 +404,15 @@
         xhr.setRequestHeader(header, token);
       },
       success: function (data) {
-        layer.close(loading);
-        alert("成功添加"+data.num+"记录！");
-        console.log(data);
-        location.reload();
+        layer.alert("成功添加"+data.num+"记录！",{icon:1,title:false},function (){
+          layer.close(loading);
+          location.reload();
+        });
+        // layer.close(loading);
+        // alert("成功添加"+data.num+"记录！");
+
+        // console.log(data);
+        // location.reload();
       },
       error:function(data){
         layer.close(loading);
@@ -267,7 +427,7 @@
   // $('#checkbox').onclick(){
   //     $("input[name='checkbox']").attr("checked","true");
   // }
-  //添加公告
+  //添加老师
   function addTeacherPage(){
     var layer = layui.layer;
     //iframe层
@@ -303,6 +463,7 @@
       var data="dataList="+chk_value;
       // console.log(JSON.stringify(data));
       console.log(data);
+      loading= layer.msg("正在删除...",{icon:16,time:1000*60});
       $.ajax({
         url: '/admin/delTeacherUserList',
         type: 'POST',
@@ -317,17 +478,23 @@
           // console.log(data.labid);
           // inputNull(data.labid);
           if (data.num>0){
-            alert("成功删除"+data.num+"条记录！！");
+            loading=layer.alert("成功删除"+data.num+"条记录！！",{icon:1,title:false},function (){
+              window.location.reload();
+            });
           }else{
-            alert("删除错误！");
+            loading=layer.alert("删除错误！",{icon:2,title:false},function (){
+              window.location.reload();
+            });
           }
 
           // closeIfame();
-          location.reload();
+          // location.reload();
         },
         error:function (){
-          alert("删除错误！");
-          location.reload();
+          loading=layer.alert("删除出错！",{icon:2,title:false},function (){
+            window.location.reload();
+          });
+          // location.reload();
         }
 
 
@@ -346,6 +513,7 @@
 
 
   }
+
 
   function detailsNotice(id){
     //获取被选中的option标签

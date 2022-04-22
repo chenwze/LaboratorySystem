@@ -39,12 +39,17 @@ public interface StudentUserDao {
 
 
     //批量添加用户
-    int addStudentUserList(List<User> userList);
+    int addStudentUserList(List<User>  userList);
 
     //添加单一学生用户
     int addStudentUser(User user);
 
-    //批量删除公告
+    /**
+     * 添加学生用户时邮箱是否存在
+     */
+    int isEmptyUserEmail(String email);
+
+    //批量删除学生账号
     int delStudentUserList(String[] ids);
 
     //更新账号状态
@@ -62,7 +67,7 @@ public interface StudentUserDao {
     int adminUpPassword(@Param("username") String username,@Param("password") String password);
 
     /**
-     * 管理员更新学生密码
+     * 管理员更新学生状态
      */
     int adminSetStatus(@Param("username") String username,@Param("status") String status);
 

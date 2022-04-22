@@ -4,15 +4,19 @@ import com.gdufe.laboratorysystem.dao.*;
 import com.gdufe.laboratorysystem.entity.*;
 import com.gdufe.laboratorysystem.service.StudentService;
 import com.gdufe.laboratorysystem.service.TeacherService;
+import com.gdufe.laboratorysystem.utils.ImgHeadUtils;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Date;
 import java.util.HashMap;
@@ -48,6 +52,16 @@ public class TeacherServiceImpl implements TeacherService {
     @Value("${system.user.password.secret}")
     private String secret;
 
+    /*更新认证信息*/
+    public static void setLoginUser(UserDetails userDetails) {
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities()));
+    }
+    /**
+     * 查看个人账号
+     * @param username
+     * @return
+     */
     @Override
     public User getTeacherUser(String username) {
         System.out.println("sssssssssssssssss");
@@ -59,6 +73,46 @@ public class TeacherServiceImpl implements TeacherService {
     public List<Notice> getShowNotice() {
         List<Notice> noticeList = noticeDao.getShowNotice();
         return noticeList;
+    }
+
+    /**
+     * 修改个人账号信息
+     * @return
+     */
+    @Override
+    public HashMap upTeacherUserInfo(MultipartFile file, User user){
+        HashMap hashMap = new HashMap();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            //获取当前用户名
+            String currentUserName = authentication.getName();
+            user.setUsername(currentUserName);
+            hashMap.put("msg","未登录");
+            hashMap.put("status","201");
+        }
+        String urlPasth=null;
+        if (file != null){
+            urlPasth = ImgHeadUtils.imgHead(file);
+        }
+
+        if (urlPasth != null){
+            user.setHeadPortrait(urlPasth);
+        }
+
+        int i = teacherUserDao.upTeacherUser(user);
+        if (i==1){
+            hashMap.put("status","200");
+            hashMap.put("msg","更新成功");
+            //更新信息
+
+            user = teacherUserDao.getTeacher(user.getUsername());
+            setLoginUser(user);
+        }else{
+            hashMap.put("status","201");
+            hashMap.put("msg","更新失败，请重试！！");
+        }
+        return hashMap;
+
     }
 
     //查找实验室列表
@@ -152,6 +206,23 @@ public class TeacherServiceImpl implements TeacherService {
         List<Reserve> reserveList = reserveDao.getReserveList(reserve,laboratoryInfo);
         return reserveList;
     }
+
+    /**
+     * 预约详情记录
+     * @return
+     */
+    @Override
+    public Reserve getDetailReserve(String id){
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String username = authentication.getName();
+            Reserve detailReserve = reserveDao.getDetailReserve(id, username);
+            return detailReserve;
+        }
+        return null;
+    }
+
 
     //修改用户密码
 

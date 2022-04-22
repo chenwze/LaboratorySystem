@@ -91,6 +91,41 @@
     background-color: #2e8ded;
     color: #fff;
   }
+  .layui-form-select dl dd.layui-this{
+    background-color: #009688;
+  }
+  .layui-form-item{
+    margin-bottom: 0px;
+  }
+  .layui-table td, .layui-table th{
+    padding: 5px 15px;
+  }
+  .layui-form-label{
+    margin-bottom: 0px;
+  }
+  .layui-table, .layui-table-view{
+    margin: 5px 0px;
+  }
+  .layui-table{
+    margin-top: 5px;
+  }
+
+  #select{
+    border: solid 1px #f5f5f5;
+    background-color: #009688;
+    padding: 2px;
+    color: #fff;
+    padding: 3px 5px;
+  }
+
+  #select .noselect{
+    border:none;
+    background-color: #fff;
+    color: #000;
+  }
+  .layui-table[lay-size=sm] td, .layui-table[lay-size=sm] th{
+    font-size: 14px;
+  }
   /*.btttt{*/
   /*    color: #fff;*/
   /*}*/
@@ -99,7 +134,7 @@
 <div>
   <div>
     <!--        查找表单-->
-    <form class="layui-form" action="/admin/studentUserList">
+    <form id="form" class="layui-form" action="/admin/studentUserList">
       <div class="layui-form-item ">
         <div class="layui-inline">
 
@@ -118,7 +153,7 @@
             <input id="test2" th:value="${createTime}" name="createTime" class="layui-input" readonly lay-verify="required|date" type="data" placeholder="注册时间"  >
           </div>
 
-          <button id="btn" type="submit" class="layui-btn layui-btn-normal layui-input-inline" style="width: max-content">查找</button>
+          <button id="btn" type="submit" class="layui-btn  layui-input-inline" style="width: max-content">查找</button>
         </div>
 
       </div>
@@ -138,19 +173,19 @@
   <div>
     <!--        数据列表-->
     <div>
-      <div>
+      <div style="margin-top: 10px;">
         <input type="file" id="exe_file" onchange ="uploadFile()" name="file" style="display:none" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" >
-        <button class="layui-btn" onclick="addStudentPage()">添加</button>
-        <button class="layui-btn" onclick="addStudentUserExe();">EXE添加</button>
-        <button class="layui-btn" onclick="delStudentUserlist();">删除</button>
+        <button class="layui-btn layui-btn-sm" onclick="addStudentPage()">添加</button>
+        <button class="layui-btn layui-btn-sm" onclick="addStudentUserExe();">EXE添加</button>
+        <button class="layui-btn layui-btn-sm" onclick="delStudentUserlist();">删除</button>
       </div>
 
-      <table class="layui-table" lay-size="" width="100%">
+      <table class="layui-table" lay-size="sm" style="font-size: 14px;" width="100%">
         <thead style="background-color: #009688;color: #fff;">
         <tr style="background-color: #393D49;color: #fff;" >
           <th style="min-width: 15px;"><input id="checkbox" onclick="checkAll();" type="checkbox"></th>
           <th>账号ID</th>
-          <th style="width: 200px;">账号密码</th>
+<!--          <th style="width: 200px;">账号密码</th>-->
           <th>用户名称</th>
           <th>注册时间</th>
           <th>账号状态</th>
@@ -165,18 +200,24 @@
           <!--                    <td th:text="${arrayS.id}"></td>-->
           <th style="min-width: 15px;"><input type="checkbox" name="checkbox" th:value="${arrayS.username}"></th>
           <td th:text="${arrayS.username}"></td>
-          <td>
-            <div style="width:200px;height:16px;text-overflow: ellipsis;overflow: hidden;" th:text="${arrayS.password}"></div>
-          </td>
+<!--          <td>-->
+<!--            <div style="width:200px;height:16px;text-overflow: ellipsis;overflow: hidden;" th:text="${arrayS.password}"></div>-->
+<!--          </td>-->
           <td th:text="${arrayS.name}"></td>
           <td th:text="${arrayS.createTime}"></td>
           <td th:text="${arrayS.status}"></td>
           <td th:text="${arrayS.email}"></td>
           <td th:text="${arrayS.role}"></td>
           <td>
-            <a id="del-resever" href="javascript:void(0)" th:data-id="${arrayS.username}" th:onclick="detailsNotice(this.getAttribute('data-id'))">详情</a>
-            <a id="del-resever" href="javascript:void(0)" th:data-id="${arrayS.username}" th:onclick="detailsNotice(this.getAttribute('data-id'))">修改密码</a>
-<!--            <a id="del-resever" href="javascript:void(0)" th:data-id="${arrayS.username}" th:onclick="detailsNotice(this.getAttribute('data-id'))">详情</a>-->
+            <button class="layui-btn-xs layui-btn" id="del-resever" th:data-id="${arrayS.username}"
+                    th:onclick="detailsStudentUser(this.getAttribute('data-id'))">详情</button>
+
+            <button class="layui-btn-xs layui-btn" id="del-resever" th:data-id="${arrayS.username}"
+                    th:onclick="editStudentUser(this.getAttribute('data-id'))">编辑</button>
+
+            <button class="layui-btn-xs layui-btn" id="del-resever"  th:data-id="${arrayS.username}"
+                    th:onclick="resetPasssword(this.getAttribute('data-id'))">重置密码</button>
+
           </td>
         </tr>
         </tbody>
@@ -187,7 +228,16 @@
 
   <div style="text-align: center;">
     <div  class="layui-box  layui-laypage-default layui-laypage">
-      <!--        <ul class="pagination-flickr pagination m-b-5 pull-right">-->
+
+      <th:block th:if="${1 != pageInfo.pageNum} and ${pageInfo.pages}>0">
+        <a  th:href="@{'/admin/studentUserList?pageNum=1'
+                +'&name='+${name}
+                +'&username='+${username}
+                +'&createTime='+${createTime}}" aria-label="Previous">
+          <i class="fa fa-angle-left"></i>&nbsp;第一页
+        </a>
+      </th:block>
+
       <th:block th:if="${pageInfo.hasPreviousPage}">
         <a  th:href="@{'/admin/studentUserList?pageNum='+${pageInfo.prePage}
                 +'&name='+${name}
@@ -215,20 +265,93 @@
           下一页&nbsp;<i class="fa fa-angle-right"></i>
         </a>
       </th:block>
+
+      <th:block th:if="${pageInfo.lastPage != pageInfo.pageNum} and ${pageInfo.pages}>0">
+        <a th:href="@{'/admin/studentUserList?pageNum='+${pageInfo.pages}
+               +'&name='+${name}
+                +'&username='+${username}
+                +'&createTime='+${createTime}}" aria-label="Next">
+          最后一页&nbsp;<i class="fa fa-angle-right"></i>
+        </a>
+      </th:block>
+
       <th:block th:if="${pageInfo.pages}>0">
         <span th:text="'共'+${pageInfo.pages}+'页'"></span>
+        <span th:text="'共'+${pageInfo.getTotal()}+'条记录'"></span>
       </th:block>
     </div>
+
+    <th:block th:if="${pageInfo.pages}>0">
+      <span style="margin-right: 2px;margin-left: 3px;">跳转到</span>
+      <select name="pageNum" id="select" οnfοcus="selectFocus()"  onchange="onJumpPage()" >
+        <th:block th:each="i:${#numbers.sequence(1,pageInfo.pages)}">
+          <option th:class="${i}==${pageInfo.pageNum}?'selected':'noselect'"
+                  th:selected="${i}==${pageInfo.pageNum}" th:value="${i}"
+                  οnclick="selectClick()" th:text="'第'+${i}+'页'">
+          </option>
+        </th:block>
+      </select>
+    </th:block>
   </div>
 
 </div>
 
 </body>
 <script type="text/javascript">
+  //重置学生账号密码
+  function resetPasssword(username){
+    var header = $("meta[name='_csrf_header']").attr("content");
+    var token = $("meta[name='_csrf']").attr("content");
+    $.ajax({
+      url: '/admin/resetStudentPasssword',
+      type: 'POST',
+      // contentType: 'application/x-www-form-urlencoded;charset=UTF-8',
+      // contentType: 'application/json;charset=UTF-8',
+      data: {"username":username},
+      // dataType: 'json',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader(header, token);
+        loading=layer.msg("正在执执行...",{icon:16});
+      },
+      success: function (data) {
+        console.log(data);
+
+
+        if (data.status==200){
+          loading=layer.alert(data.msg,{icon:1,title:false},function (){
+            closeIfame();
+            window.location.reload();
+          });
+        }else {
+          loading=layer.alert(data.msg,{icon:2,title:false},function (){
+            closeIfame();
+            window.location.reload();
+          })
+
+        }
+
+      },
+      error:function (){
+        loading=layer.alert("出现错误！",{icon:5,title:false});
+      }
+    })
+  }
+
+  //指定跳转页面
+  function onJumpPage(){
+    var dataParam = $("#form").serialize();
+    var pageNum = $("#select").val();
+    dataParam += "&"+"pageNum="+pageNum;
+    window.location.href="/admin/studentUserList?"+dataParam;
+
+    console.log(dataParam);
+  }
+
   //用exe表格添加学生用户
   function addStudentUserExe(){
     document.getElementById("exe_file").click();
   }
+
   //选择文件后自动上传
   function uploadFile() {
     var myform = new FormData();
@@ -349,32 +472,44 @@
 
   }
 
-  function detailsNotice(id){
-    //获取被选中的option标签
-    // var vs = $('select  option:selected').val();
-    // var reserve=document.getElementById('test2').value;
-    // alert(vs);
-    // alert(reserve);
+  //学生详情信息
+  function detailsStudentUser(id){
 
     var layer = layui.layer;
     //iframe层
     var index = layer.open({
       type: 2,
-      title: '预约实验室',
+      title: '学生账号详情信息 ',
       shadeClose: true,
       shade: 0.8,
       scrollbar: false,
       area: ['70%', '99%'],//宽 高
-      content:'/admin/detailsNoticePage?id='+id
-      // ,btn:['<div class="btttt">保存</div>','取消']
-      // ,closeBtn:1
-      // ,end: function(date){
-      //     alert(date);
-      //     window.location.href="/admin/studentUserList";
-      // }
+      content:'/admin/detailsStudentUser?username='+id
+      ,end:function (){
+        window.location.reload();
+      }
     });
   }
 
+  /**
+   * 学生账号编辑
+   */
+  function editStudentUser(username){
+    var layer = layui.layer;
+    //iframe层
+    var index = layer.open({
+      type: 2,
+      title: '学生账号编辑 ',
+      shadeClose: true,
+      shade: 0.8,
+      scrollbar: false,
+      area: ['70%', '99%'],//宽 高
+      content:'/admin/editStudentUser?username='+username
+      ,end:function (){
+        window.location.reload();
+      }
+    });
+  }
 
   $("#myselect").change(function(){
     str = document.getElementById("myselect").value;
@@ -390,30 +525,6 @@
     // var markJson={"2022-3-15":"","2022-10-10":"","2022-4-1":""};
     // console.log(markJson);
     function disabled_date() {
-      // var mm = value.year + '-' + value.month + '-' + value.date;
-
-      // $('.laydate-theme-grid table tbody').find('[lay-ymd="' + mm + '"]').removeClass('layui-this');
-
-      // if(appointmentDate!=null && appointmentDate!=''){
-      //     var dates = appointmentDate.split(",");
-      //     for(var i=0;i<dates.length;i++){
-      //         if(dates[i]=="7"){
-      //             dates[i] = 0;
-      //         }
-      //         $("table>tbody>tr").find("td:eq("+dates[i]+")").addClass('laydate-disabled');
-      //     }
-      // }
-      //
-      // if(markJson!=null){
-      //     for(var key in markJson){
-      //         var dates = key.split("-");
-      //         // dates[1] = dates[1] * 1;
-      //         var mm = dates[0] + '-' + dates[1] + '-' + dates[2];
-      //         console.log(mm)
-      //         $('.laydate-theme-grid table tbody').find('[lay-ymd="' + mm + '"]').addClass('laydate-disabled');
-      //         // keys.push(key);
-      //     }
-      // }
 
     }
 
@@ -434,6 +545,8 @@
       //      //执行函数
       // }
     });
+
+
 
     //日历插件调用方法
 
@@ -492,6 +605,14 @@
     //
   });
 
+
+  //关闭弹窗
+  function closeIfame() {
+    //使用data获取传送过的obj参数
+    //在子页面关闭弹出层
+    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+    parent.layer.close(index); //再执行关闭
+  }
 </script>
 <!--<script type="text/javascript">-->
 <!--    layui.define([ 'element', 'form', 'layer', 'laypage' ], function(exports) {-->

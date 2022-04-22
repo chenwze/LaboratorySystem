@@ -94,6 +94,29 @@
   /*.btttt{*/
   /*    color: #fff;*/
   /*}*/
+  .layui-table[lay-size=sm] td, .layui-table[lay-size=sm] th{
+    font-size: 14px;
+  }
+  #select{
+    border: solid 1px #f5f5f5;
+    background-color: #009688;
+    padding: 2px;
+    color: #fff;
+    padding: 3px 5px;
+  }
+
+  #select .noselect{
+    border:none;
+    background-color: #fff;
+    color: #000;
+  }
+  .layui-layer-btn .layui-layer-btn0{
+    color: #FFFFFF!important;
+    background-color: #009688!important;
+  }
+  .layui-layer-setwin .layui-layer-close2{
+    display: none;
+  }
 </style>
 <body>
 <div>
@@ -118,7 +141,7 @@
 <!--            <input id="test2" th:value="${createTime}" name="createTime" class="layui-input" readonly lay-verify="required|date" type="data" placeholder="注册时间"  >-->
 <!--          </div>-->
 
-          <button id="btn" type="submit" class="layui-btn layui-btn-normal layui-input-inline" style="width: max-content">查找</button>
+          <button id="btn" type="submit" class="layui-btn  layui-input-inline" style="width: max-content">查找</button>
         </div>
 
       </div>
@@ -140,12 +163,12 @@
     <div>
       <div>
         <input type="file" id="exe_file" onchange ="uploadFile()" name="file" style="display:none" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" >
-        <button class="layui-btn" onclick="addTeacherPage()">添加</button>
-        <button class="layui-btn" onclick="addTeacherInfoExe();">EXE添加</button>
-        <button class="layui-btn" onclick="delTeacherInfolist();">删除</button>
+        <button class="layui-btn layui-btn-sm" onclick="addTeacherInfoPage()">添加</button>
+        <button class="layui-btn layui-btn-sm" onclick="addTeacherInfoExe();">EXE添加</button>
+        <button class="layui-btn layui-btn-sm" onclick="delTeacherInfolist();">删除</button>
       </div>
 
-      <table class="layui-table" lay-size="" width="100%">
+      <table class="layui-table" lay-size="sm" width="100%">
         <thead style="background-color: #009688;color: #fff;">
         <tr style="background-color: #393D49;color: #fff;" >
           <th style="min-width: 15px;"><input id="checkbox" onclick="checkAll();" type="checkbox"></th>
@@ -172,11 +195,13 @@
           <td th:text="${arrayS.sex}"></td>
           <td th:text="${arrayS.tel}"></td>
           <td th:text="${arrayS.entryDate}"></td>
-          <td th:text="${arrayS.address}"></td>
           <td>
-            <a id="del-resever" href="javascript:void(0)" th:data-id="${arrayS.username}" th:onclick="detailsTeacherInfo(this.getAttribute('data-id'))">详情</a>
-            <a id="del-resever" href="javascript:void(0)" th:data-id="${arrayS.username}" th:onclick="detailsTeacherInfo(this.getAttribute('data-id'))">编辑</a>
-            <a id="del-resever" href="javascript:void(0)" th:data-id="${arrayS.username}" th:onclick="detailsTeacherInfo(this.getAttribute('data-id'))">删除</a>
+            <div style="width:200px;height:16px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;" th:text="${arrayS.address}"></div>
+          </td>
+          <td>
+            <button class="layui-btn layui-btn-xs" id="del-resever"  th:data-id="${arrayS.username}" th:onclick="detailsTeacherInfo(this.getAttribute('data-id'))">详情</button>
+            <button class="layui-btn layui-btn-xs" id="del-resever"  th:data-id="${arrayS.username}" th:onclick="editTeacherInfo(this.getAttribute('data-id'))">编辑</button>
+<!--            <button class="layui-btn layui-btn-xs" id="del-resever"  th:data-id="${arrayS.username}" th:onclick="detailsTeacherInfo(this.getAttribute('data-id'))">删除</button>-->
           </td>
         </tr>
         </tbody>
@@ -188,6 +213,14 @@
   <div style="text-align: center;">
     <div  class="layui-box  layui-laypage-default layui-laypage">
       <!--        <ul class="pagination-flickr pagination m-b-5 pull-right">-->
+      <th:block th:if="${1 != pageInfo.pageNum} and ${pageInfo.pages}>0">
+        <a  th:href="@{'/admin/getTeacherInfoList?pageNum=1'
+                +'&name='+${name}
+                +'&username='+${username}}" aria-label="Previous">
+          <i class="fa fa-angle-left"></i>&nbsp;第一页
+        </a>
+      </th:block>
+
       <th:block th:if="${pageInfo.hasPreviousPage}">
         <a  th:href="@{'/admin/getTeacherInfoList?pageNum='+${pageInfo.prePage}
                 +'&name='+${name}
@@ -212,20 +245,53 @@
           下一页&nbsp;<i class="fa fa-angle-right"></i>
         </a>
       </th:block>
+
+      <th:block th:if="${pageInfo.lastPage != pageInfo.pageNum} and ${pageInfo.pages}>0">
+        <a th:href="@{'/admin/getTeacherInfoList?pageNum='+${pageInfo.pages}
+               +'&name='+${name}
+                +'&username='+${username}}" aria-label="Next">
+          最后一页&nbsp;<i class="fa fa-angle-right"></i>
+        </a>
+      </th:block>
+
       <th:block th:if="${pageInfo.pages}>0">
         <span th:text="'共'+${pageInfo.pages}+'页'"></span>
+        <span th:text="'共'+${pageInfo.getTotal()}+'条记录'"></span>
       </th:block>
     </div>
+
+    <th:block th:if="${pageInfo.pages}>0">
+      <span style="margin-right: 2px;margin-left: 3px;">跳转到</span>
+      <select name="pageNum" id="select" οnfοcus="selectFocus()"  onchange="onJumpPage()" >
+        <th:block th:each="i:${#numbers.sequence(1,pageInfo.pages)}">
+          <option th:class="${i}==${pageInfo.pageNum}?'selected':'noselect'"
+                  th:selected="${i}==${pageInfo.pageNum}" th:value="${i}"
+                  οnclick="selectClick()" th:text="'第'+${i}+'页'">
+          </option>
+        </th:block>
+      </select>
+    </th:block>
+
   </div>
 
 </div>
 
 </body>
 <script type="text/javascript">
+
+  //跳转指定页面
+  function onJumpPage(){
+    var dataParam = $("#form").serialize();
+    var pageNum = $("#select").val();
+    dataParam += "&"+"pageNum="+pageNum;
+    window.location.href="/admin/getTeacherInfoList?"+dataParam;
+  }
+
   //用exe表格添加老师信息
   function addTeacherInfoExe(){
     document.getElementById("exe_file").click();
   }
+
   //选择文件后自动上传
   function uploadFile() {
     var myform = new FormData();
@@ -234,12 +300,12 @@
     var header = $("meta[name='_csrf_header']").attr("content");
     var token = $("meta[name='_csrf']").attr("content");
     var loading = layer.load(1, {
-      shade: true,
+      // shade: true,
       shade: [0.5, '#000'],
       // time: 50*1000
     });
     $.ajax({
-      url: "/admin/addTeacherInfoExe",
+      url: "/admin/addTeacherInfoList",
       type: "POST",
       data: myform,
       contentType: false,
@@ -248,16 +314,29 @@
         xhr.setRequestHeader(header, token);
       },
       success: function (data) {
-        layer.close(loading);
-        alert("成功添加"+data.num+"记录！");
-        console.log(data);
-        location.reload();
+        if(data.status==200){
+          loading=layer.alert("成功添加"+data.num+"记录！！",{icon:1,title:false},function (){
+            window.location.reload();
+          })
+        }else{
+          loading=layer.alert(data.msg,{icon:2,title:false},function (){
+            window.location.reload();
+          })
+        }
+
+        // layer.close(loading);
+        // alert("成功添加"+data.num+"记录！");
+        // console.log(data);
+        // location.reload();
       },
       error:function(data){
-        layer.close(loading);
-        alert("添加识别，请重试！！");
-        console.log(data)
-        location.reload();
+        loading=layer.alert("添加失败！！",{icon:2,title:false},function (){
+          window.location.reload();
+        })
+        // layer.close(loading);
+        // alert("添加识别，请重试！！");
+        // console.log(data)
+        // location.reload();
       }
     });
   }
@@ -267,17 +346,17 @@
   //     $("input[name='checkbox']").attr("checked","true");
   // }
   //添加公告
-  function addTeacherPage(){
+  function addTeacherInfoPage(){
     var layer = layui.layer;
     //iframe层
     var index = layer.open({
       type: 2,
-      title: '添加老师用户',
+      title: '添加老师信息',
       shadeClose: true,
       shade: 0.8,
       scrollbar: false,
       area: ['70%', '99%'],//宽 高
-      content:'/admin/teacherUserPage',
+      content:'/admin/addTeacherInfoPage',
       end : function() {
         location.reload();
       }
@@ -299,15 +378,15 @@
     }else {
       var header = $("meta[name='_csrf_header']").attr("content");
       var token = $("meta[name='_csrf']").attr("content");
-      var data="dataList="+chk_value;
+      var data="ids="+chk_value;
       // console.log(JSON.stringify(data));
       console.log(data);
+      loading=layer.msg("正在执行..",{icon:16,time:1000*30});
       $.ajax({
         url: '/admin/delTeacherInfoList',
         type: 'POST',
         async: false,
         data:data,
-
         beforeSend: function (xhr) {
           xhr.setRequestHeader(header, token);
         },
@@ -315,18 +394,25 @@
           console.log(data.num);
           // console.log(data.labid);
           // inputNull(data.labid);
-          if (data.num>0){
-            alert("成功删除"+data.num+"条记录！！");
+          if (data.status==200){
+            loading=layer.alert("成功删除"+data.num+"条记录！！",{icon:1,title:false},function (){
+              window.location.reload();
+            });
           }else{
-            alert("删除错误！");
+            loading=layer.alert(data.msg,{icon:2,title:false},function (){
+              window.location.reload();
+            });
           }
 
           // closeIfame();
-          location.reload();
+          // location.reload();
         },
         error:function (){
-          alert("删除错误！");
-          location.reload();
+          // alert("删除错误！");
+          // location.reload();
+          loading=layer.alert("删除错误！",{icon:2,title:false},function (){
+            window.location.reload();
+          });
         }
 
 
@@ -346,6 +432,30 @@
 
   }
 
+  //编辑老师个人信息
+  function editTeacherInfo(username){
+
+    var layer = layui.layer;
+    //iframe层
+    var index = layer.open({
+      type: 2,
+      title: '编辑老师个人信息',
+      shadeClose: true,
+      shade: 0.8,
+      scrollbar: false,
+      area: ['70%', '99%'],//宽 高
+      content:'/admin/editTeacherInfoPage?username='+username
+      // ,btn:['<div class="btttt">保存</div>','取消']
+      // ,closeBtn:1
+      ,end: function(date){
+          // alert(date);
+          // window.location.href="/admin/teacherInfoList";
+          window.location.reload();
+      }
+    });
+  }
+
+  //老师个人信息
   function detailsTeacherInfo(username){
     //获取被选中的option标签
     // var vs = $('select  option:selected').val();

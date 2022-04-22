@@ -63,4 +63,10 @@ public interface TeacherUserDao {
      * 管理员更新老师账号信息
      */
     int adminUpTeacherUser(User user);
+
+    /**
+     * 邮箱是否为空
+     */
+
+    boolean nonEmptyEmail(String email);
 }

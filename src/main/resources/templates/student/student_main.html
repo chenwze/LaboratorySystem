@@ -69,7 +69,7 @@
         <!--可能需要修改路径-->
         <form id="mylogout" th:action="@{/mylogout}" method="post" style="float: right">
           <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-          <a href="#" onclick="document.getElementById('mylogout').submit();return false;">退出</a>
+          <a href="#" onclick="document.getElementById('mylogout').submit();return false;">退出<i class="layui-icon layui-icon-logout"></i></a>
         </form>
 
       </li>
@@ -82,6 +82,7 @@
     <ul class="layui-nav layui-side layui-nav-tree layui-nav-side">
 <!--      查看公告-->
       <li class="layui-nav-item ">
+
         <a href="#" id="default-tab" data-url="/student/showNotice" data-title="公告" data-id="notice" class="site-demo-active"
            data-type="tabAdd">
           公告

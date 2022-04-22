@@ -51,7 +51,7 @@
                 resignation_date = #{resignationDate},
             </if>
 
-            <if test="entryDate != null and studayDate !='' and entryDate !='null' ">
+            <if test="entryDate != null and entryDate !='' and entryDate !='null' ">
                 entry_date = #{entryDate},
             </if>
 
@@ -59,16 +59,48 @@
                 tel = #{tel},
             </if>
 
-            <if test="sex != null and sex !='' and sex !='null' ">
+            <if test="sex =='男' or sex =='女' ">
                 sex = #{sex},
             </if>
 
-            <if test=" age != 0 and age gt 0 and age != null ">
+            <if test=" age !=null and age !=0   and age gt 0  ">
                 age = #{age},
             </if>
 
+            <if test="birth != null and birth !='' and birth !='null' ">
+                birth = #{birth},
+            </if>
         </trim>
         where username = #{username};
     </update>
+
+<!--    老师账号是否存在-->
+    <select id="existUsername" resultType="boolean">
+        select COUNT(*) from teacher_info where username = #{username}
+    </select>
+
+<!--添加老师个人信息-->
+    <insert id="addTeacherInfo">
+        INSERT INTO `laboratory_system`.`teacher_info`(`username`, `name`, `age`, `sex`, `tel`, `entry_date`, `resignation_date`, `address`, `college`, `position`, `birth`, `head_portrait`)
+        VALUES (#{username}, #{name}, #{age}, #{sex},#{tel},#{entryDate} ,#{resignationDate} ,#{address},#{college} ,#{position},#{birth},#{headPortrait})
+    </insert>
+
+    <!--批量添加老师个人信息-->
+    <insert id="addTeacherInfoList">
+        INSERT INTO `laboratory_system`.`teacher_info`(`username`, `name`, `age`, `sex`, `tel`, `entry_date`, `resignation_date`, `address`, `college`,  `position`, `birth`, `head_portrait`)
+        VALUES
+        <foreach collection="list" item="teacherInfo" index="index" separator=",">
+            (#{teacherInfo.username}, #{teacherInfo.name}, #{teacherInfo.age}, #{teacherInfo.sex},#{teacherInfo.tel},#{teacherInfo.entryDate},#{teacherInfo.resignationDate},#{teacherInfo.address},#{teacherInfo.college} ,#{teacherInfo.position},#{teacherInfo.birth},#{teacherInfo.headPortrait})
+        </foreach>
+    </insert>
+
+<!--    批量删除老师个人信息-->
+    <delete id="delTeacherInfoList" parameterType="java.lang.String" >
+        DELETE FROM `laboratory_system`.`teacher_info` WHERE
+        <foreach collection="array" separator="or" item="id" index="index" >
+            username = #{id}
+        </foreach>
+    </delete>
+
 
 </mapper>
