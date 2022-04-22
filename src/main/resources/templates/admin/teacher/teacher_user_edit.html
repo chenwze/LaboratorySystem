@@ -1,0 +1,249 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1,shrink-to-fit=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header"  th:content="${_csrf.headerName}"/>
+  <title>管理员编辑老师信息</title>
+  <link rel="stylesheet" href="../../static/layui/css/layui.css" th:href="@{/layui/css/layui.css}">
+  <script src="../../static/js/jquery-3.6.0.min.js" th:src="@{/js/jquery-3.6.0.min.js}"></script>
+  <script src="../../static/layui/layui.js" th:src="@{/layui/layui.js}"></script>
+</head>
+<style type="text/css">
+  .layui-form .layui-form-item{
+    margin-bottom: 0px;
+  }
+  label:hover{
+    cursor: pointer;
+  }
+  .layui-form-select dl dd.layui-this{
+    background-color: #009688;
+  }
+
+  .layui-layer-btn .layui-layer-btn0{
+    background-color: #009688;
+    color: #fff;
+  }
+  .layui-layer-setwin .layui-layer-close2{
+    display: none;
+  }
+</style>
+<body>
+
+<form id="form" class="layui-form " action="" enctype="multipart/form-data" method="post" style="text-align: center;margin-top: 10px;" >
+  <!--个人修改账号信息-->
+<!--  <input name="_csrf" th:value="${_csrf.token}">-->
+  <div class="layui-form-item">
+    <div class="layui-inline">
+      <!--            <label class="layui-form-label">个人账号:</label>-->
+      <div class="layui-input-inline" >
+
+        <label for="file" onchange="changImg()">
+          <input id="file" type="file" name="file" accept="image/*" style="display: none;">
+          <a>
+<!--            <img id="imghead" th:src="@{/login/img/login.jpg}" src="../../static/login/img/login.jpg"-->
+<!--                 class="" width="100px;" height="100px;">-->
+            <img id="imghead" th:src="${teacherUser.headPortrait}"
+                 class="" width="100px;" height="100px;">
+          </a>
+        </label>
+
+      </div>
+      <!--            <div class="layui-form-mid layui-word-aux" style="visibility: hidden;"><a href="#">占格</a></div>-->
+    </div>
+  </div>
+
+  <div class="layui-form-item">
+    <div class="layui-inline">
+      <label class="layui-form-label">个人账号:</label>
+      <div class="layui-input-inline" >
+        <input type="text" th:value="${teacherUser.username}" style="border: 0px;" class="layui-input" name="username"  readonly="true"  >
+      </div>
+      <div class="layui-form-mid layui-word-aux" style="visibility: hidden;"><a href="#">占格</a></div>
+    </div>
+  </div>
+
+  <div class="layui-form-item">
+    <div class="layui-inline">
+      <label class="layui-form-label">账号名称:</label>
+      <div class="layui-input-inline" >
+        <input id="name" type="text" name="name" th:value="${teacherUser.name}"  class="layui-input"  >
+      </div>
+      <div class="layui-form-mid layui-word-aux" style="visibility: hidden;"><a href="#">占格</a></div>
+    </div>
+  </div>
+
+
+  <div class="layui-form-item">
+    <div class="layui-inline">
+      <label class="layui-form-label">账号邮箱:</label>
+      <div class="layui-input-inline" >
+        <input id="email" name="email" type="text" th:value="${teacherUser.getEmail()}" class="layui-input"  >
+      </div>
+      <div class="layui-form-mid layui-word-aux" style="visibility: hidden;">
+        <a href="#" onclick="changeMailbox()" style="color: #0000FF;">更换</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="layui-form-item">
+    <div class="layui-inline">
+      <label class="layui-form-label">账号状态:</label>
+      <div class="layui-input-inline" >
+<!--        <input type="text" th:value="${teacherUser.status}" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >-->
+        <select name="status" lay-verify="">
+            <option value="正常" th:selected="${teacherUser.status}=='正常'?'selected':'false'">正常</option>
+            <option value="冻结" th:selected="${teacherUser.status}=='冻结'?'selected':'false'">冻结</option>
+        </select>
+      </div>
+      <div class="layui-form-mid layui-word-aux" style="visibility: hidden;"><a href="#">占格</a></div>
+    </div>
+  </div>
+
+
+  <div class="layui-form-item">
+    <div class="layui-inline">
+      <label class="layui-form-label">注册时间:</label>
+      <div class="layui-input-inline" >
+        <input type="text" th:value="${teacherUser.createTime}" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >
+      </div>
+      <div class="layui-form-mid layui-word-aux" style="visibility: hidden;"><a href="#">占格</a></div>
+    </div>
+  </div>
+
+  <div class="layui-form-item">
+    <div class="layui-inline">
+      <label class="layui-form-label" style="visibility: hidden;">保存账号信息</label>
+      <div class="layui-input-inline" >
+        <!--                <input type="button" th:value="${teacherUser.createTime}" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >-->
+        <button onclick="upUserInfo();"  type="button" class="layui-btn ">修改</button>
+        <button onclick="closeIfame();" type="" class="layui-btn ">取消</button>
+      </div>
+      <img id="ssss" src="" alt="">
+      <div class="layui-form-mid layui-word-aux" style="visibility: hidden;"><a href="#">占格</a></div>
+    </div>
+  </div>
+  <!--    <a href="/teacherUser/user" data-url="password" data-title="修改密码" data-id="" class="site-demo-active" data-type="tabAdd">-->
+  <!--        修改密码-->
+  <!--    </a>-->
+
+
+</form>
+
+<script type="text/javascript">
+  //图片回显
+  function changImg(){
+    var fils=$("#file").get(0).files[0];
+    console.log(fils.name);
+    // var path=$("#file").val();
+    var srcc=window.URL.createObjectURL(fils);
+    if(fils==null || fils == "" || fils.name == "") {
+      alert("未选择图片");
+      return false;
+    } else {
+        console.log(srcc);
+        // console.log(path);
+        //判断是否图片类型
+        if(!/\.(gif|jpg|jpeg|png|JPG|PNG)$/.test(fils.name)) {
+          alert("图片类型必须是.gif,jpeg,jpg,png中的一种");
+          return false;
+        }else {
+          $("#imghead").attr({'src':srcc});
+        }
+    }
+
+    // var file = document.getElementById('file');
+    // var image = document.querySelector("img");
+    // file.onchange = function() {
+    //   var fileData = this.files[0];//获取到一个FileList对象中的第一个文件( File 对象),是我们上传的文件
+    //   var pettern = /^image/;
+    //
+    //   console.info(fileData.type)
+    //
+    //   if (!pettern.test(fileData.type)) {
+    //     alert("图片格式不正确");
+    //     return;
+    //   }
+    //   var reader = new FileReader();
+    //   reader.readAsDataURL(fileData);//异步读取文件内容，结果用data:url的字符串形式表示
+    //   /*当读取操作成功完成时调用*/
+    //   reader.onload = function(e) {
+    //     console.log(e); //查看对象
+    //     console.log(this.result);//要的数据 这里的this指向FileReader（）对象的实例reader
+    //     image.setAttribute("src", this.result)
+    //   }
+    // }
+  }
+
+  //关闭弹窗
+  function closeIfame() {
+    //使用data获取传送过的obj参数
+    //在子页面关闭弹出层
+    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+    parent.layer.close(index); //再执行关闭
+    location.reload();
+  }
+
+
+
+  //修改账号信息
+  function upUserInfo(){
+
+    var myform = new FormData(document.querySelector("form"));
+    // var date = $("form").serialize();
+    // date.append('file',$('#file')[0].files[0]);
+    // myform.append('name',$('#name').val());
+    // console.log($('#name').val);
+    console.log(myform);
+
+    var header = $("meta[name='_csrf_header']").attr("content");
+    var token = $("meta[name='_csrf']").attr("content");
+
+    $.ajax({
+      url: '/admin/upTeacherUserInfo',
+      type: 'POST',
+      cache: false,
+      // async: false,
+      contentType: false,
+      processData: false,
+      data:myform,
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader(header, token);
+        loading=layer.msg("正在执行...",{icon:16});
+      },
+      success: function (data) {
+
+        if (data.status=="200"){
+          // alert(data.status);
+          // alert(data.status);
+          loading=layer.alert(data.msg,{icon:1,title:false},function (){
+            closeIfame();
+          });
+        }else {
+          loading=layer.alert(data.msg,{icon:2,title:false});
+        }
+      },
+      error:function (){
+        // alert("更新失败，请重试！！！");
+        loading=layer.alert("修改失败，请重试！！！",{icon:2,title:false});
+      }
+    })
+
+  }
+
+  //关闭弹窗
+  function closeIfame() {
+    //使用data获取传送过的obj参数
+    //在子页面关闭弹出层
+    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+    parent.layer.close(index); //再执行关闭
+    // location.reload();
+  }
+</script>
+
+</body>
+</html>

@@ -1,12 +1,9 @@
 package com.gdufe.laboratorysystem.dao;
 
 import com.gdufe.laboratorysystem.entity.StudentInfo;
-import com.gdufe.laboratorysystem.entity.User;
-import com.gdufe.laboratorysystem.entity.VO;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @program: LaboratorySystem

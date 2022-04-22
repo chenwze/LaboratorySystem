@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header"  th:content="${_csrf.headerName}"/>
+    <title>实验室物品列表</title>
+    <link th:href="@{/login/css/bootstrap.min.css}" href="../static/login/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/login/css/signin.css}" href="../static/login/css/signin.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../static/layui/css/layui.css" th:href="@{/layui/css/layui.css}">
+    <script src="../../static/js/jquery-3.6.0.min.js" th:src="@{/js/jquery-3.6.0.min.js}" type="text/javascript"></script>
+    <script src="../../static/layui/layui.js" th:src="@{/layui/layui.js}" type="text/javascript"></script>
+</head>
+
+<style type="text/css">
+    /*.my-label{*/
+    /*    width: max-content;*/
+    /*}*/
+    html body{
+        height: auto;
+    }
+    .layui-laypage .pageNum{
+        background-color: #009688;
+        color: #fff;
+    }
+    .layui-laypage .pageNum:hover{
+        color: #fff;
+    }
+
+    .layui-laypage a:hover{
+        background-color: #009688;
+        color: #fff;
+    }
+    button:focus{
+        outline: none;
+        outline: 0;
+        border-color: transparent;
+    }
+    body .demo-class .layui-layer-btn0{
+        border-color: #E6E3E6;
+        background-color: #FFF;
+        color: black;
+    }
+    body .demo-class .layui-layer-btn1{
+        border-color: #4898d5;
+        background-color: #2e8ded;
+        color: #fff;
+    }
+    .btttt{
+        color: #fff;
+    }
+    #select{
+        border: solid 1px #f5f5f5;
+        background-color: #009688;
+        padding: 2px;
+        color: #fff;
+        padding: 3px 5px;
+    }
+
+    #select .noselect{
+        border:none;
+        background-color: #fff;
+        color: #000;
+    }
+    .layui-table[lay-size=sm] td, .layui-table[lay-size=sm] th{
+        font-size: 14px!important;
+    }
+
+    .layui-layer-btn .layui-layer-btn0{
+        color: #fff!important;
+        background-color: #009688!important;
+    }
+    .layui-layer-setwin .layui-layer-close2{
+        display: none;
+    }
+    .layui-form-select dl dd.layui-this{
+        background-color: #009688!important;
+    }
+    .layui-form-item .layui-inline{
+        margin-bottom: unset;
+    }
+    .layui-form-item {
+        margin-bottom: unset;
+    }
+    .layui-form-label {
+    margin-right: 8px;
+    }
+</style>
+<body>
+<div>
+    <div>
+<!--        查找表单-->
+        <form id="form" class="layui-form" style="white-space:nowrap!important;" action="/admin/laboratoryThingList">
+            <div class="layui-form-item ">
+                <div class="layui-inline">
+                    <label class="layui-form-label ">实验楼</label>
+                    <div class="layui-input-inline">
+                        <input  th:value="${buildingName}" class="layui-input" name="buildingName" placeholder="实验楼"  >
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <label class="layui-form-label ">实验室房间</label>
+                    <div class="layui-input-inline">
+                        <input  th:value="${roomNumber}" name="roomNumber" class="layui-input" placeholder="实验室房间号"  >
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <label class="layui-form-label ">入库时间</label>
+                    <div class="layui-input-inline">
+                        <input id="time" th:value="${time}"  class="layui-input" name="time" placeholder="入库时间"  >
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <button id="btn" type="submit" class="layui-btn  layui-input-inline" style="width: max-content">查找</button>
+                </div>
+
+            </div>
+
+            <div class="layui-form-item ">
+                <div class="layui-inline">
+                    <label class="layui-form-label ">所得方式</label>
+                    <div class="layui-input-inline">
+<!--                        <select id="selcect" name="way">-->
+<!--                            <option value="" th:selected="${status} !='开放' and ${status} !='关闭'"></option>-->
+<!--                            <option value="开放" th:selected="${status}=='开放'">开放</option>-->
+<!--                            <option value="关闭" th:selected="${status}=='关闭'">关闭</option>-->
+<!--                        </select>-->
+                        <input  th:value="${way}" class="layui-input"  name="way" placeholder="捐赠/购买"  >
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <label class="layui-form-label ">购买者</label>
+                    <div class="layui-input-inline">
+                        <input  th:value="${name}" class="layui-input"  name="name" placeholder="购买者"  >
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <label class="layui-form-label ">物品类型</label>
+                    <div class="layui-input-inline">
+                        <!--                        <select id="selcect" name="way">-->
+                        <!--                            <option value="" th:selected="${status} !='开放' and ${status} !='关闭'"></option>-->
+                        <!--                            <option value="开放" th:selected="${status}=='开放'">开放</option>-->
+                        <!--                            <option value="关闭" th:selected="${status}=='关闭'">关闭</option>-->
+                        <!--                        </select>-->
+                        <input  th:value="${type}" class="layui-input"  name="type" placeholder="物品类型"  >
+                    </div>
+
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    <div>
+<!--        数据列表-->
+        <div>
+            <input type="file" id="exe_file" onchange ="uploadFile()" name="file" style="display:none" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" >
+            <button class="layui-btn layui-btn-sm" onclick="addLaboratoryThingPage()">添加</button>
+            <button class="layui-btn layui-btn-sm" onclick="addLaboratoryThingExe();">EXE添加</button>
+            <button class="layui-btn layui-btn-sm" onclick="exportLaboratoryThingTable();" title="根据现有条件导出全部数据">导出表格</button>
+            <button class="layui-btn layui-btn-sm" onclick="delLaboratoryThingList();">删除</button>
+        </div>
+        <div>
+            <table class="layui-table" lay-size="sm">
+                <thead style="background-color: #009688;color: #fff;">
+                    <tr style="background-color: #393D49;color: #fff;" >
+                        <th style="min-width: 15px;"><input id="checkbox" onclick="checkAll();" type="checkbox"></th>
+                        <th>实验楼</th>
+                        <th>实验室房间</th>
+                        <th width="200px">物品介绍</th>
+                        <th>物品类型</th>
+                        <th>所得方式</th>
+                        <th>购买者</th>
+                        <th>操做</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr th:each="arrayS,iterStat:${pageInfo.list}">
+                        <th style="min-width: 15px;"><input type="checkbox" name="checkbox" th:value="${arrayS.id}"></th>
+                        <td th:text="${arrayS.laboratoryInfo.buildingName}" ></td>
+                        <td th:text="${arrayS.laboratoryInfo.roomNumber}" ></td>
+                        <td >
+                            <div style="width:200px;text-overflow: ellipsis;overflow: hidden;white-space:nowrap;" th:text="${arrayS.introduce}"></div>
+                        </td>
+
+                        <td th:text="${arrayS.type}"></td>
+                        <td th:text="${arrayS.way}"></td>
+                        <td th:text="${arrayS.name}"></td>
+
+                        <td>
+                            <button class="layui-btn layui-btn-xs" th:data-id="${arrayS.id}"
+                                    th:onclick="detailLaboratoryThingPage(this.getAttribute('data-id'))">详情</button>
+
+                            <button class="layui-btn layui-btn-xs" th:data-id="${arrayS.id}"
+                                    th:onclick="editLaboratoryThingPage(this.getAttribute('data-id'))">编辑</button>
+                        </td>
+
+                </tbody>
+            </table>
+        </div>
+<!--        数据列表结束-->
+    </div>
+
+<!--    分页开始-->
+    <div style="text-align: center;">
+        <div  class="layui-box  layui-laypage-default layui-laypage" style="margin: unset;">
+            <!--        <ul class="pagination-flickr pagination m-b-5 pull-right">-->
+            <th:block th:if="${1 != pageInfo.pageNum} and ${pageInfo.pages}>0">
+                <a  th:href="@{'/admin/laboratoryThingList?pageNum=1'
+                +'&buildingName='+${buildingName}
+                +'&name='+${name}
+                +'&roomNumber='+${roomNumber}+'&type='+${type}
+                +'&way='+${way}}" aria-label="Previous">
+                    <i class="fa fa-angle-left"></i>&nbsp;第一页
+                </a>
+            </th:block>
+
+            <th:block th:if="${pageInfo.hasPreviousPage}">
+                <a  th:href="@{'/admin/laboratoryThingList?pageNum='+${pageInfo.prePage}
+                +'&buildingName='+${buildingName}
+                +'&name='+${name}
+                +'&roomNumber='+${roomNumber}+'&type='+${type}
+                +'&way='+${way}}" aria-label="Previous">
+                    <i class="fa fa-angle-left"></i>&nbsp;上一页
+                </a>
+            </th:block>
+
+            <th:block th:each="navIndex :${ pageInfo.navigatepageNums}">
+
+                <a th:class="${pageInfo.pageNum}==${navIndex}?'pageNum':''"
+                   th:href="@{'/admin/laboratoryThingList?pageNum='+${navIndex}
+                   +'&buildingName='+${buildingName}
+                    +'&name='+${name}
+                   +'&roomNumber='+${roomNumber}+'&type='+${type}
+                   +'&way='+${way}}" th:text="${navIndex}"></a>
+
+            </th:block>
+
+            <th:block th:if="${pageInfo.hasNextPage}">
+                <a th:href="@{'/admin/laboratoryThingList?pageNum='+${pageInfo.nextPage}
+                +'&buildingName='+${buildingName}
+                +'&name='+${name}
+                +'&roomNumber='+${roomNumber}+'&type='+${type}
+                +'&way='+${way}}" aria-label="Next">
+                    下一页&nbsp;<i class="fa fa-angle-right"></i>
+                </a>
+            </th:block>
+
+            <th:block th:if="${pageInfo.lastPage != pageInfo.pageNum} and ${pageInfo.pages}>0">
+                <a th:href="@{'/admin/laboratoryThingList?pageNum='+${pageInfo.pages}
+                +'&buildingName='+${buildingName}
+                +'&name='+${name}
+                +'&roomNumber='+${roomNumber}+'&type='+${type}
+                +'&way='+${way}}" aria-label="Next">
+                    最后一页&nbsp;<i class="fa fa-angle-right"></i>
+                </a>
+            </th:block>
+
+            <th:block th:if="${pageInfo.pages}>0">
+                <span th:text="'共'+${pageInfo.pages}+'页'"></span>
+                <span th:text="'共'+${pageInfo.getTotal()}+'条记录'"></span>
+            </th:block>
+        </div>
+
+        <th:block th:if="${pageInfo.pages}>0">
+            <span style="margin-right: 2px;margin-left: 3px;">跳转到</span>
+            <select name="pageNum" id="select" οnfοcus="selectFocus()"  onchange="onJumpPage()" >
+                <th:block th:each="i:${#numbers.sequence(1,pageInfo.pages)}">
+                    <option th:class="${i}==${pageInfo.pageNum}?'selected':'noselect'"
+                            th:selected="${i}==${pageInfo.pageNum}" th:value="${i}"
+                            οnclick="selectClick()" th:text="'第'+${i}+'页'">
+                    </option>
+                </th:block>
+            </select>
+        </th:block>
+
+    </div>
+
+</div>
+
+</body>
+<script type="text/javascript">
+        function exportLaboratoryThingTable(){
+            var header = $("meta[name='_csrf_header']").attr("content");
+            var token = $("meta[name='_csrf']").attr("content");
+            var data = $("form").serialize();
+            console.log(data);
+            location.href="/admin/exportLaboratoryThingTable?'"+data;
+
+        }
+    // //关闭实验室
+    // function closeLaboratory(labid){
+    //     var header = $("meta[name='_csrf_header']").attr("content");
+    //     var token = $("meta[name='_csrf']").attr("content");
+    //     var data="labid="+labid;
+    //     // console.log(JSON.stringify(data));
+    //     console.log(data);
+    //     $.ajax({
+    //         url: '/admin/closeLaboratory',
+    //         type: 'POST',
+    //         async: false,
+    //         data:data,
+    //         beforeSend: function (xhr) {
+    //             xhr.setRequestHeader(header, token);
+    //         },
+    //         success: function (data) {
+    //             if (data.status==200){
+    //                 loading=layer.alert(data.msg,{icon:1,title:false},function (){
+    //                     window.location.reload();
+    //                 });
+    //             }else {
+    //                 loading=layer.alert(data.msg,{icon:2,title:false},function (){
+    //                     window.location.reload();
+    //                 });
+    //             }
+    //         },
+    //         error:function (){
+    //             loading=layer.alert("出现错误 ！！",{icon:2,title:false},function (){
+    //                 window.location.reload();
+    //             });
+    //         }
+    //     })
+    // }
+
+    // //开放实验室
+    // function openLaboratory(labid){
+    //     var header = $("meta[name='_csrf_header']").attr("content");
+    //     var token = $("meta[name='_csrf']").attr("content");
+    //     var data="labid="+labid;
+    //     // console.log(JSON.stringify(data));
+    //     console.log(data);
+    //     $.ajax({
+    //         url: '/admin/openLaboratory',
+    //         type: 'POST',
+    //         async: false,
+    //         data:data,
+    //         beforeSend: function (xhr) {
+    //             xhr.setRequestHeader(header, token);
+    //         },
+    //         success: function (data) {
+    //             if (data.status==200){
+    //                 loading=layer.alert(data.msg,{icon:1,title:false},function (){
+    //                     window.location.reload();
+    //                 });
+    //             }else {
+    //                 loading=layer.alert(data.msg,{icon:2,title:false},function (){
+    //                     window.location.reload();
+    //                 });
+    //             }
+    //         },
+    //         error:function (){
+    //             loading=layer.alert("出现错误 ！！",{icon:2,title:false},function (){
+    //                 window.location.reload();
+    //             });
+    //         }
+    //     })
+    // }
+
+    //编辑修改物品信息
+    function editLaboratoryThingPage(id){
+        var layer = layui.layer;
+        //iframe层
+        var index = layer.open({
+            type: 2,
+            title: '编辑物品信息',
+            shadeClose: true,
+            shade: 0.8,
+            scrollbar: false,
+            area: ['70%', '99%'],//宽 高
+            content:'/admin/editLaboratoryThingPage?id='+id,
+            end : function() {
+                location.reload();
+            }
+        });
+    }
+
+    // //预约实验室
+    // function reserveLaboratoryPage(labid){
+    //     var layer = layui.layer;
+    //     //iframe层
+    //     var index = layer.open({
+    //         type: 2,
+    //         title: '实验室详情',
+    //         shadeClose: true,
+    //         shade: 0.8,
+    //         scrollbar: false,
+    //         area: ['70%', '99%'],//宽 高
+    //         content:'/admin/reserveLaboratoryPage?labid='+labid,
+    //         end : function() {
+    //             location.reload();
+    //         }
+    //     });
+    // }
+
+    //实验室物品详情页
+    function detailLaboratoryThingPage(id){
+        var layer = layui.layer;
+        //iframe层
+        var index = layer.open({
+            type: 2,
+            title: '实验室物品详情',
+            shadeClose: true,
+            shade: 0.8,
+            scrollbar: false,
+            area: ['70%', '99%'],//宽 高
+            content:'/admin/detailsLaboratoryThingPage?id='+id,
+            // end : function() {
+            //     location.reload();
+            // }
+        });
+    }
+
+
+    //批量删除实验室物品
+    function delLaboratoryThingList(){
+        var chk_value =[];
+        $('input[name="checkbox"]:checked').each(function(){
+            chk_value.push($(this).val());
+        });
+        // alert(chk_value.length==0 ?'你还没有选择任何内容！':chk_value);
+        if(chk_value.length==0){
+            alert("你还没有选择任何内容!");
+        }else {
+            var header = $("meta[name='_csrf_header']").attr("content");
+            var token = $("meta[name='_csrf']").attr("content");
+            var data="ids="+chk_value;
+            // console.log(JSON.stringify(data));
+            console.log(data);
+            $.ajax({
+                url: '/admin/delLaboratoryThingList',
+                type: 'POST',
+                async: false,
+                data:data,
+
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token);
+                },
+                success: function (data) {
+                    if (data.status==200){
+                        loading=layer.alert("成功删除"+data.num+"条记录！",{icon:1,title:false},function (){
+                            window.location.reload();
+                        });
+                    }else {
+                        loading=layer.alert("删除失败！！",{icon:2,title:false},function (){
+                            window.location.reload();
+                        });
+                    }
+                },
+                error:function (){
+                    loading=layer.alert("出现错误 ！！",{icon:2,title:false},function (){
+                        window.location.reload();
+                    });
+                }
+
+
+            })
+        }
+    }
+
+    //用exe表格添加实验室信息
+    function addLaboratoryThingExe(){
+        document.getElementById("exe_file").click();
+    }
+
+    //选择文件后自动上传
+    function uploadFile() {
+        var myform = new FormData();
+        myform.append('file',$('#exe_file')[0].files[0]);
+        console.log(myform);
+        var header = $("meta[name='_csrf_header']").attr("content");
+        var token = $("meta[name='_csrf']").attr("content");
+        var loading = layer.load(1, {
+            // shade: true,
+            shade: [0.5, '#000'],
+            time: 30*1000
+        });
+        $.ajax({
+            url: "/admin/addLaboratoryThingList",
+            type: "POST",
+            data: myform,
+            contentType: false,
+            processData: false,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(header, token);
+            },
+            success: function (data) {
+                if(data.status==200){
+                    loading=layer.alert("成功添加"+data.num+"记录！！",{icon:1,title:false},function (){
+                        window.location.reload();
+                    })
+                }else{
+                    loading=layer.alert(data.msg,{icon:2,title:false},function (){
+                        window.location.reload();
+                    })
+                }
+                // layer.close(loading);
+                // alert("成功添加"+data.num+"记录！");
+                // console.log(data);
+                // location.reload();
+            },
+            error:function(data){
+                // layer.close(loading);
+                // alert("添加识别，请重试！！");
+                // console.log(data)
+                // location.reload();
+                loading=layer.alert("添加识别，请重试！！",{icon:2,title:false},function (){
+                    window.location.reload();
+                })
+            }
+        });
+    }
+
+    //添加实验室
+    function addLaboratoryThingPage(){
+        var layer = layui.layer;
+        //iframe层
+        var index = layer.open({
+            type: 2,
+            title: '添加实验室信息',
+            shadeClose: false,
+            shade: 0.8,
+            scrollbar: false,
+            area: ['70%', '99%'],//宽 高
+            content:'/admin/addLabThingPage',
+            end : function() {
+                location.reload();
+            }
+        });
+    }
+
+    //指定跳转页面
+    function onJumpPage(){
+        var dataParam = $("#form").serialize();
+        var pageNum = $("#select").val();
+        dataParam += "&"+"pageNum="+pageNum;
+        window.location.href="/admin/laboratoryThingList?"+dataParam;
+
+        console.log(dataParam);
+    }
+
+    function reserve_info(name){
+        //获取被选中的option标签
+        // var vs = $('select  option:selected').val();
+        // var reserve=document.getElementById('test2').value;
+        // alert(vs);
+        // alert(reserve);
+
+            var layer = layui.layer;
+            //iframe层
+            var index = layer.open({
+                type: 2,
+                title: '预约实验室',
+                shadeClose: true,
+                shade: 0.8,
+                scrollbar: false,
+                area: ['70%', '99%'],//宽 高
+                content:'/admin/reservePage?labid='+name+'&reserveTime='+name
+                // ,btn:['<div class="btttt">保存</div>','取消']
+                // ,closeBtn:1
+                // ,end: function(date){
+                //     alert(date);
+                //     window.location.href="/admin/getReserveInfoList";
+                // }
+            });
+    }
+
+    //全选操作
+    function checkAll(){
+        if ( $("#checkbox").is(":checked") ){
+            $("input[name='checkbox']").prop("checked",true);
+        }else {
+            $("input[name='checkbox']").prop("checked",false);
+            // $("input[name='checkbox']").removeAttr("checked");
+        }
+
+    }
+        //日期
+        layui.use('laydate', function() {
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#time',
+                trigger: 'click',
+                theme: 'grid',
+                type:'datetime',
+                format:'yyyy-MM-dd HH:mm:ss'
+                // showBottom: false,
+                // ready: function (value) {//控件在打开时触发，回调返回一个参数
+                //     disabled_date(); //得到初始的日期时间对象：{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+                // },
+                // change: function (value, date) { //监听日期被切换
+                //     disabled_date();
+                //     //执行函数
+                // }
+            });
+        })
+
+</script>
+
+</html>

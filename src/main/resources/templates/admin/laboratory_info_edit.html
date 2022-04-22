@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title>编辑实验室信息表</title>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header"  th:content="${_csrf.headerName}"/>
+    <link rel="stylesheet" href="../../static/layui/css/layui.css" th:href="@{/layui/css/layui.css}">
+    <script src="../../static/js/jquery-3.6.0.min.js" th:src="@{/js/jquery-3.6.0.min.js}" type="text/javascript"></script>
+    <script src="../../static/layui/layui.js" th:src="@{/layui/layui.js}" type="text/javascript"></script>
+</head>
+<style>
+
+    td{
+        padding: 3px 5px;
+    }
+    body .demo-class .layui-layer-btn0{
+        border-color: #E6E3E6;
+        background-color: #FFF;
+        color: black;
+    }
+    body .demo-class .layui-layer-btn1{
+        border-color: #4898d5;
+        background-color: #2e8ded;
+        color: #fff;
+    }
+    body .layui-ext-myskin .layui-layer-btn0{
+        　　border-color: #55ff83;
+        　　background-color: #5aff53;
+        　　color: #4736ff;
+    }
+    .btttt{
+        color: #fff;
+    }
+    .layui-input{
+        border-color: #181818;
+    }
+    .layui-input:hover{
+        border-color:#007bff!important;
+    }
+    .layui-input:focus{
+        border-color:#007bff!important;
+    }
+
+    .layui-inline .input-focus:focus{
+        border-color: red!important;
+    }
+    .layui-form-label {
+        width: 100px;
+    }
+    .layui-layer-btn .layui-layer-btn0{
+        color: #FFF!important;
+        background-color: #009688;!important;
+    }
+    .layui-layer-setwin .layui-layer-close2{
+        display: none;
+    }
+    .layui-form-select dl dd.layui-this{
+        background-color: #009688;
+    }
+    .layui-textarea {
+        max-height: 100px!important;
+        min-height: 100px!important;
+    }
+</style>
+<body>
+
+    <form class="layui-form " style="text-align: center;" >
+        <!--实验室信息-->
+        <h1 style="padding: 10px;text-align: center;">编辑实验室</h1>
+        <table class="layui-inline" border="1px solid #ccc" cellspacing="0" cellpadding="0">
+            <tr>
+                <td>
+                    <label class="layui-form-label">实验楼</label>
+                </td>
+                <td >
+                    <input type="text" name="buildingName" th:value="${laboratoryInfo.buildingName}" class="layui-input" required="required" >
+                </td>
+                <td>
+                    <label class="layui-form-label" >实验房间号</label>
+                </td>
+                <td>
+                    <input type="text" name="roomNumber" th:value="${laboratoryInfo.roomNumber}" class="layui-input" required="required" >
+                </td>
+            </tr>
+
+
+            <tr>
+                <td>
+                    <label class="layui-form-label">可容纳数</label>
+                </td>
+                <td>
+                    <input type="text"name="capacity" th:value="${laboratoryInfo.capacity}" class="layui-input" required="required" >
+                </td>
+
+                <td>
+                    <label class="layui-form-label">实验室类别</label>
+                </td>
+                <td>
+                    <input type="text" name="category" th:value="${laboratoryInfo.category}" class="layui-input" required="required" >
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <label class="layui-form-label">实验室状态</label>
+                </td>
+                <td>
+                    <select name="status">
+                        <option value="开放" th:selected="${laboratoryInfo.status}=='开放'">开放</option>
+                        <option value="关闭" th:selected="${laboratoryInfo.status}=='关闭'">关闭</option>
+                    </select>
+                </td>
+<!--                <td >-->
+<!--                    <label class="layui-form-label"></label>-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                    <input type="text" name=""  class="layui-input" required="required" >-->
+<!--                </td>-->
+
+            </tr>
+
+            <tr>
+                <td>
+                    <label class="layui-form-label">实验室描述</label>
+                </td>
+                <td colspan="3">
+                    <textarea type="text" style="max-height: 40px;" th:text="${laboratoryInfo.describe}" name="describe"  class="layui-input layui-textarea"  ></textarea>
+                </td>
+            </tr>
+
+        </table>
+        <input name="labid" th:value="${laboratoryInfo.labid}" style="display: none;">
+        <div style="margin-top: 10px;">
+            <button type="button" class="layui-btn" onclick="upLaboratoryInfo()">保存</button>
+            <button type="button" class="layui-btn" onclick="closeIfame()">取消</button>
+        </div>
+
+    </form>
+<!--<div class="layui-input-inline">-->
+<!--    <input id="reserve-date" th:value="${reserve}" name="reserve" class="layui-input" readonly lay-verify="required|date" type="data" placeholder="预约时间"  >-->
+<!--</div>-->
+<!--<div class="layui-input-inline">-->
+<!--    <input id="reserve-date" th:value="${reserve}" name="reserve" class="layui-input" readonly lay-verify="required|date" type="data" placeholder="预约时间"  >-->
+<!--</div>-->
+<!--<div class="layui-input-inline">-->
+<!--    <input id="reserve-date" th:value="${reserve}" name="reserve" class="layui-input" readonly lay-verify="required|date" type="data" placeholder="预约时间"  >-->
+<!--</div>-->
+<!--<button onclick="getParam();">sss</button>-->
+
+</body>
+
+<script type="text/javascript">
+    /**
+     * 编辑保存实验室信息
+     */
+    function upLaboratoryInfo() {
+        inputNull();
+        var data = $("form").serialize();
+        console.log(data);
+        var header = $("meta[name='_csrf_header']").attr("content");
+        var token = $("meta[name='_csrf']").attr("content");
+        $.ajax({
+            url: '/admin/upLaboratoryInfo',
+            type: 'POST',
+            async: false,
+            contentType: 'application/x-www-form-urlencoded;charset=UTF-8',
+            data:data,
+            dataType: 'json',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(header, token);
+                loading = layer.msg('处理中', {icon: 16,time:1000*60});
+            },
+            success: function (data) {
+                // console.log(data.labid);
+                if (data.status==200){
+                    loading = layer.alert(data.msg,{icon:1,title:false},function (){
+                        closeIfame();
+                    });
+                }else {
+                    loading = layer.alert(data.msg,{icon:2,title:false});
+                }
+
+                // console.log(data.status+data.msg);
+            },
+            error:function (data){
+                loading=layer.alert("修改失败！",{icon:2,title:false});
+            }
+        })
+    }
+</script>
+<script type="text/javascript">
+
+    //日期插件
+    layui.use('laydate', function() {
+        var reserveTimeList=document.getElementById("reserveTimeList");
+        // console.log(reserveTimeList.innerText);
+        var markJson = new Function("return" + reserveTimeList.innerText)();//转换后的JSON对象
+        console.log(markJson);
+        function disabled_date() {
+            if (markJson != null) {
+                for (var key in markJson) {
+                    var dates = key.split("-");
+                    // dates[1] = dates[1] * 1;
+                    var mm = dates[0] + '-' + parseInt(dates[1]) + '-' + parseInt(dates[2]);
+                    console.log(mm);
+                    $('.laydate-theme-grid table tbody').find('[lay-ymd="' + mm + '"]').addClass('laydate-disabled');
+                    // keys.push(key);
+                }
+            }
+
+        }
+
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#reserve-date',
+            min: 1,
+            trigger: 'click',
+            theme: 'grid',
+            showBottom: false,
+            ready: function (value) {//控件在打开时触发，回调返回一个参数
+                disabled_date(); //得到初始的日期时间对象：{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+            },
+            change: function (value, date) { //监听日期被切换
+                disabled_date();
+                //执行函数
+            }
+        });
+    })
+
+    //关闭弹窗
+    function closeIfame() {
+        //使用data获取传送过的obj参数
+        //在子页面关闭弹出层
+        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+        parent.layer.close(index); //再执行关闭
+    }
+
+    // layui.use("layer", function () {
+    //     var layer = layui.layer;
+    //     $("#reserve-btn").click(function () {
+    //         layer.open({
+    //             type: 3,
+    //             // area: ['100%', '100%']
+    //         });
+    //     });
+    // });
+
+    //判断表单input是否有空值
+    // $(document).ready(function(){
+    //     $("form").submit(function(e) {
+    function inputNull (labid){
+            var ref = $("form").find("[required=required]");
+            // alert('ref');
+            $(ref).each(function () {
+                if ($(this).val() == '') {
+                    // alert("Required field should not be blank.");
+                    layer.msg("内容不能为空！！",{icon:5})
+                    $(this).focus();
+                    $(this).addClass("input-focus");
+                    e.preventDefault();
+                    return false;
+                }
+            });
+    }
+    //         return true;
+    //     });
+    // });
+</script>
+
+</html>

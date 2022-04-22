@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title>实验室详情信息表</title>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header"  th:content="${_csrf.headerName}"/>
+    <link rel="stylesheet" href="../../static/layui/css/layui.css" th:href="@{/layui/css/layui.css}">
+    <script src="../../static/js/jquery-3.6.0.min.js" th:src="@{/js/jquery-3.6.0.min.js}" type="text/javascript"></script>
+    <script src="../../static/layui/layui.js" th:src="@{/layui/layui.js}" type="text/javascript"></script>
+</head>
+<style>
+
+    td{
+        padding: 3px 5px;
+    }
+    body .demo-class .layui-layer-btn0{
+        border-color: #E6E3E6;
+        background-color: #FFF;
+        color: black;
+    }
+    body .demo-class .layui-layer-btn1{
+        border-color: #4898d5;
+        background-color: #2e8ded;
+        color: #fff;
+    }
+    body .layui-ext-myskin .layui-layer-btn0{
+        　　border-color: #55ff83;
+        　　background-color: #5aff53;
+        　　color: #4736ff;
+    }
+    .btttt{
+        color: #fff;
+    }
+    .layui-input{
+        border-color: #181818;
+    }
+    .layui-input:hover{
+        border-color:#007bff!important;
+    }
+    .layui-input:focus{
+        border-color:#007bff!important;
+    }
+
+    .layui-inline .input-focus:focus{
+        border-color: red!important;
+    }
+    .layui-form-label {
+        width: 100px;
+    }
+    .layui-layer-btn .layui-layer-btn0{
+        color: #FFF!important;
+        background-color: #009688;!important;
+    }
+    .layui-layer-setwin .layui-layer-close2{
+        display: none;
+    }
+    .layui-form-select dl dd.layui-this{
+        background-color: #009688;
+    }
+    .layui-textarea {
+        max-height: 100px!important;
+        min-height: 100px!important;
+    }
+
+</style>
+<body>
+
+<form class="layui-form " style="text-align: center;" >
+    <!--实验室信息-->
+    <h1 style="padding: 10px;text-align: center;">实验室详情信息</h1>
+    <table class="layui-inline" border="1px solid #ccc" cellspacing="0" cellpadding="0">
+        <tr>
+            <td>
+                <label class="layui-form-label">实验楼</label>
+            </td>
+            <td >
+                <input type="text" name="buildingName" th:value="${laboratoryInfo.buildingName}" class="layui-input" style="border: 0px;" readonly >
+            </td>
+            <td>
+                <label class="layui-form-label">实验房间号</label>
+            </td>
+            <td>
+                <input type="text" name="roomNumber" th:value="${laboratoryInfo.roomNumber}" class="layui-input" style="border: 0px;" readonly>
+            </td>
+        </tr>
+
+
+        <tr>
+            <td >
+                <label class="layui-form-label">预约时间</label>
+            </td>
+            <td>
+                <input id="reserveTime" type="text" name="reserveTime"  class="layui-input" required="required" placeholder="预约时间" >
+            </td>
+
+
+            <td>
+                <label class="layui-form-label">实验室类别</label>
+            </td>
+            <td>
+                <input type="text" name="category" th:value="${laboratoryInfo.category}"  class="layui-input" style="border: 0px;" readonly >
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <label class="layui-form-label">实验室状态</label>
+            </td>
+            <td>
+                <input type="text" name="category" th:value="${laboratoryInfo.status}"  class="layui-input" style="border: 0px;" readonly >
+            </td>
+
+            <td>
+                <label class="layui-form-label">可容纳数</label>
+            </td>
+            <td>
+                <input type="text"name="capacity" th:value="${laboratoryInfo.capacity}" class="layui-input" style="border: 0px;" readonly >
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <label class="layui-form-label">实验室描述</label>
+            </td>
+            <td colspan="3">
+                <textarea type="text" style="max-height: 40px;border: 0px;"  readonly  name="describe" th:text="${laboratoryInfo.describe}" class="layui-input layui-textarea"  ></textarea>
+            </td>
+        </tr>
+
+    </table>
+    <input name="labid" th:value="${laboratoryInfo.labid}" style="display: none;">
+            <div style="margin-top: 10px;">
+                <button type="button" class="layui-btn" onclick="addReserveLaboratoryInfo()">预约</button>
+                <button type="button" class="layui-btn" onclick="closeIfame()">取消</button>
+            </div>
+
+</form>
+<!--<div class="layui-input-inline">-->
+<!--    <input id="reserve-date" th:value="${reserve}" name="reserve" class="layui-input" readonly lay-verify="required|date" type="data" placeholder="预约时间"  >-->
+<!--</div>-->
+<!--<div class="layui-input-inline">-->
+<!--    <input id="reserve-date" th:value="${reserve}" name="reserve" class="layui-input" readonly lay-verify="required|date" type="data" placeholder="预约时间"  >-->
+<!--</div>-->
+<!--<div class="layui-input-inline">-->
+<!--    <input id="reserve-date" th:value="${reserve}" name="reserve" class="layui-input" readonly lay-verify="required|date" type="data" placeholder="预约时间"  >-->
+<!--</div>-->
+<!--<button onclick="getParam();">sss</button>-->
+
+</body>
+<script type="text/javascript">
+    //预约实验室记录
+    function addReserveLaboratoryInfo(){
+        inputNull();
+        var data = $("form").serialize();
+        console.log(data);
+        var header = $("meta[name='_csrf_header']").attr("content");
+        var token = $("meta[name='_csrf']").attr("content");
+        $.ajax({
+            url: '/admin/addReserveLaboratoryInfo',
+            type: 'POST',
+            async: false,
+            contentType: 'application/x-www-form-urlencoded;charset=UTF-8',
+            data:data,
+            dataType: 'json',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(header, token);
+                loading = layer.msg('处理中', {icon: 16,time:1000*60});
+            },
+            success: function (data) {
+                // console.log(data.labid);
+                if (data.status==200){
+                    loading = layer.alert(data.msg,{icon:1,title:false},function (){
+                        closeIfame();
+                    });
+                }else {
+                    loading = layer.alert(data.msg,{icon:2,title:false});
+                }
+
+                // console.log(data.status+data.msg);
+            },
+            error:function (data){
+                loading=layer.alert("添加失败！",{icon:2,title:false});
+            }
+        })
+    }
+
+    //预约时间
+    var laydate = layui.laydate;
+    laydate.render({
+        elem: '#reserveTime',
+        // min:1,
+        trigger : 'click',
+        theme: 'grid',
+        showBottom: true,
+
+    });
+
+    //关闭弹窗
+    function closeIfame() {
+        //使用data获取传送过的obj参数
+        //在子页面关闭弹出层
+        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+        parent.layer.close(index); //再执行关闭
+    }
+
+    //inputNull
+    function inputNull (){
+        var ref = $("form").find("[required=required]");
+        // alert('ref');
+        $(ref).each(function () {
+            if ($(this).val() == '') {
+                // alert("Required field should not be blank.");
+                layer.msg("内容不能为空！！",{icon:5})
+                $(this).focus();
+                $(this).addClass("input-focus");
+                e.preventDefault();
+                return false;
+            }
+        });
+    }
+</script>
+
+</html>

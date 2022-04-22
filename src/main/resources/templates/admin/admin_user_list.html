@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1,shrink-to-fit=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header"  th:content="${_csrf.headerName}"/>
+  <title>管理员列表</title>
+  <link th:href="@{/login/css/bootstrap.min.css}" href="../static/login/css/bootstrap.min.css" rel="stylesheet">
+  <link th:href="@{/login/css/signin.css}" href="../static/login/css/signin.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../../static/layui/css/layui.css" th:href="@{/layui/css/layui.css}">
+  <script src="../../../static/js/jquery-3.6.0.min.js" th:src="@{/js/jquery-3.6.0.min.js}" type="text/javascript"></script>
+  <script src="../../../static/layui/layui.js" th:src="@{/layui/layui.js}" type="text/javascript"></script>
+</head>
+<style>
+  /* Switch开关样式 */
+  input[type='checkbox'].switch {
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    position: relative;
+    width: 40px;
+    height: 20px;
+    background: #ccc;
+    border-radius: 10px;
+    transition: border-color .3s, background-color .3s;
+  }
+
+  input[type='checkbox'].switch::after {
+    content: '';
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0, 0, 2px, #999;
+    transition: .4s;
+    top: 2px;
+    position: absolute;
+    left: 2px;
+  }
+
+  input[type='checkbox'].switch:checked {
+    background: rgb(19, 206, 102);
+  }
+
+  /* 当input[type=checkbox]被选中时：伪元素显示下面样式 位置发生变化 */
+  input[type='checkbox'].switch:checked::after {
+    content: '';
+    position: absolute;
+    left: 55%;
+    top: 2px;
+  }
+</style>
+<style type="text/css">
+  .my-label{
+    width: max-content;
+  }
+  html body{
+    height: auto;
+  }
+  .layui-laypage .pageNum{
+    background-color: #009688;
+    color: #fff;
+  }
+  .layui-laypage .pageNum:hover{
+    color: #fff;
+  }
+
+  .layui-laypage a:hover{
+    background-color: #009688;
+    color: #fff;
+  }
+  button:focus{
+    outline: none;
+    outline: 0;
+    border-color: transparent;
+  }
+  body .demo-class .layui-layer-btn0{
+    border-color: #E6E3E6;
+    background-color: #FFF;
+    color: black;
+  }
+  body .demo-class .layui-layer-btn1{
+    border-color: #4898d5;
+    background-color: #2e8ded;
+    color: #fff;
+  }
+  .layui-form-select dl dd.layui-this{
+    background-color: #009688;
+  }
+  .layui-form-item{
+    margin-bottom: 0px;
+  }
+  .layui-table td, .layui-table th{
+    padding: 5px 15px;
+  }
+  .layui-form-label{
+    margin-bottom: 0px;
+  }
+  .layui-table, .layui-table-view{
+    margin: 5px 0px;
+  }
+  .layui-table{
+    margin-top: 5px;
+  }
+
+  #select{
+    border: solid 1px #f5f5f5;
+    background-color: #009688;
+    padding: 2px;
+    color: #fff;
+    padding: 3px 5px;
+  }
+
+  #select .noselect{
+    border:none;
+    background-color: #fff;
+    color: #000;
+  }
+  .layui-table[lay-size=sm] td, .layui-table[lay-size=sm] th{
+    font-size: 14px;
+  }
+  /*.btttt{*/
+  /*    color: #fff;*/
+  /*}*/
+  .layui-layer-setwin .layui-layer-close2{
+    display: none;
+  }
+  .layui-layer-btn .layui-layer-btn0{
+    background-color: #009688!important;
+    color: #FFFFFF!important;
+  }
+</style>
+<body>
+<div>
+  <div>
+<!--            查找表单-->
+    <form id="form" class="layui-form" action="/sAdmin/getAdminUserList">
+      <div class="layui-form-item ">
+        <div class="layui-inline">
+
+          <label class="layui-form-label my-label">账号</label>
+          <div class="layui-input-inline">
+            <input  th:value="${username}" class="layui-input"  name="username" placeholder="账号ID"  >
+          </div>
+
+          <label class="layui-form-label my-label">绑定邮箱</label>
+          <div class="layui-input-inline">
+            <input  th:value="${email}" class="layui-input"  name="email" placeholder="绑定邮箱"  >
+          </div>
+
+          <label class="layui-form-label my-label">账号状态</label>
+          <div class="layui-input-inline">
+            <select name="status">
+              <option value="" th:selected="${status} !='正常' and ${status} !='冻结'">未选择</option>
+              <option value="正常" th:selected="${status}=='正常'">正常</option>
+              <option value="冻结" th:selected="${status}=='冻结'">冻结</option>
+            </select>
+
+          </div>
+
+          <button id="btn" type="submit" class="layui-btn  layui-input-inline" style="width: max-content">查找</button>
+        </div>
+
+      </div>
+
+
+    </form>
+  </div>
+
+
+  <div>
+    <!--        数据列表-->
+    <div>
+      <div style="margin-top: 10px;">
+<!--        <input type="file" id="exe_file" onchange ="uploadFile()" name="file" style="display:none" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" >-->
+        <button class="layui-btn layui-btn-sm" onclick="addAdminUserPage()">添加</button>
+<!--        <button class="layui-btn layui-btn-sm" onclick="addadminUserExe();">EXE添加</button>-->
+        <button class="layui-btn layui-btn-sm" onclick="delAdminUserlist();">删除</button>
+      </div>
+
+      <table class="layui-table" lay-size="sm" style="font-size: 14px;" width="100%">
+        <thead style="background-color: #009688;color: #fff;">
+        <tr style="background-color: #393D49;color: #fff;" >
+          <th style="min-width: 15px;"><input id="checkbox" onclick="checkAll();" type="checkbox"></th>
+          <th>账号</th>
+<!--          <th style="width: 200px;">账号密码</th>-->
+          <th>用户名称</th>
+          <th>注册时间</th>
+          <th>账号状态</th>
+          <th>邮件</th>
+          <th>权限</th>
+          <th>操作</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="arrayS,iterStat:${pageInfo.list}">
+          <!--                    <td th:text="${arrayS.id}"></td>-->
+          <th style="min-width: 15px;"><input type="checkbox" name="checkbox" th:value="${arrayS.username}"></th>
+          <td th:text="${arrayS.username}"></td>
+<!--          <td>-->
+<!--            <div style="width:200px;height:16px;text-overflow: ellipsis;overflow: hidden;" th:text="${arrayS.password}"></div>-->
+<!--          </td>-->
+          <td th:text="${arrayS.name}"></td>
+          <td th:text="${arrayS.createTime}"></td>
+          <td th:text="${arrayS.status}"></td>
+          <td th:text="${arrayS.email}"></td>
+          <td th:text="${arrayS.role}"></td>
+          <td>
+            <button class="layui-btn-xs layui-btn" id="del-resever" th:data-id="${arrayS.username}"
+                    th:onclick="detailAdminUserPage(this.getAttribute('data-id'))">详情</button>
+
+            <button class="layui-btn-xs layui-btn" id="del-resever" th:data-id="${arrayS.username}"
+                    th:onclick="editAdminUserPage(this.getAttribute('data-id'))">编辑</button>
+
+            <button class="layui-btn-xs layui-btn" id="del-resever"  th:data-id="${arrayS.username}"
+                    th:onclick="resetPasssword(this.getAttribute('data-id'))">重置密码</button>
+
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <!--        数据列表结束-->
+  </div>
+
+  <div style="text-align: center;">
+    <div  class="layui-box  layui-laypage-default layui-laypage">
+
+      <th:block th:if="${1 != pageInfo.pageNum} and ${pageInfo.pages}>0">
+        <a  th:href="@{'/sAdmin/getAdminUserList?pageNum=1'
+                +'&status='+${status}
+                +'&username='+${username}
+                +'&email='+${email}}" aria-label="Previous">
+          <i class="fa fa-angle-left"></i>&nbsp;第一页
+        </a>
+      </th:block>
+
+      <th:block th:if="${pageInfo.hasPreviousPage}">
+        <a  th:href="@{'/sAdmin/getAdminUserList?pageNum='+${pageInfo.prePage}
+               +'&status='+${status}
+                +'&username='+${username}
+                +'&email='+${email}}" aria-label="Previous">
+          <i class="fa fa-angle-left"></i>&nbsp;上一页
+        </a>
+      </th:block>
+
+      <th:block th:each="navIndex :${ pageInfo.navigatepageNums}">
+
+        <a th:class="${pageInfo.pageNum}==${navIndex}?'pageNum':''"
+           th:href="@{'/sAdmin/getAdminUserList?pageNum='+${navIndex}
+                  +'&name='+${name}
+                   +'&username='+${username}
+                   +'&createTime='+${createTime}}" th:text="${navIndex}"></a>
+
+      </th:block>
+
+      <th:block th:if="${pageInfo.hasNextPage}">
+        <a th:href="@{'/sAdmin/getAdminUserList?pageNum='+${pageInfo.nextPage}
+              +'&status='+${status}
+                +'&username='+${username}
+                +'&email='+${email}}" aria-label="Next">
+          下一页&nbsp;<i class="fa fa-angle-right"></i>
+        </a>
+      </th:block>
+
+      <th:block th:if="${pageInfo.lastPage != pageInfo.pageNum} and ${pageInfo.pages}>0">
+        <a th:href="@{'/sAdmin/getAdminUserList?pageNum='+${pageInfo.pages}
+              +'&status='+${status}
+                +'&username='+${username}
+                +'&email='+${email}}" aria-label="Next">
+          最后一页&nbsp;<i class="fa fa-angle-right"></i>
+        </a>
+      </th:block>
+
+      <th:block th:if="${pageInfo.pages}>0">
+        <span th:text="'共'+${pageInfo.pages}+'页'"></span>
+        <span th:text="'共'+${pageInfo.getTotal()}+'条记录'"></span>
+      </th:block>
+    </div>
+
+    <th:block th:if="${pageInfo.pages}>0">
+      <span style="margin-right: 2px;margin-left: 3px;">跳转到</span>
+      <select name="pageNum" id="select" οnfοcus="selectFocus()"  onchange="onJumpPage()" >
+        <th:block th:each="i:${#numbers.sequence(1,pageInfo.pages)}">
+          <option th:class="${i}==${pageInfo.pageNum}?'selected':'noselect'"
+                  th:selected="${i}==${pageInfo.pageNum}" th:value="${i}"
+                  οnclick="selectClick()" th:text="'第'+${i}+'页'">
+          </option>
+        </th:block>
+      </select>
+    </th:block>
+  </div>
+
+</div>
+
+</body>
+<script type="text/javascript">
+  //重置管理员账号密码
+  function resetPasssword(username){
+    var header = $("meta[name='_csrf_header']").attr("content");
+    var token = $("meta[name='_csrf']").attr("content");
+    $.ajax({
+      url: '/sAdmin/resetAdminPasssword',
+      type: 'POST',
+      // contentType: 'application/x-www-form-urlencoded;charset=UTF-8',
+      // contentType: 'application/json;charset=UTF-8',
+      data: {"username":username},
+      // dataType: 'json',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader(header, token);
+        loading=layer.msg("正在执执行...",{icon:16});
+      },
+      success: function (data) {
+        console.log(data);
+
+
+        if (data.status==200){
+          loading=layer.alert(data.msg,{icon:1,title:false},function (){
+            // closeIfame();
+            window.location.reload();
+          });
+        }else {
+          loading=layer.alert(data.msg,{icon:2,title:false},function (){
+            // closeIfame();
+            window.location.reload();
+          })
+
+        }
+
+      },
+      error:function (){
+        loading=layer.alert("出现错误！",{icon:5,title:false});
+      }
+    })
+  }
+
+  //指定跳转页面
+  function onJumpPage(){
+    var dataParam = $("#form").serialize();
+    var pageNum = $("#select").val();
+    dataParam += "&"+"pageNum="+pageNum;
+    window.location.href="/sAdmin/getAdminUserList?"+dataParam;
+
+    console.log(dataParam);
+  }
+
+  // //用exe表格添加管理员用户
+  // function addadminUserExe(){
+  //   document.getElementById("exe_file").click();
+  // }
+
+  // //选择文件后自动上传
+  // function uploadFile() {
+  //   var myform = new FormData();
+  //   myform.append('file',$('#exe_file')[0].files[0]);
+  //   console.log(myform);
+  //   var header = $("meta[name='_csrf_header']").attr("content");
+  //   var token = $("meta[name='_csrf']").attr("content");
+  //   var loading = layer.load(1, {
+  //     shade: true,
+  //     shade: [0.5, '#000'],
+  //     // time: 50*1000
+  //   });
+  //   $.ajax({
+  //     url: "/admin/adminaddadminadminUserExe",
+  //     type: "POST",
+  //     data: myform,
+  //     contentType: false,
+  //     processData: false,
+  //     beforeSend: function (xhr) {
+  //       xhr.setRequestHeader(header, token);
+  //     },
+  //     success: function (data) {
+  //       layer.close(loading);
+  //       alert("成功添加"+data.num+"记录！");
+  //       console.log(data);
+  //       location.reload();
+  //     },
+  //     error:function(data){
+  //       layer.close(loading);
+  //       alert("添加识别，请重试！！");
+  //       console.log(data)
+  //       location.reload();
+  //     }
+  //   });
+  // }
+  //
+
+
+  //添加管理员账号页
+  function addAdminUserPage(){
+    var layer = layui.layer;
+    //iframe层
+    var index = layer.open({
+      type: 2,
+      title: '添加管理员用户',
+      shadeClose: true,
+      shade: 0.8,
+      scrollbar: false,
+      area: ['70%', '99%'],//宽 高
+      content:'/sAdmin/addAdminUserPage',
+      end : function() {
+        location.reload();
+      }
+
+    });
+  }
+
+
+
+  //批量删除管理员账号
+  function delAdminUserlist(){
+    var chk_value =[];
+    $('input[name="checkbox"]:checked').each(function(){
+      chk_value.push($(this).val());
+    });
+    // alert(chk_value.length==0 ?'你还没有选择任何内容！':chk_value);
+    if(chk_value.length==0){
+      layer.alert("你还没有选择任何内容!",{icon:5,title:false});
+    }else {
+      var header = $("meta[name='_csrf_header']").attr("content");
+      var token = $("meta[name='_csrf']").attr("content");
+      var data="ids="+chk_value;
+      // console.log(JSON.stringify(data));
+      // loading=layer.msg("正在执执行...",{icon:16,title:false});
+      // console.log(data);
+      $.ajax({
+        url: '/sAdmin/delAdminUserList',
+        type: 'POST',
+        async: false,
+        data:data,
+
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader(header, token);
+        },
+        success: function (data) {
+          // console.log(data.num);
+          // console.log(data.labid);
+          // inputNull(data.labid);
+          if (data.status==200){
+            loading=layer.alert(data.msg,{icon:1,title:false},function (){
+              // closeIfame();
+              window.location.reload();
+            });
+          }else {
+            loading =layer.alert(data.msg,{icon:2,title:false},function (){
+              // closeIfame();
+              window.location.reload();
+            })
+
+          }
+
+        },
+        error:function (){
+          loading=layer.alert("删除错误！！",{icon:2,title:false},function (){
+            // closeIfame();
+            window.location.reload();
+          })
+        }
+
+
+      })
+    }
+  }
+
+  //全选操作
+  function checkAll(){
+    if ( $("#checkbox").is(":checked") ){
+      $("input[name='checkbox']").prop("checked",true);
+    }else {
+      $("input[name='checkbox']").prop("checked",false);
+      // $("input[name='checkbox']").removeAttr("checked");
+    }
+
+  }
+
+  //管理员详情信息
+  function detailAdminUserPage(id){
+
+    var layer = layui.layer;
+    //iframe层
+    var index = layer.open({
+      type: 2,
+      title: '管理员账号详情信息 ',
+      shadeClose: true,
+      shade: 0.8,
+      scrollbar: false,
+      area: ['70%', '99%'],//宽 高
+      content:'/sAdmin/detailAdminUserPage?username='+id
+      ,end:function (){
+        window.location.reload();
+      }
+    });
+  }
+
+  /**
+   * 管理员账号编辑
+   */
+  function editAdminUserPage(username){
+    var layer = layui.layer;
+    //iframe层
+    var index = layer.open({
+      type: 2,
+      title: '管理员账号编辑 ',
+      shadeClose: true,
+      shade: 0.8,
+      scrollbar: false,
+      area: ['70%', '99%'],//宽 高
+      content:'/sAdmin/editAdminUserPage?username='+username
+      ,end:function (){
+        window.location.reload();
+      }
+    });
+  }
+
+  $("#myselect").change(function(){
+    str = document.getElementById("myselect").value;
+    obj = document.getElementById("type");
+    for(i=0;i<obj.length;i++){
+      if(obj[i].value==str)
+        obj[i].selected = true;
+    }
+  });
+
+  //日期插件
+  layui.use('laydate', function(){
+    // var markJson={"2022-3-15":"","2022-10-10":"","2022-4-1":""};
+    // console.log(markJson);
+    function disabled_date() {
+
+    }
+
+    var laydate = layui.laydate;
+
+    laydate.render({
+      elem: '#test2',
+      // min:1,
+      trigger : 'click',
+      theme: 'grid',
+      showBottom: true,
+      btns: ['clear', 'now', 'confirm']
+      // ready: function(value){//控件在打开时触发，回调返回一个参数
+      //     disabled_date(); //得到初始的日期时间对象：{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+      // },
+      //  change: function(value, date){ //监听日期被切换
+      //      disabled_date();
+      //      //执行函数
+      // }
+    });
+
+
+
+    //日历插件调用方法
+
+    //     function loding_date(new_date, data) {
+    //
+    //         laydate.render({
+    //             elem: '#date-list'
+    //             , type: 'date'
+    //             , theme: 'grid'
+    //             , max: '2099-06-16 23:59:59'
+    //             , position: 'static'
+    //             , range: false
+    //             , value: '2022-3-10'
+    //             , min:getNowFormatDate()
+    //             , isInitValue: false
+    //             , calendar: false
+    //             , btns: false
+    //             , mark:{
+    //                 '2022-3-15':'',
+    //                 '2022-3-16':''
+    //             }//重要json！
+    //             , ready: function (value) {
+    //                 disabled_date(value,$("#appointmentDate").val());
+    //                 hide_mr(data);
+    //             }
+    //             , done: function (value, date) {
+    //                 dateset(value,data);
+    //             }
+    //             , change: function (value, date) {
+    //                 disabled_date(date,$("#appointmentDate").val());
+    //                 hide_mr(data);
+    //             }
+    //         });
+    //     }
+    //
+    //     /**
+    //      *设置不可选择的星期
+    //      *value:选中的值
+    //      *appointmentDate星期：如1,2,3,4,5,6,7
+    //      */
+    //     function disabled_date(value,appointmentDate) {
+    //         var mm = value.year + '-' + value.month + '-' + value.date;
+    //         $('.laydate-theme-grid table tbody').find('[lay-ymd="' + mm + '"]').removeClass('layui-this');
+    //
+    //         if(appointmentDate!=null && appointmentDate!=''){
+    //             var dates = appointmentDate.split(",");
+    //             for(var i=0;i<dates.length;i++){
+    //                 if(dates[i]=="7"){
+    //                     dates[i] = 0;
+    //                 }
+    //                 $("table>tbody>tr").find("td:eq("+dates[i]+")").addClass('ng-laydate-disabled');
+    //             }
+    //         }
+    //
+    //     }
+    //
+  });
+
+
+  //关闭弹窗
+  function closeIfame() {
+    //使用data获取传送过的obj参数
+    //在子页面关闭弹出层
+    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+    parent.layer.close(index); //再执行关闭
+  }
+</script>
+<!--<script type="text/javascript">-->
+<!--    layui.define([ 'element', 'form', 'layer', 'laypage' ], function(exports) {-->
+<!--        var element = layui.element();-->
+<!--        var form = layui.form();-->
+<!--        var layer = layui.layer;-->
+<!--        var laypage = layui.laypage;-->
+
+<!--        var pindex = "${requestScope.page.pindex}";// 当前页-->
+<!--        var ptotalpages = "${requestScope.page.ptotalpages}";// 总页数-->
+<!--        var pcount = "${requestScope.page.pcount}";// 总记录数-->
+<!--        var psize = "${requestScope.page.psize}";// 每一页的记录数-->
+
+<!--        // 分页-->
+<!--        laypage({-->
+<!--            cont : 'form_page', // 页面上的id-->
+<!--            pages : ptotalpages,//总页数-->
+<!--            curr : pindex,//当前页。-->
+<!--            skip : true,-->
+<!--            jump : function(obj, first) {-->
+
+<!--                $("#pindex").val(obj.curr);//设置当前页-->
+<!--                $("#psize").val($("#page_size").val())-->
+<!--                //防止无限刷新,-->
+<!--                //只有监听到的页面index 和当前页不一样是才出发分页查询-->
+<!--                if (obj.curr != pindex || psize != $("#psize").val()) {-->
+<!--                    document.f1.submit();-->
+<!--                }-->
+<!--            }-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
+<script type="text/javascript">
+
+  // $("#btn-resever").click(function () {
+  //     layui.use("layer", function () {
+  //         var layer = layui.layer;
+  //         //iframe层
+  //         layer.open({
+  //             type: 2,
+  //             title: 'layer mobile页',
+  //             shadeClose: true,
+  //             shade: 0.8,
+  //             area: ['70%', '90%'],//宽 高
+  //             content: '<iframe data-frameid="' + id + '" scrolling="auto" frameborder="0" src="' + url + '" style="width:100%;height:99%;"></iframe>'
+  //
+  //         });
+  //     });
+  // });
+
+</script>
+</html>

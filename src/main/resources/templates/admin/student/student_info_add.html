@@ -1,0 +1,291 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header"  th:content="${_csrf.headerName}"/>
+    <title>添加学生个人信息</title>
+    <link rel="stylesheet" href="../../../static/layui/css/layui.css" th:href="@{/layui/css/layui.css}">
+    <script src="../../../static/js/jquery-3.6.0.min.js" th:src="@{/js/jquery-3.6.0.min.js}"></script>
+    <script src="../../../static/layui/layui.js" th:src="@{/layui/layui.js}"></script>
+</head>
+<style type="text/css">
+    .layui-form .layui-form-item{
+        margin-bottom: 0px;
+    }
+    td{
+        padding: 3px 5px;
+    }
+    .layui-input{
+        border-color: #181818;
+    }
+    .layui-input:hover{
+        border-color:#007bff!important;
+    }
+    .layui-input:focus{
+        border-color:#007bff!important;
+    }
+
+    .layui-inline .input-focus:focus{
+        border-color: red!important;
+    }
+    .layui-form-label {
+        width: 100px;
+    }
+    .layui-layer-btn .layui-layer-btn0{
+        color: #FFF!important;
+        background-color: #009688;!important;
+    }
+    .layui-layer-setwin .layui-layer-close2{
+        display: none;
+    }
+    .layui-form-select dl dd.layui-this{
+        background-color: #009688;
+    }
+    .layui-textarea {
+        max-height: 50px!important;
+        min-height: 50px!important;
+    }
+</style>
+<body>
+
+<form class="layui-form " style="text-align: center;" >
+    <!--个人信息-->
+        <h2 style="padding: 5px;">学生个人信息</h2>
+        <table class="layui-inline" border="1px solid #ccc" cellspacing="0" cellpadding="0">
+            <tr>
+                <td>
+                    <label class="layui-form-label">账号/学号</label>
+                </td>
+                <td >
+                    <input type="text" name="username"  class="layui-input" required="required" >
+                </td>
+                <td>
+                    <label class="layui-form-label">姓名</label>
+                </td>
+                <td>
+                    <input type="text" name="name"  class="layui-input" required="required" >
+                </td>
+            </tr>
+
+
+            <tr>
+                <td>
+                    <label class="layui-form-label">年龄</label>
+                </td>
+                <td>
+                    <input type="text" name="age"   class="layui-input" required="required" >
+                </td>
+                <td>
+                    <label class="layui-form-label">性别</label>
+                </td>
+                <td>
+                    <select name="sex">
+                        <option value="男">男</option>
+                        <option value="女">女</option>
+                    </select>
+<!--                    <input type="text" name="sex" class="layui-input" required="required" >-->
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <label class="layui-form-label">联系方式</label>
+                </td>
+                <td>
+                    <input type="text" name="tel" class="layui-input" required="required" >
+                </td>
+                <td>
+                    <label class="layui-form-label">入学时间</label>
+                </td>
+                <td>
+                    <input id="studay"  name="studayDate"  class="layui-input" required="required" readonly lay-verify="required|date" type="data" >
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <label class="layui-form-label">毕业时间</label>
+                </td>
+                <td>
+                    <input id="graduation" name="graduationDate" class="layui-input" required="required" readonly lay-verify="required|date" type="data">
+                </td>
+                <td>
+                    <label class="layui-form-label">学院</label>
+                </td>
+                <td>
+                    <input type="text" name="college" class="layui-input" required="required" >
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <label class="layui-form-label">专业</label>
+                </td>
+                <td>
+                    <input type="text" name="major"  class="layui-input" required="required" >
+                </td>
+                <td>
+                    <label class="layui-form-label">班级</label>
+                </td>
+                <td>
+                    <input type="text" name="aclass"  class="layui-input" required="required" >
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <label class="layui-form-label">出生/年/月/日</label>
+                </td>
+                <td>
+                    <input type="text" name="birth"  class="layui-input" required="required"  >
+                </td>
+<!--                <td >-->
+<!--                    <label class="layui-form-label"></label>-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                    <input type="text"  class="layui-input" required="required"  >-->
+<!--                </td>-->
+            </tr>
+
+            <tr>
+                <td>
+                    <label class="layui-form-label">家庭住址</label>
+                </td>
+                <td colspan="3">
+                    <textarea type="text" style="max-height: 40px;" name="address"  class="layui-input layui-textarea" required="required"  ></textarea>
+                </td>
+            </tr>
+
+        </table>
+
+    <div style="margin-top: 10px;">
+        <button type="button" class="layui-btn" onclick="addStudentInfo()">添加</button>
+        <button class="layui-btn" onclick="closeIfame()">取消</button>
+    </div>
+
+</form>
+
+</body>
+<script type="text/javascript">
+
+    $("#graduation").click(function (){
+        if($("#studay").val()==""){
+            loading=layer.msg("请先填写入学日期",{icon:2});
+        }
+    })
+
+    var laydate = layui.laydate;
+    //时间插件
+    laydate.render({
+        elem: '#studay',
+        // min:1,
+        trigger : 'click',
+        theme: 'grid',
+        showBottom: true,
+        btns: ['clear', 'now', 'confirm'],
+        done: function (value) {
+            laydate.render({
+                elem: "#graduation",
+                trigger : 'click',
+                theme: 'grid',
+                showBottom: true,
+                min: value,
+            });
+        }
+        // ready: function(value){//控件在打开时触发，回调返回一个参数
+        //     disabled_date(); //得到初始的日期时间对象：{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+        // },
+        //  change: function(value, date){ //监听日期被切换
+        //      disabled_date();
+        //      //执行函数
+        // }
+    });
+
+    // var studay = $("#studay").val();
+    // $("#graduation").click(function (){
+    //     var studay = $("#studay").val();
+    //     alert(studay);
+    //     //时间插件{
+    //     laydate.render({
+    //         elem: '#graduation',
+    //         min:studay,
+    //         trigger : 'click',
+    //         theme: 'grid',
+    //         showBottom: true,
+    //         btns: ['clear', 'now', 'confirm'],
+    //         renderDate:true
+    //         // ready: function(value){//控件在打开时触发，回调返回一个参数
+    //         //     disabled_date(); //得到初始的日期时间对象：{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+    //         // },
+    //         //  change: function(value, date){ //监听日期被切换
+    //         //      // disabled_date();
+    //         //      //执行函数
+    //         // }
+    //     });
+    // })
+
+
+    //添加学生个人信息
+    function addStudentInfo() {
+        inputNull();
+        var data = $("form").serialize();
+        console.log(data);
+        var header = $("meta[name='_csrf_header']").attr("content");
+        var token = $("meta[name='_csrf']").attr("content");
+        $.ajax({
+            url: '/admin/addStudentInfo',
+            type: 'POST',
+            async: false,
+            contentType: 'application/x-www-form-urlencoded;charset=UTF-8',
+            data:data,
+            dataType: 'json',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(header, token);
+                loading = layer.msg('处理中', {icon: 16,time:1000*60});
+            },
+            success: function (data) {
+                // console.log(data.labid);
+                if (data.status==200){
+                    loading = layer.alert(data.msg,{icon:1,title:false},function (){
+                        closeIfame();
+                    });
+                }else {
+                    loading = layer.alert(data.msg,{icon:2,title:false});
+                }
+
+                // console.log(data.status+data.msg);
+            },
+            error:function (data){
+                loading=layer.alert("添加失败！",{icon:2,title:false});
+            }
+        })
+    }
+
+    //判断表单input是否有空值
+    function inputNull (){
+        var ref = $("form").find("[required=required]");
+        $(ref).each(function () {
+            if ($(this).val() == '') {
+                layer.msg('内容不能为空！！', {time: 1500, icon: 5});
+                $(this).focus();
+                $(this).addClass("input-focus");
+                e.preventDefault();
+                return false;
+            }
+        });
+    }
+
+    //关闭弹窗
+    function closeIfame() {
+        //使用data获取传送过的obj参数
+        //在子页面关闭弹出层
+        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+        parent.layer.close(index); //再执行关闭
+    }
+</script>
+</html>

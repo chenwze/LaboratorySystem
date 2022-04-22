@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>错误请求</title>
+    <link th:href="@{/login/css/bootstrap.min.css}" href="../static/login/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/login/css/signin.css}" href="../static/login/css/signin.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../../static/layui/css/layui.css" th:href="@{/layui/css/layui.css}">
+    <script src="../../../static/js/jquery-3.6.0.min.js" th:src="@{/js/jquery-3.6.0.min.js}" type="text/javascript"></script>
+    <script src="../../../static/layui/layui.js" th:src="@{/layui/layui.js}" type="text/javascript"></script>
+</head>
+<style>
+    .error-box{
+        margin-top: 0px;
+    }
+    .error-body h1 {
+        font-size: 188px;
+        font-weight: 700;
+        text-shadow: 4px 4px 0 #f5f6fa, 6px 6px 0 #868e96;
+        line-height: 210px;
+        color: #868e96;
+        margin-bottom: 0px;
+        margin-top: 0px;
+    }
+    .layui-laypage input:focus, .layui-laypage select:focus{
+        border-color: #009688!important;
+    }
+</style>
+<body>
+<div>
+    <div class="error-box">
+        <div class="error-body" style="text-align: center;">
+            <h1>400</h1>
+            <h5 style="padding: 15px;">请求出错了,请稍后重试...</h5>
+            <input type="button" name="submit" class="layui-btn" value="返回上一页" onclick="javascript:history.back(-1);">
+        </div>
+    </div>
+</div>
+</body>
+</html>

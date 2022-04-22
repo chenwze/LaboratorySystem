@@ -1,0 +1,264 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header"  th:content="${_csrf.headerName}"/>
+    <title>编辑老师账号信息</title>
+    <link rel="stylesheet" href="../../../static/layui/css/layui.css" th:href="@{/layui/css/layui.css}">
+    <script src="../../../static/js/jquery-3.6.0.min.js" th:src="@{/js/jquery-3.6.0.min.js}"></script>
+    <script src="../../../static/layui/layui.js" th:src="@{/layui/layui.js}"></script>
+</head>
+<style type="text/css">
+    .layui-form .layui-form-item{
+        margin-bottom: 0px;
+    }
+    td{
+        padding: 3px 5px;
+    }
+    .layui-input{
+        border-color: #181818;
+    }
+    .layui-input:hover{
+        border-color:#007bff!important;
+    }
+    .layui-input:focus{
+        border-color:#007bff!important;
+    }
+
+    .layui-inline .input-focus:focus{
+        border-color: red!important;
+    }
+    .layui-form-label {
+        width: 100px;
+    }
+    .layui-layer-btn .layui-layer-btn0{
+        color: #FFF!important;
+        background-color: #009688;!important;
+    }
+    .layui-layer-setwin .layui-layer-close2{
+        display: none;
+    }
+    .layui-form-select dl dd.layui-this{
+        background-color: #009688;
+    }
+    .layui-textarea {
+        max-height: 50px!important;
+        min-height: 50px!important;
+    }
+</style>
+<body>
+
+<form class="layui-form " style="text-align: center;" >
+    <!--个人信息-->
+        <h2 style="padding: 10px;">编辑老师信息</h2>
+        <table class="layui-inline" border="1px solid #ccc" cellspacing="0" cellpadding="0">
+            <tr>
+                <td>
+                    <label class="layui-form-label">账号/学号</label>
+                </td>
+                <td>
+                    <input type="text" name="username" th:value="${teacherInfo.username}" class="layui-input" required="required" readonly="true">
+                </td>
+                <td>
+                    <label class="layui-form-label">姓名</label>
+                </td>
+                <td>
+                    <input type="text" name="name" th:value="${teacherInfo.name}" class="layui-input" required="required"  >
+                </td>
+            </tr>
+
+
+            <tr>
+                <td>
+                    <label class="layui-form-label">年龄</label>
+                </td>
+                <td>
+                    <input type="text" name="age" th:value="${teacherInfo.age}"  class="layui-input" required="required" >
+                </td>
+                <td>
+                    <label class="layui-form-label">性别</label>
+                </td>
+                <td>
+                    <input type="text" name="sex" th:value="${teacherInfo.sex}"  class="layui-input" required="required" >
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <label class="layui-form-label">联系方式</label>
+                </td>
+                <td>
+                    <input type="text" name="tel" th:value="${teacherInfo.tel}" class="layui-input" required="required"  >
+                </td>
+                <td>
+                    <label class="layui-form-label">入职时间</label>
+                </td>
+                <td>
+                    <input id="entryDate"  name="entryDate" th:value="${teacherInfo.entryDate}" class="layui-input" required="required" readonly lay-verify="required|date" type="data" >
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <label class="layui-form-label">离职时间</label>
+                </td>
+                <td>
+                    <input id="resignationDate" th:value="${teacherInfo.resignationDate}" name="resignationDate"  class="layui-input"  readonly lay-verify="required|date" type="data">
+                </td>
+                <td>
+                    <label class="layui-form-label">学院</label>
+                </td>
+                <td>
+                    <input type="text"name="college" th:value="${teacherInfo.college}" class="layui-input"  required="required" >
+                </td>
+            </tr>
+
+            <tr>
+
+                <td>
+                    <label class="layui-form-label">职位</label>
+                </td>
+                <td>
+                    <input type="text" name="position" th:value="${teacherInfo.position}" class="layui-input" required="required" >
+                </td>
+
+                <td>
+                    <label class="layui-form-label">出生/年/月/日</label>
+                </td>
+                <td>
+                    <input id="birthDate"  name="birth" th:value="${teacherInfo.birth}" class="layui-input"  required="required" readonly lay-verify="required|date" type="data">
+                </td>
+            </tr>
+
+<!--            <tr>-->
+<!--                <td>-->
+<!--                    <label class="layui-form-label">出生/年/月/日</label>-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                    <input type="text" name="birth"  class="layui-input" disabled="disabled" readonly="true"  >-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                    <label class="layui-form-label"></label>-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                    <input type="text" class="layui-input" disabled="disabled" readonly="true"  >-->
+<!--                </td>-->
+<!--            </tr>-->
+
+            <tr>
+                <td>
+                    <label class="layui-form-label">家庭住址</label>
+                </td>
+                <td colspan="3">
+                    <textarea type="text" style="max-height: 40px;" name="address" th:text="${teacherInfo.address}"  class="layui-input layui-textarea" required="required"  ></textarea>
+                </td>
+            </tr>
+
+        </table>
+
+    <div style="margin-top: 10px;">
+        <button type="button" class="layui-btn" onclick="upStudentInfo()">保存</button>
+        <button type="button" class="layui-btn" onclick="closeIfame()">取消</button>
+    </div>
+</form>
+
+</body>
+<script type="text/javascript">
+    //编辑保存老师个人信息
+    function upStudentInfo() {
+        inputNull();
+        var data = $("form").serialize();
+        console.log(data);
+        var header = $("meta[name='_csrf_header']").attr("content");
+        var token = $("meta[name='_csrf']").attr("content");
+        $.ajax({
+            url: '/admin/upTeacherInfo',
+            type: 'POST',
+            async: false,
+            contentType: 'application/x-www-form-urlencoded;charset=UTF-8',
+            data:data,
+            dataType: 'json',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(header, token);
+                loading = layer.msg('处理中', {icon: 16,time:1000*60});
+            },
+            success: function (data) {
+                // console.log(data.labid);
+                if (data.status==200){
+                    loading = layer.alert(data.msg,{icon:1,title:false},function (){
+                        closeIfame();
+                    });
+                }else {
+                    loading = layer.alert(data.msg,{icon:2,title:false});
+                }
+
+                // console.log(data.status+data.msg);
+            },
+            error:function (data){
+                loading=layer.alert("添加失败！",{icon:2,title:false});
+            }
+        })
+    }
+
+    //时间插件
+    //出生年月日
+    var laydate = layui.laydate;
+    laydate.render({
+        elem: '#birthDate',
+        // min:1,
+        trigger : 'click',
+        theme: 'grid',
+        showBottom: true,
+        btns: ['clear', 'now', 'confirm'],
+        })
+
+    //入职时间
+    laydate.render({
+        elem: '#entryDate',
+        // min:1,
+        trigger : 'click',
+        theme: 'grid',
+        showBottom: true,
+        btns: ['clear', 'now', 'confirm'],
+    })
+
+    //离职时间
+    // var entryDate = $("#entryDate").val();
+    laydate.render({
+        elem: '#resignationDate',
+        // min:entryDate,
+        trigger : 'click',
+        theme: 'grid',
+        showBottom: true,
+        btns: ['clear', 'now', 'confirm'],
+    })
+
+    //判断表单input是否有空值
+    function inputNull (){
+        var ref = $("form").find("[required=required]");
+        $(ref).each(function () {
+            if ($(this).val() == '') {
+                layer.msg('内容不能为空！！', {time: 1500, icon: 5});
+                $(this).focus();
+                $(this).addClass("input-focus");
+                e.preventDefault();
+                return false;
+            }
+        });
+    }
+
+    //关闭弹窗
+    function closeIfame() {
+        //使用data获取传送过的obj参数
+        //在子页面关闭弹出层
+        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+        parent.layer.close(index); //再执行关闭
+    }
+
+</script>
+</html>

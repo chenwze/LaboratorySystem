@@ -38,6 +38,7 @@ public class UserController {
     @Autowired
     private UserServiceImpl userServiceImpl;
 
+
     /**
      * 发送验证码到指定邮箱
      */
@@ -299,5 +300,24 @@ public class UserController {
 //        }
 //        return "user/user_info";
 //    }
+    @RequestMapping(value = "/error400Page")
+    public String error400Page() {
+        return "/error/400";
+    }
 
+    @RequestMapping(value = "/error403Page")
+    public String error401Page() {
+        return "/error/403";
+    }
+
+    @RequestMapping(value = "/error404Page")
+    public String error404Page(Model model,HttpServletRequest request) {
+        model.addAttribute("code","6666666");
+        model.addAttribute("msg",request.getRequestURL().toString());
+        return "/error/404";
+    }
+    @RequestMapping(value = "/error500Page")
+    public String error500Page(Model model) {
+        return "/error/500";
+    }
 }
