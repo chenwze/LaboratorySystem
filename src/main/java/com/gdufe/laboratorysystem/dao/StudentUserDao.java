@@ -1,10 +1,8 @@
 package com.gdufe.laboratorysystem.dao;
 
-import com.gdufe.laboratorysystem.entity.StudentInfo;
+import com.gdufe.laboratorysystem.entity.StudentUser;
 import com.gdufe.laboratorysystem.entity.User;
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,7 +17,7 @@ public interface StudentUserDao {
    User getStudent(@Param("username") String username);
 
    //根据用户名查询个人信息
-    StudentInfo getStudentInfo(@Param("username") String username);
+    StudentUser getStudentInfo(@Param("username") String username);
 
     //根据用户名查询个人账号信息
     User getUserInfo(@Param("username") String username);
@@ -73,4 +71,36 @@ public interface StudentUserDao {
 
     //    <!--管理员更新学生账号信息-->
     int adminUpStudentUser(User user);
+
+
+
+    //根据条件查询用户信息结果集
+    List<StudentUser> getStudentInfoAll(StudentUser studentInfo);
+
+
+//    StudentInfo getStudentInfo(String usernam);
+
+    /**
+     * 学生个人信息列表
+     */
+    List<StudentUser> getStudentInfoList(StudentUser studentInfo);
+
+    //批量添加学生信息
+    int addStudentInfoList(List<StudentUser> studentInfoList);
+
+    /**
+     * 批量删除学生个人信息
+     */
+    int delStudentInfoList(String[] ids);
+    /**
+     * 更新学生个人信息
+     *
+     */
+    int upStudentInfo(StudentUser studentInfo);
+
+    //添加学生个人信息
+    int addStudentInfo(StudentUser studentInfo);
+
+    //是否存在学生个人信息账号
+    boolean existUsername(String username);
 }

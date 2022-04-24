@@ -8,7 +8,7 @@
 <!--    </select>-->
 
 
-<!--    <select id="getStudentInfoAll" resultType="com.gdufe.laboratorysystem.entity.StudentInfo">-->
+<!--    <select id="getStudentInfoAll" resultType="com.gdufe.laboratorysystem.entity.StudentUser">-->
 <!--        select * from student_info-->
 <!--        <where>-->
 <!--            <if test="age !=0">-->
@@ -21,107 +21,107 @@
 <!--        ;-->
 <!--    </select>-->
 
-    <!--查找个人信息-->
-    <select id="getStudentInfo" resultType="com.gdufe.laboratorysystem.entity.StudentInfo">
-        select * from student_info where username=#{username};
-    </select>
+<!--    &lt;!&ndash;查找个人信息&ndash;&gt;-->
+<!--    <select id="getStudentInfo" resultType="com.gdufe.laboratorysystem.entity.StudentUser">-->
+<!--        select * from student_user where username=#{username};-->
+<!--    </select>-->
 
-    <!--    学生个人信息列表-->
-    <select id="getStudentInfoList" resultType="com.gdufe.laboratorysystem.entity.StudentInfo">
-        SELECT  * from student_info
-        <where>
-            <if test="username != '' and username !=null and username != 'null'">
-                and username like concat(concat('%',#{username}),'%')
-            </if>
-
-            <if test="name != '' and name !=null and name != 'null'">
-                and name like concat(concat('%',#{name}),'%')
-            </if>
-
-            <if test="major != null and major !='' and major !='null' ">
-                major = #{major},
-            </if>
-<!--            <if test="createTime != '' and createTime !=null and createTime != 'null'">-->
-<!--                and TO_DAYS(create_time)= TO_DAYS(#{createTime})-->
+<!--    &lt;!&ndash;    学生个人信息列表&ndash;&gt;-->
+<!--    <select id="getStudentInfoList" resultType="com.gdufe.laboratorysystem.entity.StudentUser">-->
+<!--        SELECT  * from student_user-->
+<!--        <where>-->
+<!--            <if test="username != '' and username !=null and username != 'null'">-->
+<!--                and username like concat(concat('%',#{username}),'%')-->
 <!--            </if>-->
 
-        </where>
-    </select>
+<!--            <if test="name != '' and name !=null and name != 'null'">-->
+<!--                and name like concat(concat('%',#{name}),'%')-->
+<!--            </if>-->
 
-    <!--更新学生个人信息-->
-    <update id="upStudentInfo" parameterType="com.gdufe.laboratorysystem.entity.StudentInfo">
-        update student_info
-        <trim prefix="set" suffixOverrides=",">
-            <if test="name != null and name !='' and name !='null' ">
-                name = #{name},
-            </if>
+<!--            <if test="major != null and major !='' and major !='null' ">-->
+<!--                major = #{major},-->
+<!--            </if>-->
+<!--&lt;!&ndash;            <if test="createTime != '' and createTime !=null and createTime != 'null'">&ndash;&gt;-->
+<!--&lt;!&ndash;                and TO_DAYS(create_time)= TO_DAYS(#{createTime})&ndash;&gt;-->
+<!--&lt;!&ndash;            </if>&ndash;&gt;-->
 
-            <if test="major != null and major !='' and major !='null' ">
-                major = #{major},
-            </if>
+<!--        </where>-->
+<!--    </select>-->
 
-            <if test="college != null and college !='' and college !='null' ">
-                college = #{college},
-            </if>
+<!--    &lt;!&ndash;更新学生个人信息&ndash;&gt;-->
+<!--    <update id="upStudentInfo" parameterType="com.gdufe.laboratorysystem.entity.StudentUser">-->
+<!--        update student_info-->
+<!--        <trim prefix="set" suffixOverrides=",">-->
+<!--            <if test="name != null and name !='' and name !='null' ">-->
+<!--                name = #{name},-->
+<!--            </if>-->
 
-            <if test="address != null and address !='' and address !='null' ">
-                address = #{address},
-            </if>
+<!--            <if test="major != null and major !='' and major !='null' ">-->
+<!--                major = #{major},-->
+<!--            </if>-->
 
-            <if test="graduationDate != null and graduationDate !='' and graduationDate !='null' ">
-                graduation_date = #{graduationDate},
-            </if>
+<!--            <if test="college != null and college !='' and college !='null' ">-->
+<!--                college = #{college},-->
+<!--            </if>-->
 
-            <if test="studayDate != null and studayDate !='' and studayDate !='null' ">
-                studay_date = #{studayDate},
-            </if>
+<!--            <if test="address != null and address !='' and address !='null' ">-->
+<!--                address = #{address},-->
+<!--            </if>-->
 
-            <if test="birth != null and birth !='' and birth !='null' ">
-                birth = #{birth},
-            </if>
+<!--            <if test="graduationDate != null and graduationDate !='' and graduationDate !='null' ">-->
+<!--                graduation_date = #{graduationDate},-->
+<!--            </if>-->
 
-            <if test="tel != null and tel !='' and tel !='null' ">
-                tel = #{tel},
-            </if>
+<!--            <if test="studayDate != null and studayDate !='' and studayDate !='null' ">-->
+<!--                studay_date = #{studayDate},-->
+<!--            </if>-->
 
-            <if test="sex =='男' or sex =='女' ">
-                sex = #{sex},
-            </if>
+<!--            <if test="birth != null and birth !='' and birth !='null' ">-->
+<!--                birth = #{birth},-->
+<!--            </if>-->
 
-            <if test=" age !=null and age !=0   and age gt 0  ">
-                age = #{age},
-            </if>
+<!--            <if test="tel != null and tel !='' and tel !='null' ">-->
+<!--                tel = #{tel},-->
+<!--            </if>-->
 
-        </trim>
-        where username = #{username};
-    </update>
+<!--            <if test="sex =='男' or sex =='女' ">-->
+<!--                sex = #{sex},-->
+<!--            </if>-->
 
-<!--    添加学生个人信息-->
-    <insert id="addStudentInfo">
-        INSERT INTO `laboratory_system`.`student_info`(`username`, `name`, `age`, `sex`, `tel`, `studay_date`, `graduation_date`, `address`, `college`, `major`, `aclass`, `birth`, `head_portrait`)
-        VALUES (#{username}, #{name}, #{age}, #{sex},#{tel},#{studayDate} ,#{graduationDate} ,#{address},#{college} ,#{major},#{aclass},#{birth},#{headPortrait})
-    </insert>
+<!--            <if test=" age !=null and age !=0   and age gt 0  ">-->
+<!--                age = #{age},-->
+<!--            </if>-->
 
-<!--    学生个人信息账号是否存在-->
-    <select id="existUsername" resultType="boolean">
-        select count(*) from student_info where username=#{username};
-    </select>
+<!--        </trim>-->
+<!--        where username = #{username};-->
+<!--    </update>-->
 
-<!--    批量删除学生个人信息-->
-    <delete id="delStudentInfoList" parameterType="java.lang.String" >
-        DELETE FROM `laboratory_system`.`student_info` WHERE
-        <foreach collection="array" separator="or" item="id" index="index" >
-            username = #{id}
-        </foreach>
-    </delete>
+<!--&lt;!&ndash;    添加学生个人信息&ndash;&gt;-->
+<!--    <insert id="addStudentInfo">-->
+<!--        INSERT INTO `laboratory_system`.`student_info`(`username`, `name`, `age`, `sex`, `tel`, `studay_date`, `graduation_date`, `address`, `college`, `major`, `aclass`, `birth`, `head_portrait`)-->
+<!--        VALUES (#{username}, #{name}, #{age}, #{sex},#{tel},#{studayDate} ,#{graduationDate} ,#{address},#{college} ,#{major},#{aclass},#{birth},#{headPortrait})-->
+<!--    </insert>-->
 
-    <!--    批量添加学生个人信息-->
-    <insert id="addStudentInfoList">
-        INSERT INTO `laboratory_system`.`student_info`(`username`, `name`, `age`, `sex`, `tel`, `studay_date`, `graduation_date`, `address`, `college`, `major`, `aclass`, `birth`, `head_portrait`)
-        VALUES
-        <foreach collection="list" item="studentInfo" index="index" separator=",">
-           (#{studentInfo.username}, #{studentInfo.name}, #{studentInfo.age}, #{studentInfo.sex},#{studentInfo.tel},#{studentInfo.studayDate},#{studentInfo.graduationDate},#{studentInfo.address},#{studentInfo.college} ,#{studentInfo.major},#{studentInfo.aclass},#{studentInfo.birth},#{studentInfo.headPortrait})
-        </foreach>
-    </insert>
+<!--&lt;!&ndash;    学生个人信息账号是否存在&ndash;&gt;-->
+<!--    <select id="existUsername" resultType="boolean">-->
+<!--        select count(*) from student_info where username=#{username};-->
+<!--    </select>-->
+
+<!--&lt;!&ndash;    批量删除学生个人信息&ndash;&gt;-->
+<!--    <delete id="delStudentInfoList" parameterType="java.lang.String" >-->
+<!--        DELETE FROM `laboratory_system`.`student_info` WHERE-->
+<!--        <foreach collection="array" separator="or" item="id" index="index" >-->
+<!--            username = #{id}-->
+<!--        </foreach>-->
+<!--    </delete>-->
+
+<!--    &lt;!&ndash;    批量添加学生个人信息&ndash;&gt;-->
+<!--    <insert id="addStudentInfoList">-->
+<!--        INSERT INTO `laboratory_system`.`student_info`(`username`, `name`, `age`, `sex`, `tel`, `studay_date`, `graduation_date`, `address`, `college`, `major`, `aclass`, `birth`, `head_portrait`)-->
+<!--        VALUES-->
+<!--        <foreach collection="list" item="studentInfo" index="index" separator=",">-->
+<!--           (#{studentInfo.username}, #{studentInfo.name}, #{studentInfo.age}, #{studentInfo.sex},#{studentInfo.tel},#{studentInfo.studayDate},#{studentInfo.graduationDate},#{studentInfo.address},#{studentInfo.college} ,#{studentInfo.major},#{studentInfo.aclass},#{studentInfo.birth},#{studentInfo.headPortrait})-->
+<!--        </foreach>-->
+<!--    </insert>-->
 
 </mapper>

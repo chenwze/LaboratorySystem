@@ -4,7 +4,6 @@ import com.gdufe.laboratorysystem.dao.*;
 import com.gdufe.laboratorysystem.entity.*;
 import com.gdufe.laboratorysystem.service.AdminService;
 import com.gdufe.laboratorysystem.utils.ImgHeadUtils;
-import net.minidev.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -16,7 +15,6 @@ import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.handler.UserRoleAuthorizationInterceptor;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -40,10 +38,7 @@ public class AdminServiceImpl implements AdminService {
     @Autowired
     TeacherUserDao teacherUserDao;
 
-    @Autowired
-    StudentInfoDao studentInfoDao;
-    @Autowired
-    TeacherInfoDao teacherInfoDao;
+
     @Autowired
     LaboratoryInfoDao laboratoryInfoDao;
     @Autowired
@@ -519,15 +514,15 @@ public class AdminServiceImpl implements AdminService {
      * 学生个人信息列表
      */
     @Override
-    public List<StudentInfo> getStudentInfoList(StudentInfo studentInfo) {
-        List<StudentInfo> studentInfoList = studentInfoDao.getStudentInfoList(studentInfo);
+    public List<StudentUser> getStudentInfoList(StudentUser studentInfo) {
+        List<StudentUser> studentInfoList = studentUserDao.getStudentInfoList(studentInfo);
         return studentInfoList;
     }
 
     //批量添加学生个人信息
     @Override
-    public int addStudentInfoList(List<StudentInfo> studentInfoList){
-        int i = studentInfoDao.addStudentInfoList(studentInfoList);
+    public int addStudentInfoList(List<StudentUser> studentInfoList){
+        int i = studentUserDao.addStudentInfoList(studentInfoList);
         return i;
     }
 
@@ -536,7 +531,7 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public int delStudentInfoList(String[] ids){
-        int i = studentInfoDao.delStudentInfoList(ids);
+        int i = studentUserDao.delStudentInfoList(ids);
         return i;
     }
 
@@ -546,23 +541,23 @@ public class AdminServiceImpl implements AdminService {
      * @return
      */
     @Override
-    public StudentInfo getStudentInfo(String username) {
-        StudentInfo studentInfo = studentInfoDao.getStudentInfo(username);
+    public StudentUser getStudentInfo(String username) {
+        StudentUser studentInfo = studentUserDao.getStudentInfo(username);
         return studentInfo;
     }
 
     //添加学生个人信息
     @Override
-    public HashMap addStudentInfo(StudentInfo studentInfo){
+    public HashMap addStudentInfo(StudentUser studentInfo){
         HashMap hashMap = new HashMap();
 
-//        System.out.println("existsuername"+studentInfoDao.existUsername(studentInfo.getUsername()));
-        if (studentInfoDao.existUsername(studentInfo.getUsername())){
+//        System.out.println("existsuername"+studentUserDao.existUsername(studentInfo.getUsername()));
+        if (studentUserDao.existUsername(studentInfo.getUsername())){
             hashMap.put("status","201");
             hashMap.put("msg","账号/学号已存在！！");
             return hashMap;
         }
-        int i = studentInfoDao.addStudentInfo(studentInfo);
+        int i = studentUserDao.addStudentInfo(studentInfo);
         if (i==1){
             hashMap.put("status","200");
             hashMap.put("msg","添加成功！！");
@@ -575,10 +570,10 @@ public class AdminServiceImpl implements AdminService {
 
     //修改保存学生个人信息
     @Override
-    public HashMap upStudentInfo(StudentInfo studentInfo){
+    public HashMap upStudentInfo(StudentUser studentInfo){
         HashMap hashMap = new HashMap();
 
-        int i = studentInfoDao.upStudentInfo(studentInfo);
+        int i = studentUserDao.upStudentInfo(studentInfo);
         if (i==1){
             hashMap.put("status","200");
             hashMap.put("msg","修改成功！！");
@@ -595,8 +590,8 @@ public class AdminServiceImpl implements AdminService {
      * 老师个人信息列表
      */
     @Override
-    public List<TeacherInfo> getTeacherInfoList(TeacherInfo teacherInfo) {
-        List<TeacherInfo> teacherinfoList = teacherInfoDao.getTeacherinfoList(teacherInfo);
+    public List<TeacherUser> getTeacherInfoList(TeacherUser teacherInfo) {
+        List<TeacherUser> teacherinfoList = teacherUserDao.getTeacherinfoList(teacherInfo);
         return teacherinfoList;
     }
 
@@ -607,21 +602,21 @@ public class AdminServiceImpl implements AdminService {
      * @return
      */
     @Override
-    public TeacherInfo getTeacherInfo(String username){
-        TeacherInfo teacherInfo = teacherInfoDao.getTeacherInfo(username);
+    public TeacherUser getTeacherInfo(String username){
+        TeacherUser teacherInfo = teacherUserDao.getTeacherInfo(username);
         return teacherInfo;
     }
 
     //添加老师个人信息
     @Override
-    public HashMap addTeacherInfo(TeacherInfo teacherInfo){
+    public HashMap addTeacherInfo(TeacherUser teacherInfo){
         HashMap hashMap = new HashMap();
-        if (teacherInfoDao.existUsername(teacherInfo.getUsername())){
+        if (teacherUserDao.existUsername(teacherInfo.getUsername())){
             hashMap.put("status","201");
             hashMap.put("msg","账号/学号已存在！！");
             return hashMap;
         }
-        int i = teacherInfoDao.addTeacherInfo(teacherInfo);
+        int i = teacherUserDao.addTeacherInfo(teacherInfo);
         if (i==1){
             hashMap.put("status","200");
             hashMap.put("msg","添加成功！！");
@@ -634,9 +629,9 @@ public class AdminServiceImpl implements AdminService {
 
     //更新老师个人信息
     @Override
-    public HashMap upTeacherInfo(TeacherInfo teacherInfo){
+    public HashMap upTeacherInfo(TeacherUser teacherInfo){
         HashMap hashMap = new HashMap();
-        int i = teacherInfoDao.upTeacherInfo(teacherInfo);
+        int i = teacherUserDao.upTeacherInfo(teacherInfo);
         if (i==1){
             hashMap.put("status","200");
             hashMap.put("msg","修改成功！！");
@@ -649,8 +644,8 @@ public class AdminServiceImpl implements AdminService {
 
     //批量添加老师个人信息
     @Override
-    public int addTeacherInfoList(List<TeacherInfo> teacherInfoList){
-        int i = teacherInfoDao.addTeacherInfoList(teacherInfoList);
+    public int addTeacherInfoList(List<TeacherUser> teacherInfoList){
+        int i = teacherUserDao.addTeacherInfoList(teacherInfoList);
         return i;
     }
 
@@ -659,7 +654,7 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public int delTeacherInfoList(String[] ids){
-        int i = teacherInfoDao.delTeacherInfoList(ids);
+        int i = teacherUserDao.delTeacherInfoList(ids);
         return i;
     }
 

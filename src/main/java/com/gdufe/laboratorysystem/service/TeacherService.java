@@ -51,7 +51,7 @@ public interface TeacherService {
     /**
      * 获取个人信息表
      */
-    TeacherInfo getTeacherInfo();
+    TeacherUser getTeacherInfo();
 
     /**
      * 删除预约记录

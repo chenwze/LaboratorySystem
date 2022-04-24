@@ -36,17 +36,13 @@ public class SAdminServiceImpl implements SAdminService {
 
     @Autowired
     NoticeDao noticeDao;
-    
+
     @Autowired
     StudentUserDao studentUserDao;
-    
+
     @Autowired
     TeacherUserDao teacherUserDao;
 
-    @Autowired
-    StudentInfoDao studentInfoDao;
-    @Autowired
-    TeacherInfoDao teacherInfoDao;
     @Autowired
     LaboratoryInfoDao laboratoryInfoDao;
     @Autowired
@@ -55,7 +51,7 @@ public class SAdminServiceImpl implements SAdminService {
     AdminUserDao adminUserDao;
     @Autowired
     LaboratoryThingDao laboratoryThingDao;
-    
+
     @Value("${system.user.password.secret}")
     private String secret;
     /*更新认证信息*/
@@ -132,18 +128,18 @@ public class SAdminServiceImpl implements SAdminService {
     //更新管理员账号信息
     @Override
     @Transactional
-    public HashMap upAdminUserIfo(MultipartFile file, User user){
+    public HashMap upAdminUserIfo(MultipartFile file, AdminUser adminUser){
         HashMap hashMap = new HashMap();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             //获取当前用户名
             String currentUserName = authentication.getName();
-            user.setUsername(currentUserName);
+            adminUser.setUsername(currentUserName);
 //            hashMap.put("msg","未登录");
 //            hashMap.put("status","201");
         }
 
-        if(adminUserDao.existEmail(user.getEmail(),user.getUsername())){
+        if(adminUserDao.existEmail(adminUser.getEmail(),adminUser.getUsername())){
             hashMap.put("status","201");
             hashMap.put("msg","更新失败，邮箱已存在！！");
             return hashMap;
@@ -155,17 +151,17 @@ public class SAdminServiceImpl implements SAdminService {
         }
 
         if (urlPasth != null){
-            user.setHeadPortrait(urlPasth);
+            adminUser.setHeadPortrait(urlPasth);
         }
 
-        int i = adminUserDao.upSAdminUserInfo(user);
+        int i = adminUserDao.upSAdminUserInfo(adminUser);
         if (i==1){
             hashMap.put("status","200");
             hashMap.put("msg","更新成功");
             //更新信息
 
-            user = adminUserDao.getAdmin(user.getUsername());
-            setLoginUser(user);
+            adminUser = adminUserDao.getAdmin(adminUser.getUsername());
+            setLoginUser(adminUser);
         }else{
             hashMap.put("status","201");
             hashMap.put("msg","更新失败，请重试！！");

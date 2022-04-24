@@ -1,6 +1,6 @@
 package com.gdufe.laboratorysystem.entity;
 
-import com.gdufe.laboratorysystem.utils.UserInfo;
+//import com.gdufe.laboratorysystem.utils.UserInfo;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,7 +19,6 @@ import java.util.Date;
 public class User implements Serializable,UserDetails {
 
     private static final long serialVersionUID = 3069954400946883940L;
-    //登录账号
     private String userid;
     //用户账号
     private String username;
@@ -33,6 +32,7 @@ public class User implements Serializable,UserDetails {
     private String headPortrait;
     private String email;
     private String createTime;
+
 
     public String getUserid() {
         return userid;
@@ -147,4 +147,5 @@ public class User implements Serializable,UserDetails {
                 ", createTime=" + createTime +
                 '}';
     }
+
 }

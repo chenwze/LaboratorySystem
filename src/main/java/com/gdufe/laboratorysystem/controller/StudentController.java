@@ -3,11 +3,10 @@ package com.gdufe.laboratorysystem.controller;
 import com.gdufe.laboratorysystem.entity.*;
 
 import com.gdufe.laboratorysystem.service.StudentService;
-import com.gdufe.laboratorysystem.utils.UserInfo;
+//import com.gdufe.laboratorysystem.utils.UserInfo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.HtmlUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,10 +43,11 @@ public class StudentController {
     //用户个人账号信息
     @RequestMapping("/user")
     public String userPage(Model model){
-        System.out.println(UserInfo.islogin()+"+++++++++");
-        if (UserInfo.islogin()){
-            System.out.println(UserInfo.getUser().getUsername());
-            User user = studentService.getStudentUser(UserInfo.getUser().getUsername());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            //获取当前用户名
+            String currentUserName = authentication.getName();
+            User user = studentService.getStudentUser(currentUserName);
             System.out.println(user.toString());
             model.addAttribute("StudentUser",user);
             return"/student/student_user";
@@ -84,9 +83,11 @@ public class StudentController {
     @RequestMapping("/changePassword")
     public String changePasswordPage(Model model){
         System.out.println("+++++++++++");
-        if (UserInfo.islogin()){
-            System.out.println(UserInfo.getUser().getUsername());
-            model.addAttribute("username",UserInfo.getUser().getUsername());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            //获取当前用户名
+            String currentUserName = authentication.getName();
+            model.addAttribute("username",currentUserName);
             return "/student/change_password";
         }else {
             return "redirect:/userLogin";
@@ -303,7 +304,7 @@ public class StudentController {
      */
     @GetMapping("/getStudentInfo")
     public String getStudentInfo(Model model){
-        StudentInfo studentInfo = studentService.getStudentInfo();
+        StudentUser studentInfo = studentService.getStudentInfo();
         model.addAttribute("studentInfo",studentInfo);
         return "/student/student_info";
     }

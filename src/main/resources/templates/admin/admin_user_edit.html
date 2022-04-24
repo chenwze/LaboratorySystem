@@ -54,7 +54,7 @@
     <div class="layui-inline">
       <label class="layui-form-label">个人账号:</label>
       <div class="layui-input-inline" >
-        <input type="text" th:value="${adminUser.username}" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >
+        <input type="text" th:value="${adminUser.username}" name="username" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >
       </div>
       <div class="layui-form-mid layui-word-aux" style="visibility: hidden;"><a href="#">占格</a></div>
     </div>
@@ -70,6 +70,17 @@
     </div>
   </div>
 
+  <div class="layui-form-item">
+    <div class="layui-inline">
+      <label class="layui-form-label">联系电话:</label>
+      <div class="layui-input-inline" >
+        <input id="tel" type="text" name="tel" th:value="${adminUser.tel}" style="border: 0px;" disabled="disabled" readonly="true" class="layui-input"  >
+      </div>
+      <div class="layui-form-mid layui-word-aux" style="visibility: hidden;">
+        <a href="#" onclick="changeMailbox()" style="color: #0000FF;">更换</a>
+      </div>
+    </div>
+  </div>
 
   <div class="layui-form-item">
     <div class="layui-inline">
@@ -83,20 +94,33 @@
     </div>
   </div>
 
+<!--  <div class="layui-form-item">-->
+<!--    <div class="layui-inline">-->
+<!--      <label class="layui-form-label">账号状态:</label>-->
+<!--      <div class="layui-input-inline" >-->
+<!--        <select name="status">-->
+<!--          <option value="正常" th:selected="${adminUser.status}=='正常'">正常</option>-->
+<!--          <option value="冻结" th:selected="${adminUser.status}=='冻结'">冻结</option>-->
+<!--        </select>-->
+<!--&lt;!&ndash;        <input type="text" th:value="${adminUser.status}" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >&ndash;&gt;-->
+<!--      </div>-->
+<!--      <div class="layui-form-mid layui-word-aux" style="visibility: hidden;"><a href="#">占格</a></div>-->
+<!--    </div>-->
+<!--  </div>-->
+
   <div class="layui-form-item">
     <div class="layui-inline">
-      <label class="layui-form-label">账号状态:</label>
+      <label class="layui-form-label">性别:</label>
       <div class="layui-input-inline" >
-        <select name="status">
-          <option value="正常" th:selected="${adminUser.status}=='正常'">正常</option>
-          <option value="冻结" th:selected="${adminUser.status}=='冻结'">冻结</option>
+        <select name="sex">
+          <option value="男" th:selected="${adminUser.status}=='男'">男</option>
+          <option value="女" th:selected="${adminUser.status}=='女'">女</option>
         </select>
-<!--        <input type="text" th:value="${adminUser.status}" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >-->
+        <!--        <input type="text" th:value="${adminUser.status}" style="border: 0px;" class="layui-input" disabled="disabled" readonly="true"  >-->
       </div>
       <div class="layui-form-mid layui-word-aux" style="visibility: hidden;"><a href="#">占格</a></div>
     </div>
   </div>
-
 
   <div class="layui-form-item">
     <div class="layui-inline">

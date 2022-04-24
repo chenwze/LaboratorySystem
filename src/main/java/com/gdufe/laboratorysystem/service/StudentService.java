@@ -1,8 +1,6 @@
 package com.gdufe.laboratorysystem.service;
 
-import com.gdufe.laboratorysystem.dao.LaboratoryInfoDao;
 import com.gdufe.laboratorysystem.entity.*;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
@@ -49,7 +47,7 @@ public interface StudentService {
     /**
      * 获取个人信息表
      */
-    StudentInfo getStudentInfo();
+    StudentUser getStudentInfo();
 
     /**
      * 删除预约记录

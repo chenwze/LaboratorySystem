@@ -1,6 +1,8 @@
 package com.gdufe.laboratorysystem.controller;
 
+import com.gdufe.laboratorysystem.entity.AdminUser;
 import com.gdufe.laboratorysystem.entity.User;
+//import com.gdufe.laboratorysystem.service.SAdminService;
 import com.gdufe.laboratorysystem.service.SAdminService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -122,9 +124,9 @@ public class SAdminController {
     //更新管理账号信息
     @RequestMapping("/upUserInfo")
     @ResponseBody
-    public Map upUserInfo(MultipartFile file, User user) {
-        System.out.println("user.getName() = " + user.getName());
-        HashMap hashMap = sAdminService.upAdminUserIfo(file, user);
+    public Map upUserInfo(MultipartFile file, AdminUser adminUser) {
+        System.out.println("user.getName() = " + adminUser.getName());
+        HashMap hashMap = sAdminService.upAdminUserIfo(file, adminUser);
         return hashMap;
     }
 

@@ -12,9 +12,9 @@
     <title>管理员公告列表</title>
     <link th:href="@{/login/css/bootstrap.min.css}" href="../static/login/css/bootstrap.min.css" rel="stylesheet">
     <link th:href="@{/login/css/signin.css}" href="../static/login/css/signin.css" rel="stylesheet">
-    <link rel="stylesheet" href="../../static/layui/css/layui.css" th:href="@{/layui/css/layui.css}">
-    <script src="../../static/js/jquery-3.6.0.min.js" th:src="@{/js/jquery-3.6.0.min.js}" type="text/javascript"></script>
-    <script src="../../static/layui/layui.js" th:src="@{/layui/layui.js}" type="text/javascript"></script>
+    <link rel="stylesheet" href="../../../static/layui/css/layui.css" th:href="@{/layui/css/layui.css}">
+    <script src="../../../static/js/jquery-3.6.0.min.js" th:src="@{/js/jquery-3.6.0.min.js}" type="text/javascript"></script>
+    <script src="../../../static/layui/layui.js" th:src="@{/layui/layui.js}" type="text/javascript"></script>
 </head>
 <style>
     /* Switch开关样式 */
@@ -208,7 +208,7 @@
         <div>
             <div>
                 <button class="layui-btn layui-btn-sm" onclick="addNoticePage()">添加</button>
-                <button class="layui-btn layui-btn-sm" onclick="delNoticelist();">删除</button>
+                <button class="layui-btn layui-btn-sm layui-btn-danger" onclick="delNoticelist();">删除</button>
             </div>
 
             <table class="layui-table" lay-size="sm">
@@ -256,7 +256,7 @@
                         <button class="layui-btn layui-btn-xs"  th:data-id="${arrayS.id}" th:onclick="upNotice(this.getAttribute('data-id'))">编辑</button>
 
                         <th:block th:if="${arrayS.display}==1">
-                            <button class="layui-btn layui-btn-xs"  th:data-id="${arrayS.id}" th:onclick="hideNotice(this.getAttribute('data-id'))">隐藏</button>
+                            <button class="layui-btn layui-btn-xs layui-btn-warm"  th:data-id="${arrayS.id}" th:onclick="hideNotice(this.getAttribute('data-id'))">隐藏</button>
                         </th:block>
 
                         <th:block th:if="${arrayS.display}==0">
@@ -466,7 +466,7 @@
         });
         // alert(chk_value.length==0 ?'你还没有选择任何内容！':chk_value);
         if(chk_value.length==0){
-            alert("你还没有选择任何内容!");
+            layer.alert("你还没有选择任何内容!",{icon:5,title:false});
         }else {
             var header = $("meta[name='_csrf_header']").attr("content");
             var token = $("meta[name='_csrf']").attr("content");
@@ -487,17 +487,23 @@
                     // console.log(data.labid);
                     // inputNull(data.labid);
                     if (data.num>0){
-                        alert("成功删除"+data.num+"条记录！！");
+                        layer.alert("成功删除"+data.num+"条记录！！",{icon:1,title:false},function (){
+                            window.location.reload();
+                        });
                     }else{
-                        alert("删除错误！");
+                        // layer.alert("删除错误！");
+                        layer.alert("删除错误！",{icon:1,title:false},function (){
+                            window.location.reload();
+                        });
                     }
 
-                    // closeIfame();
-                    location.reload();
+
                 },
                 error:function (){
-                    alert("删除错误！");
-                    location.reload();
+                    layer.alert("删除错误！",{icon:1,title:false},function (){
+                        window.location.reload();
+                    });
+                    // location.reload();
                 }
 
 

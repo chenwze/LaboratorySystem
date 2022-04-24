@@ -6,9 +6,10 @@ import com.gdufe.laboratorysystem.dao.StudentUserDao;
 import com.gdufe.laboratorysystem.dao.TeacherUserDao;
 //import com.gdufe.laboratorysystem.service.UserService;
 import com.gdufe.laboratorysystem.entity.Email;
+import com.gdufe.laboratorysystem.entity.StudentUser;
 import com.gdufe.laboratorysystem.entity.User;
 import com.gdufe.laboratorysystem.entity.VerificationCode;
-import com.gdufe.laboratorysystem.utils.UserInfo;
+//import com.gdufe.laboratorysystem.utils.UserInfo;
 import com.gdufe.laboratorysystem.utils.VerCodeGenerateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -94,9 +95,9 @@ public  class UserServiceImpl implements UserDetailsService {
         if (userType.equals("2")){
             System.out.println("学生用户进行登录验证---------------------");
             //根据用户名查找账号信息
-            User user = studentUserDao.getStudent(username);
+            User studentUser = studentUserDao.getStudent(username);
             System.out.println("学生用户进行登录验证-----------");
-            return loginDo(user,username,password);
+            return loginDo(studentUser,username,password);
         }
 
         //教师认证

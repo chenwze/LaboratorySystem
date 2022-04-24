@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.gdufe.laboratorysystem.dao.AdminUserDao">
-    <select id="getAdmin" resultType="com.gdufe.laboratorysystem.entity.User">
-        select *,admin_user.adminid userid from admin_user where username=#{username};
+    <select id="getAdmin" resultType="com.gdufe.laboratorysystem.entity.AdminUser">
+        select * from admin_user where username=#{username};
     </select>
 <!--    获取密码-->
     <select id="getPassword" resultType="String">
@@ -13,11 +13,11 @@
 <!--        select * from  admin_user where username=#{username};-->
 <!--    </select>-->
 <!--    根据用户名查询管理员个人信息-->
-    <select id="getAdminInfo" resultType="com.gdufe.laboratorysystem.entity.AdminInfo">
+    <select id="getAdminInfo" resultType="com.gdufe.laboratorysystem.entity.AdminUser">
         select * from admin_info where username = #{username};
     </select>
 <!--更新管理员账号信息-->
-    <update id="upAdminUserInfo" parameterType="com.gdufe.laboratorysystem.entity.User">
+    <update id="upAdminUserInfo" parameterType="com.gdufe.laboratorysystem.entity.AdminUser">
         update admin_user
         <set>
             <if test="name != null and name !=''">
@@ -42,7 +42,7 @@
     </update>
 
     <!--查询管理员信息列表-->
-    <select id="getAdminInfoList" resultType="com.gdufe.laboratorysystem.entity.TeacherInfo">
+    <select id="getAdminInfoList" resultType="com.gdufe.laboratorysystem.entity.TeacherUser">
 --         select * from teacher_info  where username in (select teacher_username FROM admin_info where
 --             admin_info.admin_username='10001') and name like '李老师'
             SELECT * from teacher_info te ,admin_info ad
@@ -105,7 +105,7 @@
     </select>
 
     <!--超管更新管理员账号信息-->
-    <update id="upSAdminUserInfo" parameterType="com.gdufe.laboratorysystem.entity.User">
+    <update id="upSAdminUserInfo">
         update admin_user
         <set>
             <if test="name != null and name !=''">
@@ -124,6 +124,13 @@
                 head_Portrait = #{headPortrait},
             </if>
 
+            <if test="sex != null and sex != ''">
+                sex = #{sex},
+            </if>
+
+            <if test="tel != null and tel != ''">
+                tel = #{tel},
+            </if>
 
         </set>
         where username = #{username}

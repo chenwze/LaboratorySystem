@@ -1,8 +1,8 @@
 package com.gdufe.laboratorysystem.dao;
 
-import com.gdufe.laboratorysystem.entity.AdminInfo;
+import com.gdufe.laboratorysystem.entity.AdminUser;
 import com.gdufe.laboratorysystem.entity.LaboratoryThing;
-import com.gdufe.laboratorysystem.entity.TeacherInfo;
+import com.gdufe.laboratorysystem.entity.TeacherUser;
 import com.gdufe.laboratorysystem.entity.User;
 import org.apache.ibatis.annotations.Param;
 import org.apache.poi.ss.formula.functions.T;
@@ -16,7 +16,7 @@ public interface AdminUserDao {
      * 获取的管理用户信息
      *
      * */
-    User getAdmin(@Param("username") String username);
+    AdminUser getAdmin(@Param("username") String username);
 
     /**
      * 忘记密码，修改密码
@@ -30,7 +30,7 @@ public interface AdminUserDao {
     String getPassword(String username);
 
     //根据用户名查询个人信息
-    AdminInfo getAdminInfo(@Param("username") String username);
+    AdminUser getAdminInfo(@Param("username") String username);
 
     //根据用户名查询个人账号信息
     User getUserInfo(@Param("username") String username);
@@ -50,7 +50,7 @@ public interface AdminUserDao {
     /**
      * 超级管理员信息查询管理列表
      */
-    List<T> getAdminInfoList(@Param("username") String username , TeacherInfo teacherInfo);
+    List<T> getAdminInfoList(@Param("username") String username , TeacherUser teacherInfo);
 
 
 

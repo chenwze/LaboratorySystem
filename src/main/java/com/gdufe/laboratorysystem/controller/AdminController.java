@@ -1,13 +1,8 @@
 package com.gdufe.laboratorysystem.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.gdufe.laboratorysystem.dao.LaboratoryThingDao;
 import com.gdufe.laboratorysystem.entity.*;
 import com.gdufe.laboratorysystem.service.AdminService;
 //import com.gdufe.laboratorysystem.utils.ExportExcel;
-import com.gdufe.laboratorysystem.utils.ImgHeadUtils;
 import com.gdufe.laboratorysystem.utils.ImportExcelUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -20,12 +15,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.ClassUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.*;
@@ -54,7 +47,7 @@ public class AdminController {
     @RequestMapping("/noticePage")
     public String noticePage(){
         System.out.println("------------");
-        return "/admin/notice_page";
+        return "/admin/notice/notice_page";
     }
 
 
@@ -74,7 +67,7 @@ public class AdminController {
         notice = adminService.addNotice(notice);
         if (null != notice){
             hashMap.put("msg","发布成功！！");
-            hashMap.put("status","201");
+            hashMap.put("status","200");
             return hashMap;
         }else {
             hashMap.put("msg","添加失败！！");
@@ -158,7 +151,7 @@ public class AdminController {
         }
         //5.设置返回的jsp/html等前端页面
         // thymeleaf默认就会拼串classpath:/templates/xxxx.html
-        return "/admin/notice_list_page";
+        return "/admin/notice/notice_list_page";
     }
 
 
@@ -171,7 +164,7 @@ public class AdminController {
         System.out.println(notice.toString());
         notice = adminService.getdetailsNoticePage(notice);
         model.addAttribute("notice",notice);
-        return "/admin/details_notice_page";
+        return "/admin/notice/details_notice_page";
     }
 
     /**
@@ -182,7 +175,7 @@ public class AdminController {
         System.out.println(notice.toString());
         notice = adminService.getdetailsNoticePage(notice);
         model.addAttribute("notice",notice);
-        return "/admin/notice_edit";
+        return "/admin/notice/notice_edit";
     }
 
 
@@ -421,7 +414,7 @@ public class AdminController {
     public String detailsStudentInfoPage(String username,Model model){
         System.out.println("username = ++++++++++++++++++++++++++++++" );
         System.out.println("username = " + username);
-        StudentInfo studentInfo = adminService.getStudentInfo(username);
+        StudentUser studentInfo = adminService.getStudentInfo(username);
         model.addAttribute("studentInfo",studentInfo);
         return "/admin/student/student_info_page";
     }
@@ -546,7 +539,7 @@ public class AdminController {
      * 学生个人信息列表
      */
     @RequestMapping("/getStudentInfoList")
-    public String getStudentInfoList(StudentInfo studentInfo, Model model,
+    public String getStudentInfoList(StudentUser studentInfo, Model model,
                                      @RequestParam(required = false,defaultValue="1",value="pageNum")Integer pageNum,
                                      @RequestParam(defaultValue="8",value="pageSize")Integer pageSize) {
 
@@ -582,7 +575,7 @@ public class AdminController {
         //2.紧跟的查询就是一个分页查询-必须紧跟.后面的其他查询不会被分页，除非再次调用PageHelper.startPage
         try {
 //            System.out.println(studentService.getLaboratoryInfoList(laboratoryInfo).toArray().toString());
-            List<StudentInfo> studentInfoList = adminService.getStudentInfoList(studentInfo);
+            List<StudentUser> studentInfoList = adminService.getStudentInfoList(studentInfo);
             System.out.println("分页数据："+studentInfoList);
             //3.使用PageInfo包装查询后的结果,5是连续显示的条数,结果list类型是Page<E>
             PageInfo pageInfo = new PageInfo(studentInfoList);
@@ -616,13 +609,13 @@ public class AdminController {
         in.close();
         List<Object> loTitle = listob.get(1);
         List<Object> lo =null;
-        List<StudentInfo> studentInfoList= new ArrayList<StudentInfo>();
+        List<StudentUser> studentInfoList= new ArrayList<StudentUser>();
         //调用service相应方法进行数据保存到数据库中，现只对数据输出
 
 //        Pbkdf2PasswordEncoder encoder = new Pbkdf2PasswordEncoder(secret);
         for (int i = 2; i < listob.size(); i++) {
             lo=listob.get(i);
-            StudentInfo studentInfo = new StudentInfo();
+            StudentUser studentInfo = new StudentUser();
 //            user.setUserid(String.valueOf(lo.get(0)));
 //            user.setUserid(UUID.randomUUID().toString().replaceAll("-",""));
             studentInfo.setUsername(String.valueOf(lo.get(0)));
@@ -630,7 +623,7 @@ public class AdminController {
             studentInfo.setAge(Integer.valueOf(String.valueOf(lo.get(2))).intValue());
             studentInfo.setSex(String.valueOf(lo.get(3)).charAt(0));
             studentInfo.setTel(String.valueOf(lo.get(4)));
-            studentInfo.setStudayData(String.valueOf(lo.get(5)));
+            studentInfo.setStudayDate(String.valueOf(lo.get(5)));
             studentInfo.setGraduationDate(String.valueOf(lo.get(6)));
             studentInfo.setAddress(String.valueOf(lo.get(7)));
             studentInfo.setCollege(String.valueOf(lo.get(8)));
@@ -678,7 +671,7 @@ public class AdminController {
     public String addStudentInfoPage(String username,Model model){
         System.out.println(username+"++++");
         if(username != null && !username.equals("null") && !username.equals("")){
-            StudentInfo studentInfo = adminService.getStudentInfo(username);
+            StudentUser studentInfo = adminService.getStudentInfo(username);
             model.addAttribute("studentInfo",studentInfo);
             return "/admin/student/student_info_edit";
         }else{
@@ -691,7 +684,7 @@ public class AdminController {
      */
     @RequestMapping("/addStudentInfo")
     @ResponseBody
-    public HashMap addStudentInfo(StudentInfo studentInfo){
+    public HashMap addStudentInfo(StudentUser studentInfo){
         System.out.println(studentInfo.toString());
         HashMap hashMap = new HashMap();
         hashMap = adminService.addStudentInfo(studentInfo);
@@ -703,13 +696,12 @@ public class AdminController {
      */
     @RequestMapping("/upStudentInfo")
     @ResponseBody
-    public HashMap upStudentInfo(StudentInfo studentInfo){
+    public HashMap upStudentInfo(StudentUser studentInfo){
         System.out.println(studentInfo.toString()+studentInfo.getAge()+studentInfo.getSex());
         HashMap hashMap = new HashMap();
         hashMap = adminService.upStudentInfo(studentInfo);
         return hashMap;
     }
-
 
 
     /**
@@ -918,7 +910,7 @@ public class AdminController {
      * 老师个人信息列表
      */
     @RequestMapping("/getTeacherInfoList")
-    public String getTeacherInfoList(TeacherInfo teacherInfo, Model model,
+    public String getTeacherInfoList(TeacherUser teacherInfo, Model model,
                                      @RequestParam(required = false,defaultValue="1",value="pageNum")Integer pageNum,
                                      @RequestParam(defaultValue="8",value="pageSize")Integer pageSize) {
 
@@ -951,7 +943,7 @@ public class AdminController {
         //2.紧跟的查询就是一个分页查询-必须紧跟.后面的其他查询不会被分页，除非再次调用PageHelper.startPage
         try {
 //            System.out.println(studentService.getLaboratoryInfoList(laboratoryInfo).toArray().toString());
-            List<TeacherInfo> teacherInfoList = adminService.getTeacherInfoList(teacherInfo);
+            List<TeacherUser> teacherInfoList = adminService.getTeacherInfoList(teacherInfo);
             System.out.println("分页数据："+teacherInfoList);
             //3.使用PageInfo包装查询后的结果,5是连续显示的条数,结果list类型是Page<E>
             PageInfo pageInfo = new PageInfo(teacherInfoList);
@@ -974,7 +966,7 @@ public class AdminController {
     public String detailsTeacherInfoPage(String username,Model model){
         System.out.println("username = ++++++++++++++++++++++++++++++" );
         System.out.println("username = " + username);
-        TeacherInfo teacherInfo = adminService.getTeacherInfo(username);
+        TeacherUser teacherInfo = adminService.getTeacherInfo(username);
         if (teacherInfo==null){
             return "error/500";
         }
@@ -991,7 +983,7 @@ public class AdminController {
     //编辑老师个人 信息页
     @RequestMapping("/editTeacherInfoPage")
     public String editTeacherInfoPage(String username,Model model){
-        TeacherInfo teacherInfo = adminService.getTeacherInfo(username);
+        TeacherUser teacherInfo = adminService.getTeacherInfo(username);
         if (teacherInfo == null){
             return null;
         }
@@ -1005,7 +997,7 @@ public class AdminController {
      */
     @RequestMapping("/addTeacherInfo")
     @ResponseBody
-    public HashMap addTeacherInfo(TeacherInfo teacherInfo){
+    public HashMap addTeacherInfo(TeacherUser teacherInfo){
         HashMap hashMap = new HashMap();
         System.out.println(teacherInfo.toString()+"suername");
         hashMap=adminService.addTeacherInfo(teacherInfo);
@@ -1018,7 +1010,7 @@ public class AdminController {
      */
     @RequestMapping("/upTeacherInfo")
     @ResponseBody
-    public HashMap upTeacherInfo(TeacherInfo teacherInfo){
+    public HashMap upTeacherInfo(TeacherUser teacherInfo){
         HashMap hashMap = new HashMap();
         System.out.println(teacherInfo.toString()+"suername");
         hashMap=adminService.upTeacherInfo(teacherInfo);
@@ -1045,12 +1037,12 @@ public class AdminController {
         in.close();
         List<Object> loTitle = listob.get(1);
         List<Object> lo =null;
-        List<TeacherInfo> teacherInfoList= new ArrayList<TeacherInfo>();
+        List<TeacherUser> teacherInfoList= new ArrayList<TeacherUser>();
 
         //调用service相应方法进行数据保存到数据库中，现只对数据输出
        for (int i = 2; i < listob.size(); i++) {
             lo=listob.get(i);
-            TeacherInfo teacherInfo = new TeacherInfo();
+            TeacherUser teacherInfo = new TeacherUser();
 //            user.setUserid(String.valueOf(lo.get(0)));
 //            user.setUserid(UUID.randomUUID().toString().replaceAll("-",""));
            teacherInfo.setUsername(String.valueOf(lo.get(0)));
@@ -1159,7 +1151,7 @@ public class AdminController {
         }
         //5.设置返回的jsp/html等前端页面
         // thymeleaf默认就会拼串classpath:/templates/xxxx.html
-        return "/admin/laboratory_info_list";
+        return "/admin/labinfo/laboratory_info_list";
     }
 
     /**
@@ -1221,13 +1213,13 @@ public class AdminController {
         //5.设置返回的jsp/html等前端页面
         // thymeleaf默认就会拼串classpath:/templates/xxxx.html
 
-        return "/admin/reserve_list";
+        return "/admin/reserve/reserve_list";
     }
 
     //添加实验室信息页面
     @RequestMapping("/addLaboratoryInfoPage")
     public String addLaboratoryInfoPage(){
-        return "admin/laboratory_info_add";
+        return "admin/labinfo/laboratory_info_add";
     }
 
     //添加实验室
@@ -1302,7 +1294,7 @@ public class AdminController {
             return "/error/500";
         }else{
             model.addAttribute("laboratoryInfo",laboratoryInfo);
-            return "/admin/laboratory_info_details";
+            return "/admin/labinfo/laboratory_info_details";
         }
     }
 
@@ -1311,7 +1303,7 @@ public class AdminController {
     public String reserveLaboratoryPage(String labid,Model model){
         LaboratoryInfo laboratoryInfo = adminService.getLaboratoryInfo(labid);
         model.addAttribute("laboratoryInfo",laboratoryInfo);
-        return "/admin/laboratory_reserve_add";
+        return "/admin/reserve/laboratory_reserve_add";
     }
 
     //预约实验室记录
@@ -1329,7 +1321,7 @@ public class AdminController {
     public String editLaboratoryInfoPage(Model model,String labid){
         LaboratoryInfo laboratoryInfo = adminService.getLaboratoryInfo(labid);
         model.addAttribute("laboratoryInfo",laboratoryInfo);
-        return "/admin/laboratory_info_edit";
+        return "/admin/labinfo/laboratory_info_edit";
     }
 
     //修改保存实验室信息
@@ -1375,7 +1367,7 @@ public class AdminController {
     public String detailReserveInfoPage(String id,Model model){
         Reserve reserve = adminService.getDetailReserve(id);
         model.addAttribute("reserve",reserve);
-        return "/admin/reserve_info_details";
+        return "/admin/reserve/reserve_info_details";
     }
 
     //批量删除预约记录

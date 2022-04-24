@@ -2,7 +2,7 @@ package com.gdufe.laboratorysystem.controller;
 
 import com.gdufe.laboratorysystem.entity.*;
 import com.gdufe.laboratorysystem.service.TeacherService;
-import com.gdufe.laboratorysystem.utils.UserInfo;
+//import com.gdufe.laboratorysystem.utils.UserInfo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,10 +41,12 @@ public class TeacherController {
     //用户个人账号信息
     @RequestMapping("/user")
     public String userPage(Model model){
-        System.out.println(UserInfo.islogin()+"+++++++++");
-        if (UserInfo.islogin()){
-            System.out.println(UserInfo.getUser().getUsername());
-            User user = teacherService.getTeacherUser(UserInfo.getUser().getUsername());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            //获取当前用户名
+            String currentUserName = authentication.getName();
+//            System.out.println(UserInfo.getUser().getUsername());
+            User user = teacherService.getTeacherUser(currentUserName);
             System.out.println(user.toString());
             model.addAttribute("teacherUser",user);
             return"/teacher/teacher_user";
@@ -108,9 +110,11 @@ public class TeacherController {
     @RequestMapping("/changePassword")
     public String changePasswordPage(Model model){
         System.out.println("+++++++++++");
-        if (UserInfo.islogin()){
-            System.out.println(UserInfo.getUser().getUsername());
-            model.addAttribute("username",UserInfo.getUser().getUsername());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            //获取当前用户名
+            String currentUserName = authentication.getName();
+            model.addAttribute("username",currentUserName);
             return "/teacher/change_password";
         }else {
             return "redirect:/userLogin";
@@ -324,7 +328,7 @@ public class TeacherController {
      */
     @GetMapping("/getTeacherInfo")
     public String getTeacherInfo(Model model){
-        TeacherInfo teacherInfo = teacherService.getTeacherInfo();
+        TeacherUser teacherInfo = teacherService.getTeacherInfo();
         model.addAttribute("teacherInfo",teacherInfo);
         return "/teacher/teacher_info";
     }

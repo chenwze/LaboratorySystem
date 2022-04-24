@@ -3,104 +3,104 @@
 <mapper namespace="com.gdufe.laboratorysystem.dao.TeacherInfoDao">
 
 
-    <!--查找老师个人信息-->
-    <select id="getTeacherInfo" resultType="com.gdufe.laboratorysystem.entity.TeacherInfo">
-        select * from teacher_info where username=#{username};
-    </select>
+<!--    &lt;!&ndash;查找老师个人信息&ndash;&gt;-->
+<!--    <select id="getTeacherInfo" resultType="com.gdufe.laboratorysystem.entity.TeacherUser">-->
+<!--        select * from teacher_info where username=#{username};-->
+<!--    </select>-->
 
-<!--    查找老师个人信息列表-->
-    <select id="getTeacherinfoList" resultType="com.gdufe.laboratorysystem.entity.TeacherInfo">
-        SELECT  * from teacher_info
-        <where>
-            <if test="username != '' and username !=null and username != 'null'">
-                and username like concat(concat('%',#{username}),'%')
-            </if>
+<!--&lt;!&ndash;    查找老师个人信息列表&ndash;&gt;-->
+<!--    <select id="getTeacherinfoList" resultType="com.gdufe.laboratorysystem.entity.TeacherUser">-->
+<!--        SELECT  * from teacher_info-->
+<!--        <where>-->
+<!--            <if test="username != '' and username !=null and username != 'null'">-->
+<!--                and username like concat(concat('%',#{username}),'%')-->
+<!--            </if>-->
 
-            <if test="name != '' and name !=null and name != 'null'">
-                and name like concat(concat('%',#{name}),'%')
-            </if>
-            <!--            <if test="createTime != '' and createTime !=null and createTime != 'null'">-->
-            <!--                and TO_DAYS(create_time)= TO_DAYS(#{createTime})-->
-            <!--            </if>-->
+<!--            <if test="name != '' and name !=null and name != 'null'">-->
+<!--                and name like concat(concat('%',#{name}),'%')-->
+<!--            </if>-->
+<!--            &lt;!&ndash;            <if test="createTime != '' and createTime !=null and createTime != 'null'">&ndash;&gt;-->
+<!--            &lt;!&ndash;                and TO_DAYS(create_time)= TO_DAYS(#{createTime})&ndash;&gt;-->
+<!--            &lt;!&ndash;            </if>&ndash;&gt;-->
 
-        </where>
-    </select>
+<!--        </where>-->
+<!--    </select>-->
 
 
-    <!--更新老师个人信息-->
-    <update id="upTeacherInfo" parameterType="com.gdufe.laboratorysystem.entity.TeacherInfo">
-        update teacher_info
-        <trim prefix="set" suffixOverrides=",">
-            <if test="name != null and name !='' and name !='null' ">
-                name = #{name},
-            </if>
+<!--    &lt;!&ndash;更新老师个人信息&ndash;&gt;-->
+<!--    <update id="upTeacherInfo" parameterType="com.gdufe.laboratorysystem.entity.TeacherUser">-->
+<!--        update teacher_info-->
+<!--        <trim prefix="set" suffixOverrides=",">-->
+<!--            <if test="name != null and name !='' and name !='null' ">-->
+<!--                name = #{name},-->
+<!--            </if>-->
 
-            <if test="position != null and position !='' and position !='null' ">
-                position = #{position},
-            </if>
+<!--            <if test="position != null and position !='' and position !='null' ">-->
+<!--                position = #{position},-->
+<!--            </if>-->
 
-            <if test="college != null and college !='' and college !='null' ">
-                college = #{college},
-            </if>
+<!--            <if test="college != null and college !='' and college !='null' ">-->
+<!--                college = #{college},-->
+<!--            </if>-->
 
-            <if test="address != null and address !='' and address !='null' ">
-                address = #{address},
-            </if>
+<!--            <if test="address != null and address !='' and address !='null' ">-->
+<!--                address = #{address},-->
+<!--            </if>-->
 
-            <if test="resignationDate != null and resignationDate !='' and resignationDate !='null' ">
-                resignation_date = #{resignationDate},
-            </if>
+<!--            <if test="resignationDate != null and resignationDate !='' and resignationDate !='null' ">-->
+<!--                resignation_date = #{resignationDate},-->
+<!--            </if>-->
 
-            <if test="entryDate != null and entryDate !='' and entryDate !='null' ">
-                entry_date = #{entryDate},
-            </if>
+<!--            <if test="entryDate != null and entryDate !='' and entryDate !='null' ">-->
+<!--                entry_date = #{entryDate},-->
+<!--            </if>-->
 
-            <if test="tel != null and tel !='' and tel !='null' ">
-                tel = #{tel},
-            </if>
+<!--            <if test="tel != null and tel !='' and tel !='null' ">-->
+<!--                tel = #{tel},-->
+<!--            </if>-->
 
-            <if test="sex =='男' or sex =='女' ">
-                sex = #{sex},
-            </if>
+<!--            <if test="sex =='男' or sex =='女' ">-->
+<!--                sex = #{sex},-->
+<!--            </if>-->
 
-            <if test=" age !=null and age !=0   and age gt 0  ">
-                age = #{age},
-            </if>
+<!--            <if test=" age !=null and age !=0   and age gt 0  ">-->
+<!--                age = #{age},-->
+<!--            </if>-->
 
-            <if test="birth != null and birth !='' and birth !='null' ">
-                birth = #{birth},
-            </if>
-        </trim>
-        where username = #{username};
-    </update>
+<!--            <if test="birth != null and birth !='' and birth !='null' ">-->
+<!--                birth = #{birth},-->
+<!--            </if>-->
+<!--        </trim>-->
+<!--        where username = #{username};-->
+<!--    </update>-->
 
-<!--    老师账号是否存在-->
-    <select id="existUsername" resultType="boolean">
-        select COUNT(*) from teacher_info where username = #{username}
-    </select>
+<!--&lt;!&ndash;    老师账号是否存在&ndash;&gt;-->
+<!--    <select id="existUsername" resultType="boolean">-->
+<!--        select COUNT(*) from teacher_info where username = #{username}-->
+<!--    </select>-->
 
-<!--添加老师个人信息-->
-    <insert id="addTeacherInfo">
-        INSERT INTO `laboratory_system`.`teacher_info`(`username`, `name`, `age`, `sex`, `tel`, `entry_date`, `resignation_date`, `address`, `college`, `position`, `birth`, `head_portrait`)
-        VALUES (#{username}, #{name}, #{age}, #{sex},#{tel},#{entryDate} ,#{resignationDate} ,#{address},#{college} ,#{position},#{birth},#{headPortrait})
-    </insert>
+<!--&lt;!&ndash;添加老师个人信息&ndash;&gt;-->
+<!--    <insert id="addTeacherInfo">-->
+<!--        INSERT INTO `laboratory_system`.`teacher_info`(`username`, `name`, `age`, `sex`, `tel`, `entry_date`, `resignation_date`, `address`, `college`, `position`, `birth`, `head_portrait`)-->
+<!--        VALUES (#{username}, #{name}, #{age}, #{sex},#{tel},#{entryDate} ,#{resignationDate} ,#{address},#{college} ,#{position},#{birth},#{headPortrait})-->
+<!--    </insert>-->
 
-    <!--批量添加老师个人信息-->
-    <insert id="addTeacherInfoList">
-        INSERT INTO `laboratory_system`.`teacher_info`(`username`, `name`, `age`, `sex`, `tel`, `entry_date`, `resignation_date`, `address`, `college`,  `position`, `birth`, `head_portrait`)
-        VALUES
-        <foreach collection="list" item="teacherInfo" index="index" separator=",">
-            (#{teacherInfo.username}, #{teacherInfo.name}, #{teacherInfo.age}, #{teacherInfo.sex},#{teacherInfo.tel},#{teacherInfo.entryDate},#{teacherInfo.resignationDate},#{teacherInfo.address},#{teacherInfo.college} ,#{teacherInfo.position},#{teacherInfo.birth},#{teacherInfo.headPortrait})
-        </foreach>
-    </insert>
+<!--    &lt;!&ndash;批量添加老师个人信息&ndash;&gt;-->
+<!--    <insert id="addTeacherInfoList">-->
+<!--        INSERT INTO `laboratory_system`.`teacher_info`(`username`, `name`, `age`, `sex`, `tel`, `entry_date`, `resignation_date`, `address`, `college`,  `position`, `birth`, `head_portrait`)-->
+<!--        VALUES-->
+<!--        <foreach collection="list" item="teacherInfo" index="index" separator=",">-->
+<!--            (#{teacherInfo.username}, #{teacherInfo.name}, #{teacherInfo.age}, #{teacherInfo.sex},#{teacherInfo.tel},#{teacherInfo.entryDate},#{teacherInfo.resignationDate},#{teacherInfo.address},#{teacherInfo.college} ,#{teacherInfo.position},#{teacherInfo.birth},#{teacherInfo.headPortrait})-->
+<!--        </foreach>-->
+<!--    </insert>-->
 
-<!--    批量删除老师个人信息-->
-    <delete id="delTeacherInfoList" parameterType="java.lang.String" >
-        DELETE FROM `laboratory_system`.`teacher_info` WHERE
-        <foreach collection="array" separator="or" item="id" index="index" >
-            username = #{id}
-        </foreach>
-    </delete>
+<!--&lt;!&ndash;    批量删除老师个人信息&ndash;&gt;-->
+<!--    <delete id="delTeacherInfoList" parameterType="java.lang.String" >-->
+<!--        DELETE FROM `laboratory_system`.`teacher_info` WHERE-->
+<!--        <foreach collection="array" separator="or" item="id" index="index" >-->
+<!--            username = #{id}-->
+<!--        </foreach>-->
+<!--    </delete>-->
 
 
 </mapper>

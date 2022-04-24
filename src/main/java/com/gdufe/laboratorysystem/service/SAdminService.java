@@ -1,6 +1,7 @@
 package com.gdufe.laboratorysystem.service;
 
 
+import com.gdufe.laboratorysystem.entity.AdminUser;
 import com.gdufe.laboratorysystem.entity.User;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,7 +27,7 @@ public interface SAdminService {
     User getAdminUser(String usename);
 
     //更新管理员账号信息
-    HashMap upAdminUserIfo(MultipartFile file, User name);
+    HashMap upAdminUserIfo(MultipartFile file, AdminUser adminUser);
 
     //批量删除管理员账号
     HashMap delAdminUserList(String[] ids);

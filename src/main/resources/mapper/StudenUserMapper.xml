@@ -144,4 +144,109 @@
     <update id="upPasswrodEmail">
         UPDATE `laboratory_system`.`student_user` SET `password` = #{password} WHERE `username` = #{username} and `email` = #{email}
     </update>
+
+
+
+    <!--查找个人信息-->
+    <select id="getStudentInfo" resultType="com.gdufe.laboratorysystem.entity.StudentUser">
+        select * from student_user where username=#{username};
+    </select>
+
+    <!--    学生个人信息列表-->
+    <select id="getStudentInfoList" resultType="com.gdufe.laboratorysystem.entity.StudentUser">
+        SELECT  * from student_user
+        <where>
+            <if test="username != '' and username !=null and username != 'null'">
+                and username like concat(concat('%',#{username}),'%')
+            </if>
+
+            <if test="name != '' and name !=null and name != 'null'">
+                and name like concat(concat('%',#{name}),'%')
+            </if>
+
+            <if test="major != null and major !='' and major !='null' ">
+                major = #{major},
+            </if>
+            <!--            <if test="createTime != '' and createTime !=null and createTime != 'null'">-->
+            <!--                and TO_DAYS(create_time)= TO_DAYS(#{createTime})-->
+            <!--            </if>-->
+
+        </where>
+    </select>
+
+    <!--更新学生个人信息-->
+    <update id="upStudentInfo" parameterType="com.gdufe.laboratorysystem.entity.StudentUser">
+        update student_user
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name != null and name !='' and name !='null' ">
+                name = #{name},
+            </if>
+
+            <if test="major != null and major !='' and major !='null' ">
+                major = #{major},
+            </if>
+
+            <if test="college != null and college !='' and college !='null' ">
+                college = #{college},
+            </if>
+
+            <if test="address != null and address !='' and address !='null' ">
+                address = #{address},
+            </if>
+
+            <if test="graduationDate != null and graduationDate !='' and graduationDate !='null' ">
+                graduation_date = #{graduationDate},
+            </if>
+
+            <if test="studayDate != null and studayDate !='' and studayDate !='null' ">
+                studay_date = #{studayDate},
+            </if>
+
+            <if test="birth != null and birth !='' and birth !='null' ">
+                birth = #{birth},
+            </if>
+
+            <if test="tel != null and tel !='' and tel !='null' ">
+                tel = #{tel},
+            </if>
+
+            <if test="sex =='男' or sex =='女' ">
+                sex = #{sex},
+            </if>
+
+            <if test=" age !=null and age !=0   and age gt 0  ">
+                age = #{age},
+            </if>
+
+        </trim>
+        where username = #{username};
+    </update>
+
+    <!--    添加学生个人信息-->
+    <insert id="addStudentInfo">
+        INSERT INTO `laboratory_system`.`student_user`(`username`, `name`, `age`, `sex`, `tel`, `studay_date`, `graduation_date`, `address`, `college`, `major`, `aclass`, `birth`, `head_portrait`)
+        VALUES (#{username}, #{name}, #{age}, #{sex},#{tel},#{studayDate} ,#{graduationDate} ,#{address},#{college} ,#{major},#{aclass},#{birth},#{headPortrait})
+    </insert>
+
+    <!--    学生个人信息账号是否存在-->
+    <select id="existUsername" resultType="boolean">
+        select count(*) from student_user where username=#{username};
+    </select>
+
+    <!--    批量删除学生个人信息-->
+    <delete id="delStudentInfoList" parameterType="java.lang.String" >
+        DELETE FROM `laboratory_system`.`student_user` WHERE
+        <foreach collection="array" separator="or" item="id" index="index" >
+            username = #{id}
+        </foreach>
+    </delete>
+
+    <!--    批量添加学生个人信息-->
+    <insert id="addStudentInfoList">
+        INSERT INTO `laboratory_system`.`student_user`(`username`, `name`, `age`, `sex`, `tel`, `studay_date`, `graduation_date`, `address`, `college`, `major`, `aclass`, `birth`, `head_portrait`)
+        VALUES
+        <foreach collection="list" item="studentInfo" index="index" separator=",">
+            (#{studentInfo.username}, #{studentInfo.name}, #{studentInfo.age}, #{studentInfo.sex},#{studentInfo.tel},#{studentInfo.studayDate},#{studentInfo.graduationDate},#{studentInfo.address},#{studentInfo.college} ,#{studentInfo.major},#{studentInfo.aclass},#{studentInfo.birth},#{studentInfo.headPortrait})
+        </foreach>
+    </insert>
 </mapper>

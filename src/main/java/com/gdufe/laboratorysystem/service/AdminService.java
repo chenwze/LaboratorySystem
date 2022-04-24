@@ -5,7 +5,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @program: LaboratorySystem
@@ -95,10 +94,10 @@ public interface AdminService {
      * @param studentInfo
      * @return
      */
-    List<StudentInfo> getStudentInfoList(StudentInfo studentInfo);
+    List<StudentUser> getStudentInfoList(StudentUser studentInfo);
 
     //批量添加学生个人信息
-    int addStudentInfoList(List<StudentInfo> studentInfoList);
+    int addStudentInfoList(List<StudentUser> studentInfoList);
     /**
      * 批量删除学生个人信息
      */
@@ -109,13 +108,13 @@ public interface AdminService {
      * @param username
      * @return
      */
-    StudentInfo getStudentInfo(String username);
+    StudentUser getStudentInfo(String username);
 
     //添加学生个人信息
-    HashMap addStudentInfo(StudentInfo studentInfo);
+    HashMap addStudentInfo(StudentUser studentInfo);
 
     //修改保存学生个人信息
-    HashMap upStudentInfo(StudentInfo studentInfo);
+    HashMap upStudentInfo(StudentUser studentInfo);
 
 
     /**
@@ -123,7 +122,7 @@ public interface AdminService {
      * @param teacherInfo
      * @return
      */
-    List<TeacherInfo> getTeacherInfoList(TeacherInfo teacherInfo);
+    List<TeacherUser> getTeacherInfoList(TeacherUser teacherInfo);
 
 
     /**
@@ -131,16 +130,16 @@ public interface AdminService {
      * @param username
      * @return
      */
-    TeacherInfo getTeacherInfo(String username);
+    TeacherUser getTeacherInfo(String username);
 
     //添加老师个人信息
-    HashMap addTeacherInfo(TeacherInfo teacherInfo);
+    HashMap addTeacherInfo(TeacherUser teacherInfo);
 
     //更新老师个人信息
-    HashMap upTeacherInfo(TeacherInfo teacherInfo);
+    HashMap upTeacherInfo(TeacherUser teacherInfo);
 
     //批量添加老师个人信息
-    int addTeacherInfoList(List<TeacherInfo> teacherInfoList);
+    int addTeacherInfoList(List<TeacherUser> teacherInfoList);
 
     /**
      * 批量删除老师个人信息

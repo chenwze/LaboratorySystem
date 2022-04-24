@@ -47,8 +47,8 @@ public class StudentServiceImpl implements StudentService {
     @Autowired
     LaboratoryInfoDao laboratoryInfoDao;
 
-    @Autowired
-    StudentInfoDao studentInfoDao;
+//    @Autowired
+//    StudentInfoDao studentInfoDao;
 
     @Value("${system.user.password.secret}")
     private String secret;
@@ -271,12 +271,12 @@ public class StudentServiceImpl implements StudentService {
      * @return
      */
     @Override
-    public StudentInfo getStudentInfo() {
+    public StudentUser getStudentInfo() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             //获取当前用户名
             String username = authentication.getName();
-            StudentInfo studentInfo = studentInfoDao.getStudentInfo(username);
+            StudentUser studentInfo = studentUserDao.getStudentInfo(username);
             System.out.println(studentInfo.toString());
             System.out.println();
             return studentInfo;

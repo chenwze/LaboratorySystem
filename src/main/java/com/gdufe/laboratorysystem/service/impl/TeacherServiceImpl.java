@@ -2,7 +2,6 @@ package com.gdufe.laboratorysystem.service.impl;
 
 import com.gdufe.laboratorysystem.dao.*;
 import com.gdufe.laboratorysystem.entity.*;
-import com.gdufe.laboratorysystem.service.StudentService;
 import com.gdufe.laboratorysystem.service.TeacherService;
 import com.gdufe.laboratorysystem.utils.ImgHeadUtils;
 import net.minidev.json.JSONObject;
@@ -46,8 +45,8 @@ public class TeacherServiceImpl implements TeacherService {
     @Autowired
     LaboratoryInfoDao laboratoryInfoDao;
 
-    @Autowired
-    TeacherInfoDao teacherInfoDao;
+//    @Autowired
+//    TeacherInfoDao teacherInfoDao;
 
     @Value("${system.user.password.secret}")
     private String secret;
@@ -263,12 +262,12 @@ public class TeacherServiceImpl implements TeacherService {
      * @return
      */
     @Override
-    public TeacherInfo getTeacherInfo() {
+    public TeacherUser getTeacherInfo() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             //获取当前用户名
             String username = authentication.getName();
-            TeacherInfo teacherInfo = teacherInfoDao.getTeacherInfo(username);
+            TeacherUser teacherInfo = teacherUserDao.getTeacherInfo(username);
             System.out.println(teacherInfo.toString());
             System.out.println();
             return teacherInfo;

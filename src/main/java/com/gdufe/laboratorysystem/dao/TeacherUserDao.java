@@ -1,6 +1,6 @@
 package com.gdufe.laboratorysystem.dao;
 
-import com.gdufe.laboratorysystem.entity.TeacherInfo;
+import com.gdufe.laboratorysystem.entity.TeacherUser;
 import com.gdufe.laboratorysystem.entity.User;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -17,7 +17,7 @@ public interface TeacherUserDao {
 
 
     //根据用户名查询个人信息
-    TeacherInfo getTeacherInfo(@Param("username") String username);
+    TeacherUser getTeacherInfo(@Param("username") String username);
 
     //根据用户名查询个人账号信息
     User getUserInfo(@Param("username") String username);
@@ -69,4 +69,35 @@ public interface TeacherUserDao {
      */
 
     boolean nonEmptyEmail(String email);
+
+    /**
+     * 老师个人信息列表
+     * @param teacherInfo
+     * @return
+     */
+    List<TeacherUser> getTeacherinfoList(TeacherUser teacherInfo);
+
+//    //获取单个老师信息
+//    TeacherInfo getTeacherInfo(String usernam);
+
+    /**
+     * 更新修改老师个人信息
+     */
+    int upTeacherInfo(TeacherUser teacherInfo);
+
+    /**
+     * 老师账号是否存在
+     */
+    boolean existUsername(String username);
+
+    /*
+    添加老师个人信息
+     */
+    int addTeacherInfo(TeacherUser teacherInfo);
+
+    //批量添加老师个人信息
+    int addTeacherInfoList(List<TeacherUser> teacherInfoList);
+
+    //批量删除老师个人信息
+    int delTeacherInfoList(String[] ids);
 }
